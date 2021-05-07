@@ -48,8 +48,8 @@ import Switch from './switch';
 import { setDistributorOrders } from '../../redux/action';
 import DispositionForm from './DispositionForm';
 
-const SOCKETENDPOINT = 'http://164.52.205.10:42002';
-const APIENDPOINT = 'http://164.52.205.10:42002';
+const SOCKETENDPOINT = 'http://192.168.3.36:62002';
+const APIENDPOINT = 'http://192.168.3.36:62002';
 const axios = require('axios');
 
 const socket = socketIOClient(SOCKETENDPOINT, { transports: ['websocket'] });
@@ -156,16 +156,17 @@ const Dashboard = ({
     label: ''
   });
   const [currentCall, setCurrentCall] = useState({
-    callUniqueId: '',
-    callType: '',
     callStatus: '',
-    callDetails: '',
-    callDispositionStatus: '',
-    callerNumber: '',
-    breakStatus: ''
+    callUniqueId: '',
+    // callType: '',
+
+    // callDetails: '',
+    // callDispositionStatus: '',
+    // callerNumber: '',
+    // breakStatus: ''
   });
   const [user, setUserDetails] = useState({
-    userType: 'Agent'
+    userType: 'agent'
   });
   const [agent, setAgent] = useState({
     AgentId: '1234',
@@ -198,7 +199,7 @@ const Dashboard = ({
   }
 
   function getALF() {
-    console.log('getALF')
+    // console.log('getALF')
     setTimeout(function () {
       const config = {
         method: 'get',
@@ -254,7 +255,7 @@ const Dashboard = ({
 
   }
   function selectedDataForInbound(data) {
-    console.log(localStorage.getItem('AgentType'))
+    // console.log(localStorage.getItem('AgentType'))
     // if(localStorage.getItem('AgentType') === 'Outbound'){
     //   console.log('selected')
     // }else{
@@ -264,33 +265,34 @@ const Dashboard = ({
   }
 
   function setCurrentCallDetails(
-    callStatusId,
-    callUniqueId,
-    callType,
+    // callStatusId,
+    // callUniqueId,
+    // callType,
     callStatus,
-    callEvent,
-    callDispositionStatus,
-    callerNumber,
-    breakStatus
+    // callEvent,
+    // callDispositionStatus,
+    // callerNumber,
+    // breakStatus
   ) {
     setCurrentCall({
-      callStatusId,
-      callUniqueId,
-      callType,
+      // callStatusId,
+      // callUniqueId,
+      // callType,
       callStatus,
-      callEvent,
-      callDispositionStatus,
-      callerNumber,
-      breakStatus
+      // callEvent,
+      // callDispositionStatus,
+      // callerNumber,
+      // breakStatus
     });
-    localStorage.setItem('callStatusId', callStatusId);
-    localStorage.setItem('callUniqueId', callUniqueId);
-    localStorage.setItem('callType', callType);
+    // localStorage.setItem('callStatusId', callStatusId);
+    // localStorage.setItem('callUniqueId', callUniqueId);
+    // localStorage.setItem('callType', callType);
     localStorage.setItem('callStatus', callStatus);
-    localStorage.setItem('callEvent', callEvent);
-    localStorage.setItem('callDispositionStatus', callDispositionStatus);
-    localStorage.setItem('callerNumber', callerNumber);
-    localStorage.setItem('breakStatus', breakStatus);
+    // localStorage.setItem('Interaction_ID', callUniqueId)
+    // localStorage.setItem('callEvent', callEvent);
+    // localStorage.setItem('callDispositionStatus', callDispositionStatus);
+    // localStorage.setItem('callerNumber', callerNumber);
+    // localStorage.setItem('breakStatus', breakStatus);
   }
 
   function addToQueue(agentId, queue) {
@@ -338,7 +340,7 @@ const Dashboard = ({
       const config = {
         method: 'get',
         // eslint-disable-next-line prefer-template
-        url: `http://164.52.205.10:42002/ami/actions/orginatecall?sipAgentID=Local%2F5${localStorage.getItem('AgentSIPID')}%40from-internal&NumbertobeCalled=5${Number}`
+        url: `http://192.168.3.36:62002/ami/actions/orginatecall?sipAgentID=Local%2F5${localStorage.getItem('AgentSIPID')}%40from-internal&NumbertobeCalled=5${Number}`
         ,
         headers: {}
       };
@@ -355,7 +357,7 @@ const Dashboard = ({
   }
 
   function updateAgentCallStatus(updateData) {
-    // console.log('updateData', updateData);
+    console.log('updateData', updateData);
     const data = {
       agentCallStatus: updateData.callStatus,
       agentCallEvent: updateData.callEvent,
@@ -376,7 +378,7 @@ const Dashboard = ({
 
     axios(config)
       .then((response) => {
-        // console.log('update', JSON.stringify(response.data));
+        console.log('update', JSON.stringify(response.data));
       })
       .catch((error) => {
         console.log(error);
@@ -384,140 +386,106 @@ const Dashboard = ({
   }
 
   function getAgentCallStatus(agentSipID) {
-    // console.log('calling the', agentSipID);
-    const config = {
+    console.log('calling the', agentSipID);
+
+    var axios = require('axios');
+
+    var config = {
       method: 'get',
-      url: GET_CURRENT_STATUS_BY_AGENT_SIP_ID + agentSipID,
+      url: `http://192.168.3.36:62004/api/agents/${agentSipID}`,
       headers: {}
     };
 
     axios(config)
-      .then((response) => {
-
-        if (response.data) {
-          // console.log('getAgentCallStatus....................', response.data);
-
-          setCurrentCallDetails(
-            // eslint-disable-next-line no-underscore-dangle
-            response.data[0]._id,
-            response.data[0].agentCallUniqueId,
-            response.data[0].agentCallType,
-            response.data[0].agentCallStatus,
-            response.data[0].agentCallEvent,
-            response.data[0].agentCallDispositionStatus,
-            response.data[0].contactNumber,
-            response.data[0].breakStatus
-          );
-          setAgentCurrentStatusAction({
-            AgentType: agent.AgentType,
-            role: user.userType,
-            callUniqueId: response.data[0].agentCallUniqueId,
-            distributer_id: '',
-            // eslint-disable-next-line no-underscore-dangle
-            callStatusId: response.data[0]._id,
-            callDispositionStatus: response.data[0].agentCallDispositionStatus,
-            callType: response.data[0].agentCallType,
-            callEvent: response.data[0].agentCallEvent,
-            callerNumber: response.data[0].contactNumber,
-            callStatus: response.data[0].agentCallStatus,
-            AgentSIPID: agent.AgentSipId,
-            breakStatus: response.data[0].breakStatus
-          });
-          if (response.data[0].channel !== null || response.data[0].channel !== undefined) {
-            // localStorage.setItem('channel', response.data[0].channel);
-          }
-
+      .then(function (response) {
+        console.log((response.data));
+        setCurrentCallDetails(
+          response.data.Event,
+          localStorage.setItem('Interaction_id', response.data.InteractionID)
+        )
+        if (response.data.Paused === '1') {
+          localStorage.setItem('Break_Status', 'IN')
+        } else {
+          localStorage.setItem('Break_Status', 'OUT')
         }
       })
-      .catch((error) => {
+      .catch(function (error) {
         console.log(error);
       });
+
+
+    //       setCurrentCallDetails(
+    //         // eslint-disable-next-line no-underscore-dangle
+    //         response.data[0]._id,
+    //         response.data[0].agentCallUniqueId,
+    //         response.data[0].agentCallType,
+    //         response.data[0].agentCallStatus,
+    //         response.data[0].agentCallEvent,
+    //         response.data[0].agentCallDispositionStatus,
+    //         response.data[0].contactNumber,
+    //         response.data[0].breakStatus
+    //       );
+    //       setAgentCurrentStatusAction({
+    //         AgentType: agent.AgentType,
+    //         role: user.userType,
+    //         callUniqueId: response.data[0].agentCallUniqueId,
+    //         distributer_id: '',
+    //         // eslint-disable-next-line no-underscore-dangle
+    //         callStatusId: response.data[0]._id,
+    //         callDispositionStatus: response.data[0].agentCallDispositionStatus,
+    //         callType: response.data[0].agentCallType,
+    //         callEvent: response.data[0].agentCallEvent,
+    //         callerNumber: response.data[0].contactNumber,
+    //         callStatus: response.data[0].agentCallStatus,
+    //         AgentSIPID: agent.AgentSipId,
+    //         breakStatus: response.data[0].breakStatus
+    //       });
+    //       if (response.data[0].channel !== null || response.data[0].channel !== undefined) {
+    //         // localStorage.setItem('channel', response.data[0].channel);
+    //       }
+
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //   });
   }
 
   function breakService() {
-    const BreakStatus = localStorage.getItem('breakStatus');
-    if (BreakStatus === 'NA') {
-      localStorage.setItem('breakStatus', 'IN');
+    console.log("called from dispos")
+    const AgentSIPID = localStorage.getItem('AgentSIPID')
+    if (localStorage.getItem('Break_Status') === 'OUT') {
+      var axios = require('axios');
+      var config = {
+        method: 'get',
+        url: `http://192.168.3.36:62002/ami/actions/break?Queue=5003&Interface=SIP%2F${AgentSIPID}&Reason=BREAK_IN&Break=true`,
+        headers: {}
+      };
 
-      if (localStorage.getItem('Agenttype') === 'L1') {
-        addToQueue(`local/5${localStorage.getItem('AgentSIPID')}@from-queue`, 5000);
-      }
-      if (localStorage.getItem('Agenttype') === 'L2') {
-        addToQueue(`Local/3${localStorage.getItem('AgentSIPID')}@from-queue`, 5001);
-      }
+      axios(config)
+        .then(function (response) {
+          console.log((response.data));
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    } else {
+      var axios = require('axios');
+      var config = {
+        method: 'get',
+        url: `http://192.168.3.36:62002/ami/actions/break?Queue=5003&Interface=SIP%2F${AgentSIPID}&Reason=BREAK_OUT&Break=false`,
+        headers: {}
+      };
 
-    }
-    if (BreakStatus === 'IN') {
-      // console.log('Inside the IN');
-      localStorage.setItem('breakStatus', 'OUT');
-
-      if (localStorage.getItem('Agenttype') === 'L1') {
-        removeFromQueue(`local/5${localStorage.getItem('AgentSIPID')}@from-queue`, 5000);
-        addToQueue(`local/5${localStorage.getItem('AgentSIPID')}@from-queue`, 5000);
-      }
-      if (localStorage.getItem('Agenttype') === 'L2') {
-        removeFromQueue(`Local/3${localStorage.getItem('AgentSIPID')}@from-queue`, 5001);
-        addToQueue(`Local/3${localStorage.getItem('AgentSIPID')}@from-queue`, 5001);
-      }
-
-    }
-    if (BreakStatus === 'OUT') {
-      // console.log('Inside the OUT');
-      localStorage.setItem('breakStatus', 'IN');
-
-      if (localStorage.getItem('Agenttype') === 'L1') {
-        removeFromQueue(`local/5${localStorage.getItem('AgentSIPID')}@from-queue`, 5000);
-      }
-      if (localStorage.getItem('Agenttype') === 'L2') {
-        removeFromQueue(`Local/3${localStorage.getItem('AgentSIPID')}@from-queue`, 5001);
-      }
-
+      axios(config)
+        .then(function (response) {
+          console.log((response.data));
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     }
 
-    updateAgentCallStatus({
-      callStatusId: localStorage.getItem('callStatusId'),
-      callUniqueId: localStorage.getItem('callUniqueId'),
-      callType: localStorage.getItem('callType'),
-      callStatus: localStorage.getItem('callStatus'),
-      callEvent: localStorage.getItem('callEvent'),
-      callDispositionStatus: localStorage.getItem('callDispositionStatus'),
-      callerNumber: localStorage.getItem('callerNumber'),
-      breakStatus: localStorage.getItem('breakStatus')
-    });
-
-    setCurrentCallDetails(
-      localStorage.getItem('callStatusId'),
-      localStorage.getItem('callUniqueId'),
-      localStorage.getItem('callType'),
-      localStorage.getItem('callStatus'),
-      localStorage.getItem('callEvent'),
-      localStorage.getItem('callDispositionStatus'),
-      localStorage.getItem('callerNumber'),
-      localStorage.getItem('breakStatus')
-    );
-
-    const data = JSON.stringify({
-      agentID: agent.AgentId,
-      agentSIPID: agent.AgentSipId,
-      breakStatus: localStorage.getItem('breakStatus')
-    });
-
-    const config = {
-      method: 'post',
-      url: PUT_BREAK_AGENT,
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      data
-    };
-
-    axios(config)
-      .then((response) => {
-        // console.log(JSON.stringify(response.data));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
   }
 
   useEffect(() => {
@@ -534,7 +502,7 @@ const Dashboard = ({
 
     async function getInitialData() {
       try {
-        await getAgentCallStatus(agent.AgentSipId);
+        await getAgentCallStatus(localStorage.getItem('Agent_Object_ID'));
       } catch (err) {
         console.log('err', err);
       }
@@ -543,6 +511,7 @@ const Dashboard = ({
     setLoadingDetails(false);
 
     socket.on('ringing1', data => {
+      console.log(data, "socket data")
       const agentExtension = data.agentNumber;
       if (agentExtension === agent.AgentSipId) {
         console.log('ringing1', data);
@@ -602,7 +571,39 @@ const Dashboard = ({
       socket.off('hangup');
       socket.off('transfercallnumber');
     };
+
+
   }, []);
+
+
+  useEffect(() => {
+    const agentSipID = localStorage.getItem('Agent_Object_ID')
+    const interval = setInterval(async () => {
+      const GET_CURRENT_STATUS_BY_AGENT_SIP_ID = `http://192.168.3.36:62004/api/agents/${localStorage.getItem('Agent_Object_ID')}`;
+      const getCurrentStatus = await axios.get(GET_CURRENT_STATUS_BY_AGENT_SIP_ID);
+      //console.log('getCurrentStatus', getCurrentStatus)
+      getAgentCallStatus(agentSipID)
+
+      // if (localStorage.getItem('jwtToken')) {
+      //   if (getCurrentStatus.data[0].jwtToken === localStorage.getItem('jwtToken')) {
+      //     getAgentCallStatus(agentSipID)
+      //   }
+      //   else {
+      //     localStorage.clear()
+      //     // dispatch(setLoggedIn(false))
+      //     window.location.reload()
+      //   }
+      // }
+
+    }, 3000);
+
+
+
+
+
+  }, [])
+
+
 
   useEffect(() => {
     getALF();
@@ -659,7 +660,7 @@ const Dashboard = ({
       });
   }
 
-  console.log(customerTable, "customertable details")
+  // console.log(customerTable, "customertable details")
 
   // useEffect(() => {
   //   // console.log("currentCall", currentCall)
@@ -673,7 +674,7 @@ const Dashboard = ({
 
   return !loadingDetails ? (
     <div style={{ position: 'relative' }}>
-      {currentCall.callStatus === 'connected' ? (
+      {/* {currentCall.callStatus === '0' ? (
         <div>
 
           <Box
@@ -693,23 +694,70 @@ const Dashboard = ({
       ) : null}
       {currentCall.callDispositionStatus === 'NotDisposed' &&
         currentCall.callStatus === 'disconnected' ? (
-          <div>
+        <div>
 
-            <Box
-              alignItems="center"
-              display="flex"
-              className={`${classes.timerComp} ${classes.callWrapper} ${classes.callOutbound}`}
-            >
-              <CallIcon />
+          <Box
+            alignItems="center"
+            display="flex"
+            className={`${classes.timerComp} ${classes.callWrapper} ${classes.callOutbound}`}
+          >
+            <CallIcon />
             &nbsp;
             <Typography display="inline">
-                {localStorage.getItem('callerNumber')}
+              {localStorage.getItem('callerNumber')}
                  Call Is Disconnected
             </Typography>
-            </Box>
-            {' '}
-          </div>
-        ) : null}
+          </Box>
+          {' '}
+        </div>
+      ) : null} */}
+      <Box
+        alignItems="center"
+        display="flex"
+        className={`${classes.timerComp} ${classes.callWrapper} ${classes.callInbound}`}
+      >
+        {
+          currentCall.callStatus === 'AgentCalled' ? (<div>
+            <CallIcon />
+            &nbsp;
+            <Typography display="inline">
+              {/* {localStorage.getItem('callerNumber')} */}
+          Call Ringing
+        </Typography>
+          </div>) : null
+        }
+        {
+          currentCall.callStatus === 'AgentConnect' ? (<div>
+            <CallIcon />
+            &nbsp;
+            <Typography display="inline">
+              {/* {localStorage.getItem('callerNumber')} */}
+          Call in Progress
+        </Typography>
+          </div>) : null
+        }
+        {
+          currentCall.callStatus === 'AgentComplete' ? (<div>
+            <CallIcon />
+            &nbsp;
+            <Typography display="inline">
+              {/* {localStorage.getItem('callerNumber')} */}
+          Call Disconnected
+        </Typography>
+          </div>) : null
+        }
+        {
+          currentCall.callStatus === 'AgentDisposed' ? (<div>
+            <CallIcon />
+            &nbsp;
+            <Typography display="inline">
+              {/* {localStorage.getItem('callerNumber')} */}
+         Free for next call
+        </Typography>
+          </div>) : null
+        }
+
+      </Box>
       <CustomBreadcrumbs />
       <Page className={classes.root} title="Dashboard">
         <Container maxWidth={false}>
@@ -717,12 +765,10 @@ const Dashboard = ({
             <Grid item lg={4} md={6} xs={12}>
 
               <Grid item>
-                {currentCall.callDispositionStatus === 'Disposed' && currentCall.callStatus != 'connected' ?
+                {currentCall.callStatus === 'AgentDisposed' ?
                   <Switch
                     breakService={breakService}
-                    removeFromQueue={removeFromQueue}
-                    addToQueue={addToQueue}
-
+                    callStatus={currentCall.callStatus}
                   /> : null}
               </Grid>
             </Grid>
@@ -734,9 +780,10 @@ const Dashboard = ({
               <Card>
                 <CardHeader title="Disposition Details" />
                 <Divider />
-                {currentCall.callDispositionStatus === 'NotDisposed' &&
-                  user.userType === 'Agent' ? (<CardContent>
+                {currentCall.callStatus !== 'AgentDisposed' &&
+                  user.userType === 'agent' && currentCall.callStatus !== 0 ? (<CardContent>
                     <DispositionForm
+                      breakService={breakService}
                       agentSipID={agent.AgentSipId}
                       DLF={DLF}
                       setCurrentCallDetails={setCurrentCallDetails}
@@ -768,9 +815,10 @@ const Dashboard = ({
                       setRemarks={rks => {
                         setRemarks(rks);
                       }}
+                      currentCall={currentCall.callStatus}
                     />
                   </CardContent>
-                  ) : (<></>)}
+                ) : (<></>)}
               </Card>
             </Grid>
             {/* <Grid item lg={12} md={12} xs={12}>
@@ -783,32 +831,8 @@ const Dashboard = ({
               </Card>
             </Grid> */}
 
-            <Grid item lg={12} md={12} xs={12}>
-              <Card>
-                <CardHeader title={'Caller Interactions'} />
-                <CardContent>
-                  <TextField id="outlined-basic" label="search" variant="outlined" value={searchItem} onChange={handleSearch} size="small" />&nbsp;
-              <Button variant="contained" color="primary" onClick={searchaction}><SearchIcon /></Button>
-                  {customerTable.length ? (
-                    <div>
-                      <BasicTable
-                        columns={CallerInteractioncolumns}
-                        records={customerTable.slice(0, 3)}
-                        redirectLink={"/dash360/admin/callerInteraction/" + searchItem}
-                        redirectLabel="View All"
-                        ALF={customerTable}
-                        selectedData={selectedDataForInbound}
-                      />
-                    </div>
-                  ) : (
-                      <>
-                        {/* <CommonAlert text="N/A" /> */}
-                      </>
-                    )}
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item lg={12} md={12} xs={12}>
+
+            {/* <Grid item lg={12} md={12} xs={12}>
               <Card>
                 <CardHeader title={'Agent Open Ticket'} />
                 {ALF.length ? (
@@ -823,8 +847,8 @@ const Dashboard = ({
                     />
                   </div>
                 ) : (
-                    <CommonAlert text="N/A" />
-                  )}
+                  <CommonAlert text="N/A" />
+                )}
               </Card>
 
 
@@ -846,10 +870,10 @@ const Dashboard = ({
                     />
                   </div>
                 ) : (
-                    <CommonAlert text="N/A" />
-                  )}
+                  <CommonAlert text="N/A" />
+                )}
               </Card>
-            </Grid>
+            </Grid> */}
 
 
           </Grid>
@@ -881,8 +905,8 @@ const Dashboard = ({
 
     </div>
   ) : (
-      <MainLoader />
-    );
+    <MainLoader />
+  );
 };
 Dashboard.propTypes = {
   distributorOrders: PropTypes.arrayOf(PropTypes.object),
@@ -911,3 +935,5 @@ const mapDispatchToProps = dispatch => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+
+

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import { purple, grey } from '@material-ui/core/colors';
 import FormGroup from '@material-ui/core/FormGroup';
@@ -125,28 +125,37 @@ const AntSwitch = withStyles((theme) => ({
 
 export default function CustomizedSwitches(props) {
     var breakStatus = true;
-    if(localStorage.getItem('breakStatus') === 'IN'){
-        breakStatus = true;
+    var agentStatus = false
+
+    const handle = () => {
+        if (localStorage.getItem('Break_Status') === 'OUT') {
+            breakStatus = true;
+        }
+        if (localStorage.getItem('Break_Status') === 'IN') {
+            breakStatus = false;
+        }
+        var agentStatus = true;
+        if (localStorage.getItem('AgentType') === 'Inbound') {
+            agentStatus = false;
+        }
+        if (localStorage.getItem('AgentType') === 'Outbound') {
+            agentStatus = true;
+        }
+
     }
-    if(localStorage.getItem('breakStatus') === 'OUT'){
-        breakStatus = false;
-    }
-   var agentStatus =  true;
-   if(localStorage.getItem('AgentType') === 'Inbound'){
-    agentStatus = false;
-   }
-   if(localStorage.getItem('AgentType') === 'Outbound'){
-    agentStatus = true;
-    }
-   
+
+
     const [state, setState] = React.useState({
         checkedA: agentStatus,
         checkedB: breakStatus,
         checkedC: false,
     });
 
+    useEffect(() => {
+        handle()
 
-    
+    }, [props])
+
     // console.log("props", props)
 
     const handleChange = (event) => {
@@ -155,16 +164,16 @@ export default function CustomizedSwitches(props) {
         setState({ ...state, [event.target.name]: event.target.checked });
         if (event.target.name === 'checkedA') {
             // props.breakService('test')
-            if(event.target.checked){
+            if (event.target.checked) {
                 localStorage.setItem('AgentType', 'Outbound')
-                props.removeFromQueue('local/5' + localStorage.getItem('AgentSIPID') + '@from-queue', 5000)
+                props.removeFromQueue(`SIP/${localStorage.getItem('AgentSIPID')}`, 5003)
                 // setState({ ...state, ['checkedB']: true });
-            }else{
+            } else {
                 localStorage.setItem('AgentType', 'Inbound')
-                props.addToQueue(`local/5${localStorage.getItem('AgentSIPID')}@from-queue`, 5000);
+                props.addToQueue(`SIP/${localStorage.getItem('AgentSIPID')}`, 5003);
             }
-  
-           
+
+
         }
         if (event.target.name === 'checkedB') {
             props.breakService()
@@ -173,13 +182,13 @@ export default function CustomizedSwitches(props) {
 
     return (
         <FormGroup>
-            <FormControlLabel
+            {/* <FormControlLabel
                 control={<GreySwitch checked={state.checkedA} onChange={handleChange} disabled={state.checkedB} name="checkedA" />}
                 label="Inbound-Outbound"
-            />
+            /> */}
             <FormControlLabel
                 control={<GreySwitch checked={state.checkedB} onChange={handleChange} disabled={state.checkedA} name="checkedB" />}
-                label="Active-Away"
+                label="Away-Active"
             />
             {/* <FormControlLabel
         control={<IOSSwitch checked={state.checkedB} onChange={handleChange} name="checkedB" />}

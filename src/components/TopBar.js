@@ -82,7 +82,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-var APIENDPOINT = 'http://164.52.205.10:42002';
+var APIENDPOINT = 'http://192.168.3.36:62002';
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// addToQueue start //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -144,7 +144,8 @@ function removeFromQueue(agentId, queue) {
 
   axios(config)
     .then(function (response) {
-
+      console.log(response)
+      // window.location.reload()
     })
     .catch(function (error) {
       console.log(error);
@@ -238,29 +239,18 @@ const TopBar = ({
   async function logoutUser() {
 
     try {
-      if (localStorage.getItem('Agenttype') === 'L1') {
-        // removeFromQueue('local/5'+localStorage.getItem('AgentSIPID')+'@from-internal', 5000)
-        removeFromQueue('local/5' + localStorage.getItem('AgentSIPID') + '@from-queue\n', 5000)
+      if (localStorage.getItem('callStatus') === 'AgentDisposed') {
+        localStorage.clear();
+
+        logout();
       }
-      if (localStorage.getItem('Agenttype') === 'L2') {
-        // removeFromQueue('Local/3'+localStorage.getItem('AgentSIPID')+'@from-internal', 5001)
-        removeFromQueue('Local/3' + localStorage.getItem('AgentSIPID') + '@from-queue\n', 5001)
-      }
-      // axios
-      // .delete(BackendURL.AuthenticationURL + '/auth/api/logout', { headers: { "authorization": userData } })
-      const userData = localStorage.jwtToken
 
-      const url = 'http://164.52.205.10:4000/auth/apiM/logout'
-      await Axios.delete(url, { headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` } });
 
-      localStorage.clear();
-
-      logout();
     } catch (err) {
       console.log(err);
     }
   }
-  var test = "black"
+  var test = "#0040ff"
   return (
     <AppBar className={clsx(classes.root, className)} elevation={0} {...rest} style={{ background: `${test}` }}>
       <Toolbar>
@@ -309,8 +299,8 @@ const TopBar = ({
           {viewAccess === -1 ? (
             ''
           ) : (
-              <></>
-            )}
+            <></>
+          )}
 
           <IconButton color="inherit">
             <Badge

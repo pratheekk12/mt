@@ -14,7 +14,7 @@ import {
   FormControlLabel,
   Grid,
   makeStyles,
-  Radio
+  Radio, Checkbox, Typography
 } from '@material-ui/core';
 import * as yup from 'yup';
 import { Autocomplete } from '@material-ui/lab';
@@ -26,10 +26,20 @@ const useStyle = makeStyles(() => ({
   }
 }));
 export default function DispositionForm(props) {
-  var APIENDPOINT = 'http://164.52.205.10:42002';
+  const [disable, setDisable] = useState(true)
+  const [takebreak, setTakebreak] = useState(false)
+  var APIENDPOINT = 'http://192.168.3.36:62002';
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /// addToQueue start //////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  const onChangeTakebreak = (e) => setTakebreak(!takebreak)
+
+  useEffect(() => {
+    if (localStorage.getItem('callStatus') === 'AgentComplete') {
+      setDisable(false)
+    }
+  }, [props])
 
   function addToQueue(agentId, queue) {
     var axios = require('axios');
@@ -1857,7 +1867,61 @@ export default function DispositionForm(props) {
       });
   }
 
+
+  const handleBreak = (e) => {
+    var axios = require('axios');
+    const AgentSIPID = localStorage.getItem('AgentSIPID')
+
+    var config = {
+      method: 'get',
+      url: `http://192.168.3.36:62002/ami/actions/break?Queue=5003&Interface=SIP%2F${AgentSIPID}&Reason=AgentDisposed&Break=false`,
+      headers: {}
+    };
+
+    axios(config)
+      .then(function (response) {
+        if (takebreak) {
+          props.breakService()
+        }
+        console.log((response.data));
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+  const handleSubmitDisposition = (data) => {
+    console.log(data, "form data")
+
+    const id = localStorage.getItem('Interaction_id')
+    console.log(id, "agentid")
+    var axios = require('axios');
+
+
+    var config = {
+      method: 'put',
+      url: `http://192.168.3.36:62004/api/interactions/${id}`,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: { "updateData": data }
+    };
+
+    axios(config)
+      .then(function (response) {
+        console.log(response, "response")
+        handleBreak()
+
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+
   function handleSubmit(e) {
+    handleSubmitDisposition()
+    // handleBreak()
     console.log('formRef', formRef.current.values);
     console.log('initialValue', initialValue)
     var categoryOBJ = formRef.current.values.category;
@@ -1918,7 +1982,12 @@ export default function DispositionForm(props) {
       "seccategory": secCategory,
       "secsubcategory": secSubCategory,
       "subcategory": subCategory
+
     }
+
+    handleSubmitDisposition(data)
+
+    console.log(data, "formdata")
 
     if (localStorage.getItem('AgentType') === 'Outbound') {
       data = {
@@ -1973,8 +2042,8 @@ export default function DispositionForm(props) {
     localStorage.setItem('callDispositionStatus', 'Disposed');
     localStorage.setItem('callDispositionStatus', 'Disposed');
     if (localStorage.getItem('Agenttype') === 'L1') {
-      removeFromQueue('local/5' + localStorage.getItem('AgentSIPID') + '@from-queue', 5000)
-      addToQueue('local/5' + localStorage.getItem('AgentSIPID') + '@from-queue', 5000)
+      removeFromQueue(`SIP/${localStorage.getItem('AgentSIPID')}`, 5003)
+      addToQueue(`SIP/${localStorage.getItem('AgentSIPID')}`, 5003)
     }
     if (localStorage.getItem('Agenttype') === 'L2') {
       removeFromQueue('Local/3' + localStorage.getItem('AgentSIPID') + '@from-queue', 5001)
@@ -2568,10 +2637,21 @@ export default function DispositionForm(props) {
           <span> </span>
           <span> </span>
           <span> </span>
-          <Button color="primary" variant="contained" onClick={handleSubmit}>
-            Submit
-          </Button>
-
+          <Grid container spacing={3} direction="row">
+            <Grid item xs={6} sm={6}>
+              <Button color="primary" variant="contained" onClick={handleSubmit} disabled={disable}>
+                Submit
+          </Button>&nbsp;
+          </Grid>
+            {/* <Grid item xs={6} sm={6}>
+              <Checkbox
+                checked={takebreak}
+                onChange={onChangeTakebreak}
+                color="primary"
+                inputProps={{ 'aria-label': 'secondary checkbox' }}
+              /> Would like to take break after this call
+            </Grid> */}
+          </Grid>
         </Form>
       )}
     </Formik>

@@ -16,7 +16,7 @@ import {
   Box
 } from '@material-ui/core';
 import {
-  GET_INBOUND_DASHBOARD_DATA,  
+  GET_INBOUND_DASHBOARD_DATA,
   GET_INTERACTION_BY_AGENT_SIP_ID
 } from 'src/modules/dashboard-360/utils/endpoints';
 import CallIcon from '@material-ui/icons/Call';
@@ -199,10 +199,10 @@ const Inbound = () => {
 
     const axios = require('axios');
     let data = '';
-    let u= 'http://164.52.205.10:42004'
+    let u = 'http://164.52.205.10:42004'
     let config = {
       method: 'get',
-      url: u + GET_INTERACTION_BY_AGENT_SIP_ID  + localStorage.getItem('AgentSIPID') + '',
+      url: u + GET_INTERACTION_BY_AGENT_SIP_ID + localStorage.getItem('AgentSIPID') + '',
       headers: {},
       data: data
     };
@@ -247,7 +247,7 @@ const Inbound = () => {
 
 
   }
-const SOCKETENDPOINT = 'http://164.52.205.10:42002/';
+  const SOCKETENDPOINT = 'http://192.168.3.36:62002/';
 
   useEffect(() => {
 
@@ -361,7 +361,7 @@ const SOCKETENDPOINT = 'http://164.52.205.10:42002/';
         {/* <CurrentStatus/> */}
       </div>
       {agentdisposedCalls.length > 0 ? <DispositionTable getALF={getALF} agentdisposedCalls={agentdisposedCalls} /> : <></>}
-     
+
     </>
   );
 };

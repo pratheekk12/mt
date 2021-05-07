@@ -23,6 +23,7 @@ import { ADMIN, USER } from 'src/redux/constants';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 // import Typography from '@material-ui/core/Typography';
 import Logo from '../../dashboard-360/components/loginlogo'
+import axios from 'axios';
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -94,12 +95,13 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-var APIENDPOINT = 'http://164.52.205.10:42002';
+var APIENDPOINT = 'http://192.168.3.36:62002';
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// addToQueue start //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 function addToQueue(agentId, queue) {
+  console.log(agentId, "agentid")
   var axios = require('axios');
   var data = JSON.stringify({
     agentId: agentId,
@@ -120,7 +122,7 @@ function addToQueue(agentId, queue) {
   };
 
   axios(config)
-    .then(function (response) { })
+    .then(function (response) { console.log(response) })
     .catch(function (error) {
       console.log(error);
     });
@@ -174,48 +176,50 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
   async function authenticate(values) {
     setError('');
     try {
-      const url = 'http://164.52.205.10:4000/auth/apiM/login'
-      // const url='http://192.168.3.45:42009/user/login'
-      console.log("values", values)
 
-      const res = await Axios.post(url, values);
+      const url = 'http://192.168.3.36:4000/api/login'
+      // // const url='http://192.168.3.45:42009/user/login'
+      console.log("values", values)
+      const data = {}
+      data.username = values.email
+      data.password = values.password
+      const res = await Axios.post(url, data);
       var myObj = res.data;
+      console.log(myObj)
       if ('statusCode' in myObj) {
         setLoggedInMain(false);
         setError(true);
       } if ('status' in myObj) {
         console.log("login api", res.data)
-        const obj = res.data.userDetails;
-        const { accessToken } = res.data;
 
-        console.log('data', res.data)
+        const obj = res.data;
+        // console.log(obj)
+        const accessToken = res.data.data;
+
+        // console.log('data', res.data)
         localStorage.setItem("jwtToken", accessToken);
-        localStorage.setItem('AgentSIPID', res.data.userDetails.External_num);
-        localStorage.setItem('role', res.data.userDetails.role);
-        localStorage.setItem('Agenttype', res.data.userDetails.AgentType);
+        localStorage.setItem('AgentSIPID', res.data.userData.id);
+        localStorage.setItem('role', myObj.user.role);
+        // localStorage.setItem('Agenttype', res.data.userDetails.AgentType);
+        localStorage.setItem('Agent_Object_ID', res.data.userData._id)
         localStorage.setItem('AgentType', 'Inbound');
 
         setUserDetailsMain(obj);
-        setAccountTypeMain(obj.role === 'Agent' ? ADMIN : USER);
+        setAccountTypeMain(obj.user.role === 'agent' ? ADMIN : USER);
 
-        if (res.data.userDetails.AgentType === 'L1') {
-          // addToQueue('local/5'+localStorage.getItem('AgentSIPID')+'@from-internal', 5000)
-          addToQueue('local/5' + localStorage.getItem('AgentSIPID') + '@from-queue\n', 5000)
-        }
-        if (res.data.userDetails.AgentType === 'L2') {
-          // addToQueue('Local/3'+localStorage.getItem('AgentSIPID')+'@from-internal', 5001)
-          addToQueue('Local/3' + localStorage.getItem('AgentSIPID') + '@from-queue\n', 5001)
-        }
+
         setLoggedInMain(true);
         setError(false);
 
       } else {
         setLoggedInMain(false);
+        console.log("i am in catch 1")
         setError(true);
       }
 
     } catch (err) {
       setLoggedInMain(false);
+      console.log("here i am catch2")
       setError(true);
     }
   }
@@ -254,10 +258,10 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
               validationSchema={Yup.object().shape({
                 email: Yup.string()
                   .email('Must be a valid email')
-                  .max(255)
+                  .max(256)
                   .required('Email is required'),
                 password: Yup.string()
-                  .max(255)
+                  .max(10)
                   .required('Password is required')
               })}
               onSubmit={values => {
@@ -280,10 +284,8 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
               }) => (
                 <form onSubmit={handleSubmit}>
                   <TextField
-                    error={Boolean(touched.email && errors.email)}
                     fullWidth
-                    helperText={touched.email && errors.email}
-                    label="Email Address"
+                    label="Email"
                     margin="normal"
                     name="email"
                     onBlur={handleBlur}
@@ -327,6 +329,12 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
                 </form>
               )}
             </Formik>
+            <Box mt={5}>
+              <Typography align="center">
+                Tap Start
+              </Typography>
+
+            </Box>
             <Box mt={5}>
               <Copyright />
             </Box>
