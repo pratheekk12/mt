@@ -239,6 +239,7 @@ const TopBar = ({
   async function logoutUser() {
 
     try {
+
       if (localStorage.getItem('callStatus') === 'AgentDisposed') {
         localStorage.clear();
 
@@ -249,6 +250,26 @@ const TopBar = ({
     } catch (err) {
       console.log(err);
     }
+
+    const AgentSIPID = localStorage.getItem('AgentSIPID')
+    var axios = require('axios');
+    var config = {
+      method: 'get',
+      url: `http://192.168.3.36:62002/ami/actions/break?Queue=5003&Interface=SIP%2F${AgentSIPID}&Reason=BREAK_IN&Break=true`,
+      headers: {}
+    };
+
+    axios(config)
+      .then(function (response) {
+        console.log((response.data));
+        logout()
+        localStorage.clear()
+        // window.location.reload()
+
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
   var test = "#0040ff"
   return (
