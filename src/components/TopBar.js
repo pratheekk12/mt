@@ -250,6 +250,23 @@ const TopBar = ({
     // } catch (err) {
     //   console.log(err);
     // }
+    var axios = require('axios');
+    var data = '';
+
+    var config = {
+      method: 'get',
+      url: `http://192.168.3.36:62002/ami/actions/rmq?Queue=5003&Interface=SIP/${localStorage.getItem('AgentSIPID')}`,
+      headers: {},
+      data: data
+    };
+
+    axios(config)
+      .then(function (response) {
+        console.log(response.data, "removed from queue");
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
 
     const AgentSIPID = localStorage.getItem('AgentSIPID')
     var axios = require('axios');

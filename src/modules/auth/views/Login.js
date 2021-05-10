@@ -176,13 +176,15 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
   async function authenticate(values) {
     setError('');
     try {
-
+      console.log(values)
       const url = 'http://192.168.3.36:4000/api/login'
       // // const url='http://192.168.3.45:42009/user/login'
       console.log("values", values)
       const data = {}
       data.username = values.email
       data.password = values.password
+
+
       const res = await Axios.post(url, data);
       var myObj = res.data;
       console.log(myObj)
@@ -207,6 +209,25 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
         setUserDetailsMain(obj);
         setAccountTypeMain(obj.user.role === 'agent' ? ADMIN : USER);
 
+        var axios = require('axios');
+        var data1 = '';
+
+        var config = {
+          method: 'get',
+          url: `http://192.168.3.36:62002/ami/actions/addq?Queue=5003&Interface=${res.data.userData.StateInterface}`,
+          headers: {},
+          data: data1
+        };
+
+        axios(config)
+          .then(function (response) {
+            console.log(response.data, "queue addedd");
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+
+
         const AgentSIPID = res.data.userData.id
         var axios = require('axios');
         var config = {
@@ -218,6 +239,7 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
         axios(config)
           .then(function (response) {
             console.log((response.data));
+
           })
           .catch(function (error) {
             console.log(error);
