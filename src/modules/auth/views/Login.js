@@ -207,6 +207,22 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
         setUserDetailsMain(obj);
         setAccountTypeMain(obj.user.role === 'agent' ? ADMIN : USER);
 
+        const AgentSIPID = res.data.userData.id
+        var axios = require('axios');
+        var config = {
+          method: 'get',
+          url: `http://192.168.3.36:62002/ami/actions/break?Queue=5003&Interface=SIP%2F${AgentSIPID}&Reason=BREAK_OUT&Break=false`,
+          headers: {}
+        };
+
+        axios(config)
+          .then(function (response) {
+            console.log((response.data));
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+
 
         setLoggedInMain(true);
         setError(false);

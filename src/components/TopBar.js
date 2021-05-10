@@ -238,18 +238,18 @@ const TopBar = ({
   };
   async function logoutUser() {
 
-    try {
+    // try {
 
-      if (localStorage.getItem('callStatus') === 'AgentDisposed') {
-        localStorage.clear();
+    //   if (localStorage.getItem('callStatus') === 'AgentDisposed') {
+    //     localStorage.clear();
 
-        logout();
-      }
+    //     logout();
+    //   }
 
 
-    } catch (err) {
-      console.log(err);
-    }
+    // } catch (err) {
+    //   console.log(err);
+    // }
 
     const AgentSIPID = localStorage.getItem('AgentSIPID')
     var axios = require('axios');
