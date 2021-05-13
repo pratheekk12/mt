@@ -14,7 +14,7 @@ function View({ accountType, routes }) {
     return (
         <DynamicModuleLoader modules={[getDashboardModule()]}>
 
-            <RouteSwitch routes={routes} redirectPath={localStorage.getItem('role') === 'agent' ? '/dash360/admin/dashboard' : '/telephony'} />
+            <RouteSwitch routes={routes} redirectPath={localStorage.getItem('role') === 'agent' ? '/dash360/admin/dashboard' : '/telephony/dashboard'} />
 
             {/* {localStorage.getItem('role') === 'Group admin' || 'Admin' ?
          <RouteSwitch routes={routes} redirectPath={accountType === ADMIN ? '/dash360/admin/dashboard' : '/dash360/user/profile'} />

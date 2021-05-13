@@ -13,6 +13,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
+import { useDispatch } from 'react-redux'
 import {
   setLoggedIn,
   setUserDetails,
@@ -24,6 +25,7 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 // import Typography from '@material-ui/core/Typography';
 import Logo from '../../dashboard-360/components/loginlogo'
 import axios from 'axios';
+import data from 'src/modules/dashboard-360/views/customer/CustomerListView/data';
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -172,82 +174,95 @@ function removeFromQueue(agentId, queue) {
 
 function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
   const classes = useStyles();
+
+  const dispatch = useDispatch()
   const [error, setError] = useState('');
+  const [visibility, setVisibility] = useState(false)
+  const [data1, setData1] = useState({})
+  const [otp, setOtp] = useState("")
+
+
+  const setotphandle = (e) => setOtp(e.target.value)
   async function authenticate(values) {
     setError('');
     try {
       console.log(values)
-      const url = 'http://192.168.3.36:4000/api/login'
+      const url = 'http://localhost:9999/api/sendOtp'
       // // const url='http://192.168.3.45:42009/user/login'
       console.log("values", values)
       const data = {}
       data.username = values.email
       data.password = values.password
 
+      setData1(data)
 
       const res = await Axios.post(url, data);
       var myObj = res.data;
       console.log(myObj)
+
       if ('statusCode' in myObj) {
         setLoggedInMain(false);
         setError(true);
       } if ('status' in myObj) {
-        console.log("login api", res.data)
+        setVisibility(true)
 
-        const obj = res.data;
-        // console.log(obj)
-        const accessToken = res.data.data;
+        // console.log("login api", res.data)
 
-        // console.log('data', res.data)
-        localStorage.setItem("jwtToken", accessToken);
-        localStorage.setItem('AgentSIPID', res.data.userData.id);
-        localStorage.setItem('role', myObj.user.role);
-        // localStorage.setItem('Agenttype', res.data.userDetails.AgentType);
-        localStorage.setItem('Agent_Object_ID', res.data.userData._id)
-        localStorage.setItem('AgentType', 'Inbound');
+        // const obj = res.data;
+        // dispatch(setUserDetails(res.data))
+        // // console.log(obj)
+        // const accessToken = res.data.data;
 
-        setUserDetailsMain(obj);
-        setAccountTypeMain(obj.user.role === 'agent' ? ADMIN : USER);
+        // // console.log('data', res.data)
+        // localStorage.setItem("jwtToken", accessToken);
+        // localStorage.setItem('AgentSIPID', res.data.userData.id);
+        // localStorage.setItem('role', myObj.user.role);
+        // // localStorage.setItem('Agenttype', res.data.userDetails.AgentType);
+        // localStorage.setItem('Agent_Object_ID', res.data.userData._id)
+        // localStorage.setItem('AgentType', 'Inbound');
 
-        var axios = require('axios');
-        var data1 = '';
+        // setUserDetailsMain(obj);
+        // setAccountTypeMain(obj.user.role === 'agent' ? ADMIN : USER);
 
-        var config = {
-          method: 'get',
-          url: `http://192.168.3.36:62002/ami/actions/addq?Queue=5003&Interface=${res.data.userData.StateInterface}`,
-          headers: {},
-          data: data1
-        };
+        // var axios = require('axios');
+        // var data1 = '';
 
-        axios(config)
-          .then(function (response) {
-            console.log(response.data, "queue addedd");
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
+        // var config = {
+        //   method: 'get',
+        //   url: `http://192.168.3.36:62002/ami/actions/addq?Queue=5003&Interface=${res.data.userData.StateInterface}`,
+        //   headers: {},
+        //   data: data1
+        // };
 
-
-        const AgentSIPID = res.data.userData.id
-        var axios = require('axios');
-        var config = {
-          method: 'get',
-          url: `http://192.168.3.36:62002/ami/actions/break?Queue=5003&Interface=SIP%2F${AgentSIPID}&Reason=BREAK_OUT&Break=false`,
-          headers: {}
-        };
-
-        axios(config)
-          .then(function (response) {
-            console.log((response.data));
-
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
+        // axios(config)
+        //   .then(function (response) {
+        //     console.log(response.data, "queue addedd");
+        //   })
+        //   .catch(function (error) {
+        //     console.log(error);
+        //   });
 
 
-        setLoggedInMain(true);
-        setError(false);
+        // const AgentSIPID = res.data.userData.id
+        // var axios = require('axios');
+        // var config = {
+        //   method: 'get',
+        //   url: `http://192.168.3.36:62002/ami/actions/break?Queue=5003&Interface=SIP%2F${AgentSIPID}&Reason=BREAK_OUT&Break=false`,
+        //   headers: {}
+        // };
+
+        // axios(config)
+        //   .then(function (response) {
+        //     console.log((response.data));
+
+        //   })
+        //   .catch(function (error) {
+        //     console.log(error);
+        //   });
+
+
+        // setLoggedInMain(true);
+        // setError(false);
 
       } else {
         setLoggedInMain(false);
@@ -261,6 +276,87 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
       setError(true);
     }
   }
+  const handlelogin = (e) => {
+
+    const data2 = data1
+    data2.OTP = otp
+    console.log(data2)
+
+    axios.post(`http://localhost:9999/api/login`, data2)
+      .then((res) => {
+        console.log(res)
+        var myObj = res.data;
+        console.log(myObj)
+        if ('statusCode' in myObj) {
+          setLoggedInMain(false);
+          setError(true);
+        } if ('status' in myObj) {
+          setVisibility(true)
+
+          console.log("login api", res.data)
+
+          const obj = res.data;
+          dispatch(setUserDetails(res.data))
+          // console.log(obj)
+          const accessToken = res.data.data;
+
+          // console.log('data', res.data)
+          localStorage.setItem("jwtToken", accessToken);
+          localStorage.setItem('AgentSIPID', res.data.userData.id);
+          localStorage.setItem('role', myObj.user.role);
+          // localStorage.setItem('Agenttype', res.data.userDetails.AgentType);
+          localStorage.setItem('Agent_Object_ID', res.data.userData._id)
+          localStorage.setItem('AgentType', 'Inbound');
+
+          setUserDetailsMain(obj);
+          setAccountTypeMain(obj.user.role === 'agent' ? ADMIN : USER);
+
+          var axios = require('axios');
+          var data1 = '';
+
+          var config = {
+            method: 'get',
+            url: `http://192.168.3.36:62002/ami/actions/addq?Queue=5003&Interface=${res.data.userData.StateInterface}`,
+            headers: {},
+            data: data1
+          };
+
+          axios(config)
+            .then(function (response) {
+              console.log(response.data, "queue addedd");
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+
+
+          const AgentSIPID = res.data.userData.id
+          var axios = require('axios');
+          var config = {
+            method: 'get',
+            url: `http://192.168.3.36:62002/ami/actions/break?Queue=5003&Interface=SIP%2F${AgentSIPID}&Reason=BREAK_OUT&Break=false`,
+            headers: {}
+          };
+
+          axios(config)
+            .then(function (response) {
+              console.log((response.data));
+
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+
+
+          setLoggedInMain(true);
+          setError(false);
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
 
   return (
     <Grid container component="main" className={classes.root}>
@@ -345,6 +441,21 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
                     value={values.password}
                     variant="outlined"
                   />
+                  { visibility ? (<div><TextField
+                    fullWidth
+                    label="otp"
+                    margin="normal"
+                    name="password"
+                    value={otp}
+                    onChange={setotphandle}
+                    // onBlur={handleBlur}
+                    // onChange={handleChange}
+                    type="text"
+                    variant="outlined"
+                  />
+
+                  </div>) : (null)
+                  }
 
                   {!!error && (
                     <Box my={1}>
@@ -353,26 +464,41 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
                       </Typography>
                     </Box>
                   )}
-                  <Box my={2} mt={5}>
-                    <Button
-                      color="primary"
-                      fullWidth
-                      size="large"
-                      type="submit"
-                      variant="contained"
-                    >
-                      Sign in now
-                    </Button>
-                  </Box>
+
+                  {
+                    visibility === false ? (<Box my={2} mt={5}>
+                      <Button
+                        color="primary"
+                        fullWidth
+                        size="large"
+                        type="submit"
+                        variant="contained"
+                      >Request OTP
+                      </Button>
+                    </Box>) : (null)
+                  }
+
                 </form>
               )}
             </Formik>
             <Box mt={5}>
+              {
+                visibility ? (<Button
+                  color="primary"
+                  fullWidth
+                  size="large"
+                  variant="contained"
+                  onClick={handlelogin}
+                >Sign In Now
+                </Button>) : (null)
+              }
+
               <Typography align="center">
                 Tap Start
               </Typography>
 
             </Box>
+
             <Box mt={5}>
               <Copyright />
             </Box>

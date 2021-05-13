@@ -281,7 +281,7 @@ const TopBar = ({
         console.log((response.data));
         logout()
         localStorage.clear()
-        // window.location.reload()
+        window.location.reload()
 
       })
       .catch(function (error) {

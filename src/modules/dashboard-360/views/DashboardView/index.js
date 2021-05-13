@@ -48,6 +48,7 @@ import Switch from './switch';
 import { setDistributorOrders } from '../../redux/action';
 import DispositionForm from './DispositionForm';
 
+
 const SOCKETENDPOINT = 'http://192.168.3.36:62002';
 const APIENDPOINT = 'http://192.168.3.36:62002';
 const axios = require('axios');
@@ -107,6 +108,7 @@ const Dashboard = ({
   setAgentCurrentStatusAction,
 }) => {
   const classes = useStyles();
+  const user1 = useSelector(state => state.userData)
   const reduxState = useSelector(state => state);
   const [loadingDetails, setLoadingDetails] = useState(true);
   const [remarks, setRemarks] = useState('');
@@ -176,6 +178,8 @@ const Dashboard = ({
   const [ALF, setALF] = useState([]);
   const [DLF, setDLF] = useState([]);
   const [disForm, setdisForm] = useState({});
+
+  console.log(user1)
 
   function getDLF() {
     // const config = {
@@ -674,244 +678,162 @@ const Dashboard = ({
 
   return !loadingDetails ? (
     <div style={{ position: 'relative' }}>
-      {/* {currentCall.callStatus === '0' ? (
-        <div>
-
-          <Box
-            alignItems="center"
-            display="flex"
-            className={`${classes.timerComp} ${classes.callWrapper} ${classes.callInbound}`}
-          >
-            <CallIcon />
+      {
+        localStorage.getItem('role') === 'agent' ? (
+          <div>
+            <Box
+              alignItems="center"
+              display="flex"
+              className={`${classes.timerComp} ${classes.callWrapper} ${classes.callInbound}`}
+            >
+              {
+                currentCall.callStatus === 'AgentCalled' ? (<div>
+                  <CallIcon />
             &nbsp;
-            <Typography display="inline">
-              {localStorage.getItem('callerNumber')}
-               Call In Progress
-            </Typography>
-          </Box>
-          {' '}
-        </div>
-      ) : null}
-      {currentCall.callDispositionStatus === 'NotDisposed' &&
-        currentCall.callStatus === 'disconnected' ? (
-        <div>
-
-          <Box
-            alignItems="center"
-            display="flex"
-            className={`${classes.timerComp} ${classes.callWrapper} ${classes.callOutbound}`}
-          >
-            <CallIcon />
-            &nbsp;
-            <Typography display="inline">
-              {localStorage.getItem('callerNumber')}
-                 Call Is Disconnected
-            </Typography>
-          </Box>
-          {' '}
-        </div>
-      ) : null} */}
-      <Box
-        alignItems="center"
-        display="flex"
-        className={`${classes.timerComp} ${classes.callWrapper} ${classes.callInbound}`}
-      >
-        {
-          currentCall.callStatus === 'AgentCalled' ? (<div>
-            <CallIcon />
-            &nbsp;
-            <Typography display="inline">
-              {/* {localStorage.getItem('callerNumber')} */}
+                  <Typography display="inline">
+                    {/* {localStorage.getItem('callerNumber')} */}
           Call Ringing
         </Typography>
-          </div>) : null
-        }
-        {
-          currentCall.callStatus === 'AgentConnect' ? (<div>
-            <CallIcon />
+                </div>) : null
+              }
+              {
+                currentCall.callStatus === 'AgentConnect' ? (<div>
+                  <CallIcon />
             &nbsp;
-            <Typography display="inline">
-              {/* {localStorage.getItem('callerNumber')} */}
+                  <Typography display="inline">
+                    {/* {localStorage.getItem('callerNumber')} */}
           Call in Progress
         </Typography>
-          </div>) : null
-        }
-        {
-          currentCall.callStatus === 'AgentComplete' ? (<div>
-            <CallIcon />
+                </div>) : null
+              }
+              {
+                currentCall.callStatus === 'AgentComplete' ? (<div>
+                  <CallIcon />
             &nbsp;
-            <Typography display="inline">
-              {/* {localStorage.getItem('callerNumber')} */}
+                  <Typography display="inline">
+                    {/* {localStorage.getItem('callerNumber')} */}
           Call Disconnected
         </Typography>
-          </div>) : null
-        }
-        {
-          currentCall.callStatus === 'AgentDisposed' ? (<div>
-            <CallIcon />
+                </div>) : null
+              }
+              {
+                currentCall.callStatus === 'AgentDisposed' ? (<div>
+                  <CallIcon />
             &nbsp;
-            <Typography display="inline">
-              {/* {localStorage.getItem('callerNumber')} */}
+                  <Typography display="inline">
+                    {/* {localStorage.getItem('callerNumber')} */}
          Free for next call
         </Typography>
-          </div>) : null
-        }
-        {
-          currentCall.callStatus === 'AgentRingNoAnswer' ? (<div>
-            <CallIcon />
+                </div>) : null
+              }
+              {
+                currentCall.callStatus === 'AgentRingNoAnswer' ? (<div>
+                  <CallIcon />
             &nbsp;
-            <Typography display="inline">
-              {/* {localStorage.getItem('callerNumber')} */}
+                  <Typography display="inline">
+                    {/* {localStorage.getItem('callerNumber')} */}
          Call Not Answered
         </Typography>
-          </div>) : null
-        }
+                </div>) : null
+              }
 
-      </Box>
-      <CustomBreadcrumbs />
-      <Page className={classes.root} title="Dashboard">
-        <Container maxWidth={false}>
-          <Grid container spacing={3}>
-            <Grid item lg={4} md={6} xs={12}>
+            </Box>
+            <CustomBreadcrumbs />
+            <Page className={classes.root} title="Dashboard">
+              <Container maxWidth={false}>
+                <Grid container spacing={3}>
+                  <Grid item lg={4} md={6} xs={12}>
 
-              <Grid item>
-                {currentCall.callStatus === 'AgentDisposed' ?
-                  <Switch
-                    breakService={breakService}
-                    callStatus={currentCall.callStatus}
-                  /> : null}
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid container spacing={3}>
+                    <Grid item>
+                      {currentCall.callStatus === 'AgentDisposed' ?
+                        <Switch
+                          breakService={breakService}
+                          callStatus={currentCall.callStatus}
+                        /> : null}
+                    </Grid>
+                  </Grid>
+                </Grid>
+                <Grid container spacing={3}>
 
-            <Grid item lg={12} md={12} xs={12}>
+                  <Grid item lg={12} md={12} xs={12}>
 
-              <Card>
-                <CardHeader title="Disposition Details" />
-                <Divider />
-                {currentCall.callStatus !== 'AgentDisposed' &&
-                  user.userType === 'agent' && currentCall.callStatus !== 0 && currentCall.callStatus !== 'AgentRingNoAnswer' ? (<CardContent>
-                    <DispositionForm
-                      breakService={breakService}
-                      agentSipID={agent.AgentSipId}
-                      DLF={DLF}
-                      setCurrentCallDetails={setCurrentCallDetails}
-                      addToQueue={addToQueue}
-                      removeFromQueue={removeFromQueue}
-                      selectedData1={selectedData1}
-                      // getALF={getALF}
-                      disForm={disForm}
-                      setdisForm={form => {
-                        setdisForm(form);
-                      }}
-                      category={category}
-                      setCategory={cat => {
-                        setCategory(cat);
-                      }}
-                      ticketType={ticketType}
-                      setTicketType={tkstyp => {
-                        setTicketType(tkstyp);
-                      }}
-                      subCategory={subCategory}
-                      setSubCategory={subcat => {
-                        setSubCategory(subcat);
-                      }}
-                      subCategoryItem={subCategoryItem}
-                      setSubCategoryItem={subcatitem => {
-                        setSubCategoryItem(subcatitem);
-                      }}
-                      remarks={remarks}
-                      setRemarks={rks => {
-                        setRemarks(rks);
-                      }}
-                      currentCall={currentCall.callStatus}
-                    />
-                  </CardContent>
-                ) : (<></>)}
-              </Card>
-            </Grid>
-            {/* <Grid item lg={12} md={12} xs={12}>
-              <Card >
+                    <Card>
+                      <CardHeader title="Disposition Details" />
+                      <Divider />
+                      {currentCall.callStatus !== 'AgentDisposed' &&
+                        user.userType === 'agent' && currentCall.callStatus !== 0 && currentCall.callStatus !== 'AgentRingNoAnswer' ? (<CardContent>
+                          <DispositionForm
+                            breakService={breakService}
+                            agentSipID={agent.AgentSipId}
+                            DLF={DLF}
+                            setCurrentCallDetails={setCurrentCallDetails}
+                            addToQueue={addToQueue}
+                            removeFromQueue={removeFromQueue}
+                            selectedData1={selectedData1}
+                            // getALF={getALF}
+                            disForm={disForm}
+                            setdisForm={form => {
+                              setdisForm(form);
+                            }}
+                            category={category}
+                            setCategory={cat => {
+                              setCategory(cat);
+                            }}
+                            ticketType={ticketType}
+                            setTicketType={tkstyp => {
+                              setTicketType(tkstyp);
+                            }}
+                            subCategory={subCategory}
+                            setSubCategory={subcat => {
+                              setSubCategory(subcat);
+                            }}
+                            subCategoryItem={subCategoryItem}
+                            setSubCategoryItem={subcatitem => {
+                              setSubCategoryItem(subcatitem);
+                            }}
+                            remarks={remarks}
+                            setRemarks={rks => {
+                              setRemarks(rks);
+                            }}
+                            currentCall={currentCall.callStatus}
+                          />
+                        </CardContent>
+                      ) : (<></>)}
+                    </Card>
+                  </Grid>
 
-                <CardContent>
-                  <TextField id="outlined-basic" label="search" variant="outlined" value={searchItem} onChange={handleSearch} size ="small"/>&nbsp;
-              <Button variant="contained" color="primary" onClick={searchaction}><SearchIcon /></Button>
-                </CardContent>
-              </Card>
-            </Grid> */}
+                </Grid>
 
+              </Container>
+            </Page>
 
-            {/* <Grid item lg={12} md={12} xs={12}>
-              <Card>
-                <CardHeader title={'Agent Open Ticket'} />
-                {ALF.length ? (
-                  <div>
-                    <BasicTable
-                      columns={lastFiveCallData}
-                      records={ALF.filter((e) => e.type === 'open').slice(0, 3)}
-                      redirectLink="/dash360/admin/agentopentickets"
-                      redirectLabel="View All"
-                      ALF={ALF.filter((e) => e.type === 'open')}
-                      selectedData={selectedDataForObutbound}
-                    />
-                  </div>
-                ) : (
-                  <CommonAlert text="N/A" />
-                )}
-              </Card>
-
-
-            </Grid>
-
-
-            <Grid item lg={12} md={12} xs={12}>
-              <Card>
-                <CardHeader title={'Agent Interactions'} />
-                {ALF.length ? (
-                  <div>
-                    <BasicTable
-                      columns={lastFiveCallData}
-                      records={ALF.slice(0, 3)}
-                      redirectLink="/dash360/admin/agentlastfive"
-                      redirectLabel="View All"
-                      ALF={ALF}
-                      selectedData={selectedDataForInbound}
-                    />
-                  </div>
-                ) : (
-                  <CommonAlert text="N/A" />
-                )}
-              </Card>
-            </Grid> */}
-
-
-          </Grid>
-
-        </Container>
-      </Page>
-
-      <Dialog
-        fullScreen={fullScreen}
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="responsive-dialog-title"
-      >
-        <DialogTitle id="responsive-dialog-title">{"Outbound Call"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are You sure, You Want to make a Outbound Call ?
+            <Dialog
+              fullScreen={fullScreen}
+              open={open}
+              onClose={handleClose}
+              aria-labelledby="responsive-dialog-title"
+            >
+              <DialogTitle id="responsive-dialog-title">{"Outbound Call"}</DialogTitle>
+              <DialogContent>
+                <DialogContentText>
+                  Are You sure, You Want to make a Outbound Call ?
           </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button autoFocus onClick={handleClose} color="primary">
-            Close
+              </DialogContent>
+              <DialogActions>
+                <Button autoFocus onClick={handleClose} color="primary">
+                  Close
           </Button>
-          <Button onClick={makeCall} color="primary" autoFocus>
-            Make A Call
+                <Button onClick={makeCall} color="primary" autoFocus>
+                  Make A Call
           </Button>
-        </DialogActions>
-      </Dialog>
+              </DialogActions>
+            </Dialog>
+          </div>
+        ) : (<div>
+
+        </div>)
+      }
+
 
     </div>
   ) : (
