@@ -186,10 +186,10 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
   async function authenticate(values) {
     setError('');
     try {
-      console.log(values)
-      const url = 'http://localhost:9999/api/sendOtp'
+      // console.log(values)
+      const url = 'http://192.168.3.36:5555/api/sendOtp'
       // // const url='http://192.168.3.45:42009/user/login'
-      console.log("values", values)
+      // console.log("values", values)
       const data = {}
       data.username = values.email
       data.password = values.password
@@ -282,7 +282,7 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
     data2.OTP = otp
     console.log(data2)
 
-    axios.post(`http://localhost:9999/api/login`, data2)
+    axios.post(`http://192.168.3.36:5555/api/login`, data2)
       .then((res) => {
         console.log(res)
         var myObj = res.data;
@@ -316,7 +316,7 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
 
           var config = {
             method: 'get',
-            url: `http://192.168.3.36:62002/ami/actions/addq?Queue=5003&Interface=${res.data.userData.StateInterface}`,
+            url: `http://192.168.3.36:52005/ami/actions/addq?Queue=5001&Interface=${res.data.userData.StateInterface}`,
             headers: {},
             data: data1
           };
@@ -334,7 +334,7 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
           var axios = require('axios');
           var config = {
             method: 'get',
-            url: `http://192.168.3.36:62002/ami/actions/break?Queue=5003&Interface=SIP%2F${AgentSIPID}&Reason=BREAK_OUT&Break=false`,
+            url: `http://192.168.3.36:52005/ami/actions/break?Queue=5001&Interface=SIP%2F${AgentSIPID}&Reason=BREAK_OUT&Break=false`,
             headers: {}
           };
 

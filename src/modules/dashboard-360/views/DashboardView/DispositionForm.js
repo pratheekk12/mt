@@ -1874,7 +1874,7 @@ export default function DispositionForm(props) {
 
     var config = {
       method: 'get',
-      url: `http://192.168.3.36:62002/ami/actions/break?Queue=5003&Interface=SIP%2F${AgentSIPID}&Reason=AgentDisposed&Break=false`,
+      url: `http://192.168.3.36:52005/ami/actions/break?Queue=5003&Interface=SIP%2F${AgentSIPID}&Reason=AgentDisposed&Break=false`,
       headers: {}
     };
 
@@ -1900,7 +1900,7 @@ export default function DispositionForm(props) {
 
     var config = {
       method: 'put',
-      url: `http://192.168.3.36:62004/api/interactions/${id}`,
+      url: `http://192.168.3.36:5000/api/interactions/${id}`,
       headers: {
         'Content-Type': 'application/json'
       },
