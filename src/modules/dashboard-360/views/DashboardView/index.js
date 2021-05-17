@@ -179,7 +179,7 @@ const Dashboard = ({
   const [DLF, setDLF] = useState([]);
   const [disForm, setdisForm] = useState({});
 
-  console.log(user1)
+  // console.log(user1)
 
   function getDLF() {
     // const config = {
@@ -462,7 +462,7 @@ const Dashboard = ({
       var axios = require('axios');
       var config = {
         method: 'get',
-        url: `http://192.168.3.36:52005/ami/actions/break?Queue=5001&Interface=SIP%2F${AgentSIPID}&Reason=BREAK_IN&Break=true`,
+        url: `http://192.168.3.36:52005/ami/actions/break?Queue=5001&Interface=SIP%2F${AgentSIPID}&Reason=BREAKIN&Break=true`,
         headers: {}
       };
 
@@ -477,7 +477,7 @@ const Dashboard = ({
       var axios = require('axios');
       var config = {
         method: 'get',
-        url: `http://192.168.3.36:52005/ami/actions/break?Queue=5001&Interface=SIP%2F${AgentSIPID}&Reason=BREAK_OUT&Break=false`,
+        url: `http://192.168.3.36:52005/ami/actions/break?Queue=5001&Interface=SIP%2F${AgentSIPID}&Reason=BREAKOUT&Break=false`,
         headers: {}
       };
 
@@ -580,6 +580,7 @@ const Dashboard = ({
   }, []);
 
 
+
   useEffect(() => {
     const agentSipID = localStorage.getItem('Agent_Object_ID')
     const interval = setInterval(async () => {
@@ -675,7 +676,6 @@ const Dashboard = ({
   //   }
   // }, [reduxState.searchDistributor]);
 
-
   return !loadingDetails ? (
     <div style={{ position: 'relative' }}>
       {
@@ -717,12 +717,22 @@ const Dashboard = ({
                 </div>) : null
               }
               {
-                currentCall.callStatus === 'AgentDisposed' ? (<div>
+                currentCall.callStatus === 'AgentDisposed' || currentCall.callStatus === 'LoggedIn' || currentCall.callStatus === 'BREAKOUT' ? (<div>
                   <CallIcon />
             &nbsp;
                   <Typography display="inline">
                     {/* {localStorage.getItem('callerNumber')} */}
          Free for next call
+        </Typography>
+                </div>) : null
+              }
+              {
+                currentCall.callStatus === 'BREAKIN' ? (<div>
+                  <CallIcon />
+            &nbsp;
+                  <Typography display="inline">
+                    {/* {localStorage.getItem('callerNumber')} */}
+                  You are in Break
         </Typography>
                 </div>) : null
               }
@@ -745,11 +755,12 @@ const Dashboard = ({
                   <Grid item lg={4} md={6} xs={12}>
 
                     <Grid item>
-                      {currentCall.callStatus === 'AgentDisposed' ?
+                      {/* {currentCall.callStatus === 'AgentDisposed' || currentCall.callStatus === 'LoggedIn' ?
                         <Switch
                           breakService={breakService}
                           callStatus={currentCall.callStatus}
-                        /> : null}
+                        /> : null} */}
+                      <Button variant="contained" color="primary" onClick={breakService}>{localStorage.getItem('Break_Status') === 'OUT' ? ('Take a Break') : ('You are in break')}</Button>
                     </Grid>
                   </Grid>
                 </Grid>
@@ -761,7 +772,7 @@ const Dashboard = ({
                       <CardHeader title="Disposition Details" />
                       <Divider />
                       {currentCall.callStatus !== 'AgentDisposed' &&
-                        user.userType === 'agent' && currentCall.callStatus !== 0 && currentCall.callStatus !== 'AgentRingNoAnswer' ? (<CardContent>
+                        user.userType === 'agent' && currentCall.callStatus !== 'LoggedIn' && currentCall.callStatus !== 'AgentRingNoAnswer' && currentCall.callStatus !== 'BREAKOUT' && currentCall.callStatus !== 'BREAKIN' ? (<CardContent>
                           <DispositionForm
                             breakService={breakService}
                             agentSipID={agent.AgentSipId}
