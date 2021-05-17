@@ -18,7 +18,7 @@ const FileUpload = ({ status }) => {
 
     function uploadFile(file) {
         axios
-            .post('/channel/uploadfile', file)
+            .post('http://192.168.3.36:3001/channel/uploadfile', file)
             .then(res => {
                 setSnackbarOpen(true);
                 setSnackbarMessage({

@@ -302,52 +302,58 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
 
           // console.log('data', res.data)
           localStorage.setItem("jwtToken", accessToken);
-          localStorage.setItem('AgentSIPID', res.data.userData.id);
+          // localStorage.setItem('AgentSIPID', res.data.userData.id);
           localStorage.setItem('role', myObj.user.role);
           // localStorage.setItem('Agenttype', res.data.userDetails.AgentType);
-          localStorage.setItem('Agent_Object_ID', res.data.userData._id)
+          if (myObj.user.role === 'agent') {
+            localStorage.setItem('AgentSIPID', res.data.userData.id);
+            localStorage.setItem('Agent_Object_ID', res.data.userData._id)
+          }
+
           localStorage.setItem('AgentType', 'Inbound');
 
           setUserDetailsMain(obj);
           setAccountTypeMain(obj.user.role === 'agent' ? ADMIN : USER);
 
-          var axios = require('axios');
-          var data1 = '';
+          if (localStorage.getItem('role' === 'agent')) {
+            var axios = require('axios');
+            var data1 = '';
 
-          var config = {
-            method: 'get',
-            url: `http://192.168.3.36:52005/ami/actions/addq?Queue=5001&Interface=${res.data.userData.StateInterface}`,
-            headers: {},
-            data: data1
-          };
-
-          axios(config)
-            .then(function (response) {
-              console.log(response.data, "queue addedd");
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
+            var config = {
+              method: 'get',
+              url: `http://192.168.3.36:52005/ami/actions/addq?Queue=5001&Interface=${res.data.userData.StateInterface}`,
+              headers: {},
+              data: data1
+            };
 
 
-          const AgentSIPID = res.data.userData.id
-          var axios = require('axios');
-          var config = {
-            method: 'get',
-            url: `http://192.168.3.36:52005/ami/actions/break?Queue=5001&Interface=SIP%2F${AgentSIPID}&Reason=BREAK_OUT&Break=false`,
-            headers: {}
-          };
-
-          axios(config)
-            .then(function (response) {
-              console.log((response.data));
-
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
+            axios(config)
+              .then(function (response) {
+                console.log(response.data, "queue addedd");
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
 
 
+            const AgentSIPID = res.data.userData.id
+            var axios = require('axios');
+            var config = {
+              method: 'get',
+              url: `http://192.168.3.36:52005/ami/actions/break?Queue=5001&Interface=SIP%2F${AgentSIPID}&Reason=BREAK_OUT&Break=false`,
+              headers: {}
+            };
+
+            axios(config)
+              .then(function (response) {
+                console.log((response.data));
+
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+
+          }
           setLoggedInMain(true);
           setError(false);
         }
