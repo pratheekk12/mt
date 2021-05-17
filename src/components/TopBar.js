@@ -238,65 +238,65 @@ const TopBar = ({
   };
   async function logoutUser() {
 
+    if (localStorage.getItem('callStatus') === 'AgentDisposed' || localStorage.getItem('callStatus') === 'LoggedIn' || localStorage.getItem('callStatus') === 'BREAKOUT' || localStorage.getItem('callStatus') === 'BREAKIN') {
+      var axios = require('axios');
+      var data = JSON.stringify({ "Event": "LoggedOut" });
 
+      var config = {
+        method: 'put',
+        url: `http://192.168.3.36:5000/api/agents/${localStorage.getItem('Agent_Object_ID')}`,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        data: data
+      };
 
-    var axios = require('axios');
-    var data = JSON.stringify({ "Event": "LoggedOut" });
+      axios(config)
+        .then(function (response) {
+          console.log(JSON.stringify(response.data), "status changed");
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
 
-    var config = {
-      method: 'put',
-      url: `http://192.168.3.36:5000/api/agents/${localStorage.getItem('Agent_Object_ID')}`,
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      data: data
-    };
+      var axios = require('axios');
+      var data = '';
 
-    axios(config)
-      .then(function (response) {
-        console.log(JSON.stringify(response.data), "status changed");
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+      var config = {
+        method: 'get',
+        url: `http://192.168.3.36:52005/ami/actions/rmq?Queue=5001&Interface=SIP/${localStorage.getItem('AgentSIPID')}`,
+        headers: {},
+        data: data
+      };
 
-    var axios = require('axios');
-    var data = '';
+      axios(config)
+        .then(function (response) {
+          console.log(response.data, "removed from queue");
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
 
-    var config = {
-      method: 'get',
-      url: `http://192.168.3.36:52005/ami/actions/rmq?Queue=5001&Interface=SIP/${localStorage.getItem('AgentSIPID')}`,
-      headers: {},
-      data: data
-    };
+      const AgentSIPID = localStorage.getItem('AgentSIPID')
+      var axios = require('axios');
+      var config = {
+        method: 'get',
+        url: `http://192.168.3.36:52005/ami/actions/break?Queue=5001&Interface=SIP%2F${AgentSIPID}&Reason=BREAK_IN&Break=true`,
+        headers: {}
+      };
 
-    axios(config)
-      .then(function (response) {
-        console.log(response.data, "removed from queue");
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+      axios(config)
+        .then(function (response) {
+          console.log((response.data));
+          logout()
+          localStorage.clear()
+          window.location.reload()
 
-    const AgentSIPID = localStorage.getItem('AgentSIPID')
-    var axios = require('axios');
-    var config = {
-      method: 'get',
-      url: `http://192.168.3.36:52005/ami/actions/break?Queue=5001&Interface=SIP%2F${AgentSIPID}&Reason=BREAK_IN&Break=true`,
-      headers: {}
-    };
-
-    axios(config)
-      .then(function (response) {
-        console.log((response.data));
-        logout()
-        localStorage.clear()
-        window.location.reload()
-
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    }
   }
   var test = "#0040ff"
   return (
@@ -367,6 +367,7 @@ const TopBar = ({
               <ExitToAppIcon />
             </IconButton>
           </Tooltip>
+
         </Hidden>
         <Hidden lgUp>
           <IconButton color="inherit" onClick={onMobileNavOpen}>
