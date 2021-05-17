@@ -15,20 +15,25 @@ const FileUpload = ({ status }) => {
         severity: '',
         message: ''
     });
+    const [disable, setDisable] = useState(false)
 
     function uploadFile(file) {
         axios
-            .post('http://192.168.3.36:3001/channel/uploadfile', file)
+            .post('http://192.168.3.36:62007/channel/uploadfile', file)
             .then(res => {
+                console.log(res)
+                setDisable(false)
+
                 setSnackbarOpen(true);
                 setSnackbarMessage({
                     severity: 'success',
-                    message: `${res.data.recordsAdded} records submitted successfully !`
+                    message: `${res.data.data} records submitted successfully !`
                 });
                 status(res);
             })
             .catch(err => {
                 console.log(err);
+                setDisable(false)
                 setSnackbarMessage({
                     severity: 'error',
                     message: 'Something went wrong. Please try again !'
@@ -43,6 +48,11 @@ const FileUpload = ({ status }) => {
         }
         setSnackbarOpen(false);
     };
+
+    const handleButton = (e) => {
+        setOpen(true)
+        setDisable(true)
+    }
 
     return (
         <>
@@ -59,7 +69,8 @@ const FileUpload = ({ status }) => {
                     variant="contained"
                     color="primary"
                     size="large"
-                    onClick={() => setOpen(true)}
+                    onClick={handleButton}
+                    disabled={disable}
                 >
                     Add File
         </Button>

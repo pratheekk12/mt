@@ -186,7 +186,7 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
   async function authenticate(values) {
     setError('');
     try {
-      // console.log(values)
+      console.log(values)
       const url = 'http://192.168.3.36:5555/api/sendOtp'
       // // const url='http://192.168.3.45:42009/user/login'
       // console.log("values", values)
@@ -198,7 +198,7 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
 
       const res = await Axios.post(url, data);
       var myObj = res.data;
-      // console.log(myObj)
+      console.log(myObj)
 
       if ('statusCode' in myObj) {
         setLoggedInMain(false);
@@ -309,6 +309,9 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
             if (myObj.user.role === 'agent') {
               localStorage.setItem('AgentSIPID', res.data.userData.id);
               localStorage.setItem('Agent_Object_ID', res.data.userData._id)
+            } else {
+              setLoggedInMain(true);
+              setError(false);
             }
 
             localStorage.setItem('AgentType', 'Inbound');
@@ -319,64 +322,67 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
 
             // console.log(" i am inside")
             console.log("login api", res.data)
-            var axios = require('axios');
-            var data1 = '';
+            if (myObj.user.role === 'agent') {
+              var axios = require('axios');
+              var data1 = '';
 
-            var config = {
-              method: 'get',
-              url: `http://192.168.3.36:52005/ami/actions/addq?Queue=5001&Interface=${res.data.userData.Location}`,
-              headers: {},
-              data: data1
-            };
+              var config = {
+                method: 'get',
+                url: `http://192.168.3.36:52005/ami/actions/addq?Queue=5001&Interface=${res.data.userData.Location}`,
+                headers: {},
+                data: data1
+              };
 
 
-            axios(config)
-              .then(function (response) {
-                console.log(response.data, "queue addedd");
-              })
-              .catch(function (error) {
-                console.log(error, "error in adding queue");
-              });
+              axios(config)
+                .then(function (response) {
+                  console.log(response.data, "queue addedd");
+                })
+                .catch(function (error) {
+                  console.log(error, "error in adding queue");
+                });
 
-            var axios = require('axios');
-            var data = JSON.stringify({ "Event": "LoggedIn" });
+              var axios = require('axios');
+              var data = JSON.stringify({ "Event": "LoggedIn" });
 
-            var config = {
-              method: 'put',
-              url: `http://192.168.3.36:5000/api/agents/${res.data.userData._id}`,
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              data: data
-            };
+              var config = {
+                method: 'put',
+                url: `http://192.168.3.36:5000/api/agents/${res.data.userData._id}`,
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                data: data
+              };
 
-            axios(config)
-              .then(function (response) {
-                console.log(JSON.stringify(response.data), "status changed");
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
+              axios(config)
+                .then(function (response) {
+                  console.log(JSON.stringify(response.data), "status changed");
+                })
+                .catch(function (error) {
+                  console.log(error);
+                });
 
-            const AgentSIPID = res.data.userData.id
-            var axios = require('axios');
-            var config = {
-              method: 'get',
-              url: `http://192.168.3.36:52005/ami/actions/break?Queue=5001&Interface=SIP%2F${AgentSIPID}&Reason=BREAK_OUT&Break=false`,
-              headers: {}
-            };
+              const AgentSIPID = res.data.userData.id
+              var axios = require('axios');
+              var config = {
+                method: 'get',
+                url: `http://192.168.3.36:52005/ami/actions/break?Queue=5001&Interface=SIP%2F${AgentSIPID}&Reason=BREAK_OUT&Break=false`,
+                headers: {}
+              };
 
-            axios(config)
-              .then(function (response) {
-                console.log((response.data));
+              axios(config)
+                .then(function (response) {
+                  console.log((response.data));
 
-              })
-              .catch(function (error) {
-                console.log(error);
-              });
+                })
+                .catch(function (error) {
+                  console.log(error);
+                });
 
-            setLoggedInMain(true);
-            setError(false);
+              setLoggedInMain(true);
+              setError(false);
+            }
+
           } else {
             setLoggedInMain(false);
             setError(true);
