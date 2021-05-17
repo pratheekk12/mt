@@ -198,7 +198,7 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
 
       const res = await Axios.post(url, data);
       var myObj = res.data;
-      console.log(myObj)
+      // console.log(myObj)
 
       if ('statusCode' in myObj) {
         setLoggedInMain(false);

@@ -760,7 +760,10 @@ const Dashboard = ({
                           breakService={breakService}
                           callStatus={currentCall.callStatus}
                         /> : null} */}
-                      <Button variant="contained" color="primary" onClick={breakService}>{localStorage.getItem('Break_Status') === 'OUT' ? ('Take a Break') : ('You are in break')}</Button>
+                      {currentCall.callStatus === 'AgentDisposed' || currentCall.callStatus === 'LoggedIn' || currentCall.callStatus === 'BREAKOUT' || currentCall.callStatus === 'BREAKIN' ? (<Button variant="contained" color="primary" onClick={breakService}>{localStorage.getItem('Break_Status') === 'OUT' ? ('Take a Break') : ('You are in break')}</Button>) : (null)
+
+                      }
+
                     </Grid>
                   </Grid>
                 </Grid>
