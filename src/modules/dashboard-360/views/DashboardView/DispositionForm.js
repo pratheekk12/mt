@@ -1872,17 +1872,17 @@ export default function DispositionForm(props) {
     var axios = require('axios');
     const AgentSIPID = localStorage.getItem('AgentSIPID')
 
+    // const AgentSIPID = localStorage.getItem('AgentSIPID')
+
+    var axios = require('axios');
     var config = {
       method: 'get',
-      url: `http://192.168.3.36:52005/ami/actions/break?Queue=5003&Interface=SIP%2F${AgentSIPID}&Reason=AgentDisposed&Break=false`,
+      url: `http://192.168.3.36:52005/ami/actions/break?Queue=5001&Interface=SIP%2F${AgentSIPID}&Reason=AgentDisposed&Break=false`,
       headers: {}
     };
 
     axios(config)
       .then(function (response) {
-        if (takebreak) {
-          props.breakService()
-        }
         console.log((response.data));
       })
       .catch(function (error) {
@@ -1892,6 +1892,8 @@ export default function DispositionForm(props) {
 
   const handleSubmitDisposition = (data) => {
     console.log(data, "form data")
+
+    handleBreak()
 
     const id = localStorage.getItem('Interaction_id')
     console.log(id, "agentid")
@@ -1910,7 +1912,6 @@ export default function DispositionForm(props) {
     axios(config)
       .then(function (response) {
         console.log(response, "response")
-        handleBreak()
 
       })
       .catch(function (error) {

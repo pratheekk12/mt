@@ -238,18 +238,28 @@ const TopBar = ({
   };
   async function logoutUser() {
 
-    // try {
-
-    //   if (localStorage.getItem('callStatus') === 'AgentDisposed') {
-    //     localStorage.clear();
-
-    //     logout();
-    //   }
 
 
-    // } catch (err) {
-    //   console.log(err);
-    // }
+    var axios = require('axios');
+    var data = JSON.stringify({ "Event": "LoggedOut" });
+
+    var config = {
+      method: 'put',
+      url: `http://192.168.3.36:5000/api/agents/${localStorage.getItem('Agent_Object_ID')}`,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: data
+    };
+
+    axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data), "status changed");
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
     var axios = require('axios');
     var data = '';
 
