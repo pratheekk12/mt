@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import SwipeableViews from 'react-swipeable-views';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -68,6 +68,10 @@ const Inbound = () => {
   const handleChangeIndex = index => {
     setValue(index);
   };
+
+  useEffect(() => {
+    localStorage.setItem('callStatus', 'AgentDisposed')
+  }, [])
 
 
   return (

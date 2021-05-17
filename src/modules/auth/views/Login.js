@@ -291,96 +291,102 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
           setLoggedInMain(false);
           setError(true);
         } if ('status' in myObj) {
+
           setVisibility(true)
 
           console.log("login api", res.data)
+          if (res.data.status === "ok") {
+            const obj = res.data;
+            dispatch(setUserDetails(res.data))
+            // console.log(obj)
+            const accessToken = res.data.data;
 
-          const obj = res.data;
-          dispatch(setUserDetails(res.data))
-          // console.log(obj)
-          const accessToken = res.data.data;
+            // console.log('data', res.data)
+            localStorage.setItem("jwtToken", accessToken);
+            // localStorage.setItem('AgentSIPID', res.data.userData.id);
+            localStorage.setItem('role', myObj.user.role);
+            // localStorage.setItem('Agenttype', res.data.userDetails.AgentType);
+            if (myObj.user.role === 'agent') {
+              localStorage.setItem('AgentSIPID', res.data.userData.id);
+              localStorage.setItem('Agent_Object_ID', res.data.userData._id)
+            }
 
-          // console.log('data', res.data)
-          localStorage.setItem("jwtToken", accessToken);
-          // localStorage.setItem('AgentSIPID', res.data.userData.id);
-          localStorage.setItem('role', myObj.user.role);
-          // localStorage.setItem('Agenttype', res.data.userDetails.AgentType);
-          if (myObj.user.role === 'agent') {
-            localStorage.setItem('AgentSIPID', res.data.userData.id);
-            localStorage.setItem('Agent_Object_ID', res.data.userData._id)
+            localStorage.setItem('AgentType', 'Inbound');
+
+            setUserDetailsMain(obj);
+            setAccountTypeMain(obj.user.role === 'agent' ? ADMIN : USER);
+
+
+            // console.log(" i am inside")
+            console.log("login api", res.data)
+            var axios = require('axios');
+            var data1 = '';
+
+            var config = {
+              method: 'get',
+              url: `http://192.168.3.36:52005/ami/actions/addq?Queue=5001&Interface=${res.data.userData.Location}`,
+              headers: {},
+              data: data1
+            };
+
+
+            axios(config)
+              .then(function (response) {
+                console.log(response.data, "queue addedd");
+              })
+              .catch(function (error) {
+                console.log(error, "error in adding queue");
+              });
+
+            var axios = require('axios');
+            var data = JSON.stringify({ "Event": "LoggedIn" });
+
+            var config = {
+              method: 'put',
+              url: `http://192.168.3.36:5000/api/agents/${res.data.userData._id}`,
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              data: data
+            };
+
+            axios(config)
+              .then(function (response) {
+                console.log(JSON.stringify(response.data), "status changed");
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+
+            const AgentSIPID = res.data.userData.id
+            var axios = require('axios');
+            var config = {
+              method: 'get',
+              url: `http://192.168.3.36:52005/ami/actions/break?Queue=5001&Interface=SIP%2F${AgentSIPID}&Reason=BREAK_OUT&Break=false`,
+              headers: {}
+            };
+
+            axios(config)
+              .then(function (response) {
+                console.log((response.data));
+
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+
+            setLoggedInMain(true);
+            setError(false);
+          } else {
+            setLoggedInMain(false);
+            setError(true);
           }
-
-          localStorage.setItem('AgentType', 'Inbound');
-
-          setUserDetailsMain(obj);
-          setAccountTypeMain(obj.user.role === 'agent' ? ADMIN : USER);
-
-
-          // console.log(" i am inside")
-          console.log("login api", res.data)
-          var axios = require('axios');
-          var data1 = '';
-
-          var config = {
-            method: 'get',
-            url: `http://192.168.3.36:52005/ami/actions/addq?Queue=5001&Interface=${res.data.userData.Location}`,
-            headers: {},
-            data: data1
-          };
-
-
-          axios(config)
-            .then(function (response) {
-              console.log(response.data, "queue addedd");
-            })
-            .catch(function (error) {
-              console.log(error, "error in adding queue");
-            });
-
-          var axios = require('axios');
-          var data = JSON.stringify({ "Event": "LoggedIn" });
-
-          var config = {
-            method: 'put',
-            url: `http://192.168.3.36:5000/api/agents/${res.data.userData._id}`,
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            data: data
-          };
-
-          axios(config)
-            .then(function (response) {
-              console.log(JSON.stringify(response.data), "status changed");
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
-
-          const AgentSIPID = res.data.userData.id
-          var axios = require('axios');
-          var config = {
-            method: 'get',
-            url: `http://192.168.3.36:52005/ami/actions/break?Queue=5001&Interface=SIP%2F${AgentSIPID}&Reason=BREAK_OUT&Break=false`,
-            headers: {}
-          };
-
-          axios(config)
-            .then(function (response) {
-              console.log((response.data));
-
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
-
-
-          setLoggedInMain(true);
-          setError(false);
         }
       })
       .catch((err) => {
         console.log(err)
+        setLoggedInMain(false);
+        setError(true);
       })
   }
 
