@@ -298,7 +298,7 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
           if (res.data.status === "ok") {
             const obj = res.data;
             dispatch(setUserDetails(res.data))
-            // console.log(obj)
+            console.log(obj, "login")
             const accessToken = res.data.data;
 
             // console.log('data', res.data)
@@ -309,6 +309,7 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
             if (myObj.user.role === 'agent') {
               localStorage.setItem('AgentSIPID', res.data.userData.id);
               localStorage.setItem('Agent_Object_ID', res.data.userData._id)
+              // localStorage.setItem('Queue', res.data.userData.Queue)
             } else {
               setLoggedInMain(true);
               setError(false);
@@ -328,7 +329,7 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
 
               var config = {
                 method: 'get',
-                url: `http://192.168.3.36:52005/ami/actions/addq?Queue=5001&Interface=${res.data.userData.Location}`,
+                url: `http://192.168.3.36:52005/ami/actions/addq?Queue=${res.data.userData.Queue}&Interface=${res.data.userData.Location}`,
                 headers: {},
                 data: data1
               };
@@ -366,7 +367,7 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
               var axios = require('axios');
               var config = {
                 method: 'get',
-                url: `http://192.168.3.36:52005/ami/actions/break?Queue=5001&Interface=SIP%2F${AgentSIPID}&Reason=BREAK_OUT&Break=false`,
+                url: `http://192.168.3.36:52005/ami/actions/break?Queue=${res.data.userData.Queue}&Interface=SIP%2F${AgentSIPID}&Reason=BREAK_OUT&Break=false`,
                 headers: {}
               };
 
