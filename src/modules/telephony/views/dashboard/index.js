@@ -11,6 +11,16 @@ import Paper from '@material-ui/core/Paper';
 // import OneDirectApi from '../OneDirectApi';
 import FileHistoryTable from './filehistorytable';
 import FileUpload from './FileUpload'
+import { DataGrid } from '@material-ui/data-grid';
+import {
+  Grid,
+  Card,
+  CardContent,
+  CardHeader,
+  Tooltip,
+  IconButton
+} from '@material-ui/core';
+import axios from 'axios'
 
 
 function TabPanel(props) {
@@ -60,20 +70,138 @@ const Inbound = () => {
   const [uploadFileStatus, setUploadFileStatus] = useState(null);
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
+  const [profiles, setProfiles] = useState([])
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
+  const getProfiles = () => {
+    axios.get(`http://192.168.3.36:62007/channel/getfile`)
+      .then((response) => {
+        // console.log(response.data.updateRecord)
+        if (response.data.updateRecord.length > 0) {
+          setProfiles(response.data.updateRecord)
+        }
+
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
   const handleChangeIndex = index => {
     setValue(index);
   };
 
+  const profilesColumns = [
+    {
+      headerName: 'Ref.Id',
+      field: 'refId',
+      flex: 0.5
+
+    },
+    {
+      headerName: 'Bank Name',
+      field: 'bankname',
+      flex: 0.5
+    },
+    {
+      headerName: 'Client',
+      field: 'client',
+      flex: 0.5
+    },
+    {
+      headerName: 'Stage',
+      field: 'stage',
+      flex: 0.5
+    },
+    {
+      headerName: 'Reason',
+      field: 'reason',
+      flex: 0.5
+    },
+    {
+      headerName: 'City',
+      field: 'city',
+      flex: 0.5
+    },
+    {
+      headerName: 'Loan Amount',
+      field: 'loanamount',
+      flex: 0.5
+    },
+    {
+      headerName: 'cfCl',
+      field: 'cfCl',
+      flex: 0.5
+    },
+    {
+      headerName: 'Id',
+      field: 'id',
+      flex: 0.5
+    },
+    {
+      headerName: 'Phone Number',
+      field: 'phone',
+      flex: 0.5
+    },
+    {
+      headerName: 'Status',
+      field: '',
+
+      renderCell: rowData => (
+        <>
+          {
+            rowData.row.status === '1' && (<div>
+              <Tooltip title="Not Dialed">
+                <IconButton
+
+                ><Typography>Not Dialed</Typography>
+                </IconButton>
+              </Tooltip>
+            </div>)
+          }
+          {
+            rowData.row.status === '0' && (<div>
+              <Tooltip title="Dialed">
+                <IconButton
+
+                ><Typography>Dialed</Typography>
+                </IconButton>
+              </Tooltip>
+            </div>)
+          }
+        </>
+      ),
+      flex: 0.5
+    },
+    {
+      headerName: 'Link',
+      field: 'link',
+      flex: 1
+    }
+
+  ];
+
+  const showProfile = (data) => {
+    console.log(data)
+  }
+
   useEffect(() => {
     localStorage.setItem('callStatus', 'AgentDisposed')
+    getProfiles()
+
+    const interval = setInterval(async () => {
+      getProfiles()
+
+    }, 5000);
+
+
+
   }, [])
 
-
+  console.log(profiles)
   return (
     <>
       <Paper className={classes.root}>
@@ -113,7 +241,24 @@ const Inbound = () => {
         </SwipeableViews>
       </Paper>
 
+      {
+        profiles.length > 1 ? (
 
+          <Grid>
+            <Card>
+              <CardContent>
+                <div style={{ height: 500, width: '100%' }}>
+                  <DataGrid rows={profiles} columns={profilesColumns} pageSize={20}
+                    // rowsPerPageOptions={[10, 20, 50]}
+                    onRowClick={showProfile}
+                    pagination />
+                </div>
+
+              </CardContent>
+            </Card>
+
+          </Grid>
+        ) : (null)}
     </>
   );
 };
