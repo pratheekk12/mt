@@ -412,6 +412,7 @@ const Dashboard = ({
         } else {
           localStorage.setItem('Break_Status', 'OUT')
         }
+        localStorage.setItem('Queue', response.data.Queue)
       })
       .catch(function (error) {
         console.log(error);
@@ -462,7 +463,7 @@ const Dashboard = ({
       var axios = require('axios');
       var config = {
         method: 'get',
-        url: `http://192.168.3.36:52005/ami/actions/break?Queue=5001&Interface=SIP%2F${AgentSIPID}&Reason=BREAKIN&Break=true`,
+        url: `http://192.168.3.36:52005/ami/actions/break?Queue=${localStorage.getItem('Queue')}&Interface=SIP%2F${AgentSIPID}&Reason=BREAKIN&Break=true`,
         headers: {}
       };
 
@@ -477,7 +478,7 @@ const Dashboard = ({
       var axios = require('axios');
       var config = {
         method: 'get',
-        url: `http://192.168.3.36:52005/ami/actions/break?Queue=5001&Interface=SIP%2F${AgentSIPID}&Reason=BREAKOUT&Break=false`,
+        url: `http://192.168.3.36:52005/ami/actions/break?Queue=${localStorage.getItem('Queue')}&Interface=SIP%2F${AgentSIPID}&Reason=BREAKOUT&Break=false`,
         headers: {}
       };
 

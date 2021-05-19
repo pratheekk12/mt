@@ -1839,32 +1839,32 @@ export default function DispositionForm(props) {
   }
 
   function updateAgentCallStatus(updateData) {
-    var axios = require('axios');
-    var data = {
-      // agentCallStatus: updateData.callStatus,
-      agentCallEvent: updateData.callEvent,
-      agentCallUniqueId: updateData.callUniqueId,
-      agentCallType: updateData.callType,
-      agentCallDispositionStatus: updateData.callDispositionStatus,
-      callerNumber: updateData.callerNumber
-    };
-    var config = {
+    // var axios = require('axios');
+    // var data = {
+    //   // agentCallStatus: updateData.callStatus,
+    //   agentCallEvent: updateData.callEvent,
+    //   agentCallUniqueId: updateData.callUniqueId,
+    //   agentCallType: updateData.callType,
+    //   agentCallDispositionStatus: updateData.callDispositionStatus,
+    //   callerNumber: updateData.callerNumber
+    // };
+    // var config = {
 
-      method: 'put',
-      url: UPDATE_CURRENT_STATUS + updateData.callStatusId,
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      data: data
-    };
+    //   method: 'put',
+    //   url: UPDATE_CURRENT_STATUS + updateData.callStatusId,
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   data: data
+    // };
 
-    axios(config)
-      .then(function (response) {
-        // console.log("update", JSON.stringify(response.data));
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+    // axios(config)
+    //   .then(function (response) {
+    //     // console.log("update", JSON.stringify(response.data));
+    //   })
+    //   .catch(function (error) {
+    //     console.log(error);
+    //   });
   }
 
 
@@ -1877,7 +1877,7 @@ export default function DispositionForm(props) {
     var axios = require('axios');
     var config = {
       method: 'get',
-      url: `http://192.168.3.36:52005/ami/actions/break?Queue=5001&Interface=SIP%2F${AgentSIPID}&Reason=AgentDisposed&Break=false`,
+      url: `http://192.168.3.36:52005/ami/actions/break?Queue=${localStorage.getItem('Queue')}&Interface=SIP%2F${AgentSIPID}&Reason=AgentDisposed&Break=false`,
       headers: {}
     };
 
