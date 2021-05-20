@@ -7,6 +7,8 @@ import authRoutes from '../modules/auth/routes';
 
 import agentRoutes from '../modules/agentForm/routes';
 import groupRoutes from '../modules/groupadminForm/routes';
+import campaign from '../modules/telephony/views/dashboard/campaign'
+
 export const dash360 = React.lazy(() =>
   import('src/modules/dashboard-360/views')
 );
@@ -76,6 +78,11 @@ export default [
     key: 'auth',
     component: auth,
     requiresAuth: false
+  },
+  {
+    path: '/campaign',
+    component: campaign,
+    requiresAuth: true
   }
 
 ];

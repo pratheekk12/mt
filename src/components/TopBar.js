@@ -15,7 +15,8 @@ import {
   Typography,
   InputBase,
   fade,
-  Tooltip
+  Tooltip,
+  Button
 } from '@material-ui/core';
 import MenuIcon from '@material-ui/icons/Menu';
 import NotificationsIcon from '@material-ui/icons/NotificationsOutlined';
@@ -350,24 +351,22 @@ const TopBar = ({
             <></>
           )}
 
-          <IconButton color="inherit">
-            <Badge
-              badgeContent={notifications.length}
-              color="primary"
-              variant="dot"
-            >
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-          <IconButton color="inherit">
-            <AccountBoxRoundedIcon />
-          </IconButton>
+
+          {
+            localStorage.getItem('role') === 'admin' ? (
+              <Tooltip title="Campaign">
+                <IconButton color="inherit">
+                  <Link to='/campaign' className="color-white"><Typography>Campaign</Typography></Link>
+                </IconButton>
+              </Tooltip>
+            ) : (null)
+          }
+
           <Tooltip title="Logout">
             <IconButton color="inherit" onClick={() => logoutUser()}>
               <ExitToAppIcon />
             </IconButton>
           </Tooltip>
-
         </Hidden>
         <Hidden lgUp>
           <IconButton color="inherit" onClick={onMobileNavOpen}>
