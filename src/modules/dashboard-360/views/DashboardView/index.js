@@ -481,11 +481,6 @@ const Dashboard = ({
                   <Grid item lg={4} md={6} xs={12}>
 
                     <Grid item>
-                      {/* {currentCall.callStatus === 'AgentDisposed' || currentCall.callStatus === 'LoggedIn' ?
-                        <Switch
-                          breakService={breakService}
-                          callStatus={currentCall.callStatus}
-                        /> : null} */}
                       {currentCall.callStatus === 'AgentDisposed' || currentCall.callStatus === 'LoggedIn' || currentCall.callStatus === 'BREAKOUT' || currentCall.callStatus === 'BREAKIN' ? (<Button variant="contained" color="primary" onClick={breakService}>{localStorage.getItem('Break_Status') === 'OUT' ? ('Take a Break') : ('You are in break')}</Button>) : (null)
 
                       }
@@ -501,7 +496,7 @@ const Dashboard = ({
                       <CardHeader title="Disposition Details" />
                       <Divider />
                       {currentCall.callStatus !== 'AgentDisposed' &&
-                        user.userType === 'agent' && currentCall.callStatus !== 'LoggedIn' && currentCall.callStatus !== 'AgentRingNoAnswer' && currentCall.callStatus !== 'BREAKOUT' && currentCall.callStatus !== 'BREAKIN' ? (<CardContent>
+                        user.userType === 'agent' && currentCall.callStatus !== 'LoggedIn' && currentCall.callStatus !== 'AgentRingNoAnswer' && currentCall.callStatus !== 'BREAKOUT' && currentCall.callStatus !== 'BREAKIN' && currentCall.callStatus !== 'LoggedOut' && currentCall.callStatus !== '0' ? (<CardContent>
                           <DispositionForm
                             breakService={breakService}
                             agentSipID={agent.AgentSipId}
