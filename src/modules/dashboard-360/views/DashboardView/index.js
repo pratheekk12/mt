@@ -182,89 +182,19 @@ const Dashboard = ({
   // console.log(user1)
 
   function getDLF() {
-    // const config = {
-    //   method: 'get',
-    //   url:
-    //     GET_INTERACTION_BY_DISTRIBUTOR_ID + localStorage.getItem('callerNumber'),
-    //   headers: {},
-    // };
 
-    // axios(config)
-    //   .then(async response => {
-    //     let DLFDATA = response.data;
-    //     DLFDATA = DLFDATA.reverse();
-    //     // console.log('DLF', DLFDATA)
-    //     setDLF(DLFDATA);
-    //   })
-
-    //   .catch(error => {
-    //     console.log(error);
-    //   });
   }
 
   function getALF() {
-    // // console.log('getALF')
-    // setTimeout(function () {
-    //   const config = {
-    //     method: 'get',
-    //     url: GET_INTERACTION_BY_AGENT_SIP_ID + agent.AgentSipId,
-    //     headers: {}
-    //   };
 
-    //   axios(config)
-    //     .then(async response => {
-    //       console.log('ALFDATA', response)
-    //       let ALFDATA = response.data;
-    //       ALFDATA = ALFDATA.reverse();
-    //       setALF(ALFDATA);
-    //     })
-    //     .catch(error => {
-    //       console.log(error);
-    //     });
-
-    // }, 3000);
 
   }
 
   function getOpenTickets(agentType, status) {
-    // const config = {
-    //   method: 'get',
-    //   url: 'http://164.52.205.10:42004/crm/interactions/getByAgentStatus?type=' + agentType + '&status=' + status,
-    //   headers: {}
-    // };
-
-    // axios(config)
-    //   .then((response) => {
-    //     // console.log(JSON.stringify(response.data));
-    //     const ALFDATA = response.data;
-    //     setALF(ALFDATA);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
 
   }
   function selectedDataForObutbound(data) {
-    // setSelectedData1(data)
-    // // console.log(localStorage.getItem('AgentType'))
-    // if (localStorage.getItem('AgentType') === 'Outbound' && localStorage.getItem('callDispositionStatus') === 'Disposed') {
-    //   // console.log('selected', data)
-    //   localStorage.setItem('L1ID', data.asterixUniqueID)
-    //   setSelectedItem(data)
 
-    //   setOpen(true);
-    // } else {
-    //   console.log('You can not make a call')
-    // }
-
-  }
-  function selectedDataForInbound(data) {
-    // console.log(localStorage.getItem('AgentType'))
-    // if(localStorage.getItem('AgentType') === 'Outbound'){
-    //   console.log('selected')
-    // }else{
-    //   console.log('You can not make a call')
-    // }
 
   }
 
@@ -300,93 +230,17 @@ const Dashboard = ({
   }
 
   function addToQueue(agentId, queue) {
-    // const config = {
-    //   method: 'get',
-    //   url: `${APIENDPOINT}/ami/actions/addq?Interface=${agentId}&Queue=${queue}`,
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   }
-    // };
 
-    // axios(config)
-    //   .then(() => { })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
   }
   function removeFromQueue(agentId, queue) {
-    // // console.log('remove', agentId)
-    // const config = {
-    //   method: 'get',
-    //   url: `${APIENDPOINT}/ami/actions/rmq?Queue=${queue}&Interface=${agentId}`,
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   }
-    // };
 
-    // axios(config)
-    //   .then(() => {
-
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
   }
   function makeCall() {
-    // setOpen(false);
-    // var Number = selectedItem.callermobilenumber
-    // // console.log('make call', Number)
-    // Number = Number.substr(Number.length - 10);
-    // if (Number.length === 10) {
-    //   const axios = require('axios');
 
-    //   // console.log('make call', SOCKETENDPOINT +'ami/actions/orginatecall?sipAgentID=local/5' +localStorage.getItem('AgentSIPID') +'@from-internal&NumbertobeCalled=5' + Number)
-    //   const config = {
-    //     method: 'get',
-    //     // eslint-disable-next-line prefer-template
-    //     url: `http://192.168.3.36:62002/ami/actions/orginatecall?sipAgentID=Local%2F5${localStorage.getItem('AgentSIPID')}%40from-internal&NumbertobeCalled=5${Number}`
-    //     ,
-    //     headers: {}
-    //   };
-    //   axios(config)
-    //     .then(response => {
-    //       // console.log(JSON.stringify(response.data));
-    //     })
-    //     .catch(error => {
-    //       console.log(error);
-    //     });
-    // } else {
-    //   console.log('Invalide number');
-    // }
   }
 
   function updateAgentCallStatus(updateData) {
-    // console.log('updateData', updateData);
-    // const data = {
-    //   agentCallStatus: updateData.callStatus,
-    //   agentCallEvent: updateData.callEvent,
-    //   agentCallUniqueId: updateData.callUniqueId,
-    //   agentCallType: updateData.callType,
-    //   agentCallDispositionStatus: updateData.callDispositionStatus,
-    //   callerNumber: updateData.callerNumber,
-    //   breakStatus: updateData.breakStatus
-    // };
-    // const config = {
-    //   method: 'put',
-    //   url: UPDATE_CURRENT_STATUS + updateData.callStatusId,
-    //   headers: {
-    //     'Content-Type': 'application/json'
-    //   },
-    //   data
-    // };
 
-    // axios(config)
-    //   .then((response) => {
-    //     console.log('update', JSON.stringify(response.data));
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
   }
 
   function getAgentCallStatus(agentSipID) {
@@ -417,43 +271,6 @@ const Dashboard = ({
       .catch(function (error) {
         console.log(error);
       });
-
-
-    //       setCurrentCallDetails(
-    //         // eslint-disable-next-line no-underscore-dangle
-    //         response.data[0]._id,
-    //         response.data[0].agentCallUniqueId,
-    //         response.data[0].agentCallType,
-    //         response.data[0].agentCallStatus,
-    //         response.data[0].agentCallEvent,
-    //         response.data[0].agentCallDispositionStatus,
-    //         response.data[0].contactNumber,
-    //         response.data[0].breakStatus
-    //       );
-    //       setAgentCurrentStatusAction({
-    //         AgentType: agent.AgentType,
-    //         role: user.userType,
-    //         callUniqueId: response.data[0].agentCallUniqueId,
-    //         distributer_id: '',
-    //         // eslint-disable-next-line no-underscore-dangle
-    //         callStatusId: response.data[0]._id,
-    //         callDispositionStatus: response.data[0].agentCallDispositionStatus,
-    //         callType: response.data[0].agentCallType,
-    //         callEvent: response.data[0].agentCallEvent,
-    //         callerNumber: response.data[0].contactNumber,
-    //         callStatus: response.data[0].agentCallStatus,
-    //         AgentSIPID: agent.AgentSipId,
-    //         breakStatus: response.data[0].breakStatus
-    //       });
-    //       if (response.data[0].channel !== null || response.data[0].channel !== undefined) {
-    //         // localStorage.setItem('channel', response.data[0].channel);
-    //       }
-
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
   }
 
   function breakService() {
@@ -494,16 +311,6 @@ const Dashboard = ({
   }
 
   useEffect(() => {
-    // // getALF();
-    // if (localStorage.getItem('Agenttype') === 'L1') {
-    //   // getOpenTickets(localStorage.getItem('Agenttype'), 'open');
-    // }
-    // if (localStorage.getItem('Agenttype') === 'L2') {
-    //   // getOpenTickets('L1', 'open');
-    // }
-    // if (localStorage.getItem('Agenttype') === 'L3') {
-    //   // getOpenTickets('L2', 'open');
-    // }
 
     async function getInitialData() {
       try {
@@ -515,67 +322,6 @@ const Dashboard = ({
     getInitialData();
     setLoadingDetails(false);
 
-    // socket.on('ringing1', data => {
-    //   console.log(data, "socket data")
-    //   const agentExtension = data.agentNumber;
-    //   if (agentExtension === agent.AgentSipId) {
-    //     console.log('ringing1', data);
-    //     localStorage.setItem('channel', data.event.Channel)
-    //   }
-    // });
-
-    // socket.on('ringing2', data => {
-    //   const agentExtension = data.agentNumber;
-    //   if (agentExtension === agent.AgentSipId) {
-    //     console.log('ringing2', data)
-    //     localStorage.setItem('callUniqueId', data.event.Uniqueid)
-    //     localStorage.setItem('callerNumber', data.event.ConnectedLineNum)
-    //   }
-    // });
-    // socket.on('transfercallnumber', data => {
-    //   if (localStorage.getItem('Agenttype') === 'L2') {
-    //     localStorage.setItem('callerNumber', data.contactnumber)
-    //   }
-
-    // })
-    // socket.on('connected', data => {
-    //   const agentExtension = data.agentNumber;
-    //   if (agentExtension === agent.AgentSipId) {
-    //     localStorage.setItem('distributer_id', agent.AgentSipId);
-    //     setCurrentCallDetails(
-    //       localStorage.getItem('callStatusId'),
-    //       localStorage.getItem('callUniqueId'),
-    //       agent.AgentType,
-    //       'connected',
-    //       'Bridge',
-    //       'NotDisposed',
-    //       localStorage.getItem('callerNumber'),
-    //       localStorage.getItem('breakStatus')
-    //     );
-    //     // removeFromQueue(agent.AgentSipId, '5000');
-    //   }
-    // });
-    // socket.on('hangup', data => {
-    //   const agentExtension = data.agentNumber;
-    //   if (agentExtension === agent.AgentSipId) {
-    //     setCurrentCallDetails(
-    //       localStorage.getItem('callStatusId'),
-    //       localStorage.getItem('callUniqueId'),
-    //       localStorage.getItem('callType'),
-    //       'disconnected',
-    //       'Hangup',
-    //       localStorage.getItem('callDispositionStatus'),
-    //       localStorage.getItem('callerNumber'),
-    //       localStorage.getItem('breakStatus')
-    //     );
-    //   }
-    // });
-    // return () => {
-    //   socket.off('ringing');
-    //   socket.off('connected');
-    //   socket.off('hangup');
-    //   socket.off('transfercallnumber');
-    // };
 
 
   }, []);
@@ -590,16 +336,6 @@ const Dashboard = ({
       //console.log('getCurrentStatus', getCurrentStatus)
       getAgentCallStatus(agentSipID)
 
-      // if (localStorage.getItem('jwtToken')) {
-      //   if (getCurrentStatus.data[0].jwtToken === localStorage.getItem('jwtToken')) {
-      //     getAgentCallStatus(agentSipID)
-      //   }
-      //   else {
-      //     localStorage.clear()
-      //     // dispatch(setLoggedIn(false))
-      //     window.location.reload()
-      //   }
-      // }
 
     }, 3000);
 
@@ -613,8 +349,6 @@ const Dashboard = ({
 
   useEffect(() => {
     getALF();
-    // console.log('data second useEffect', currentCall);
-    // console.log('currentCall.callerNumber', currentCall.callerNumber);
 
 
     if (
@@ -666,16 +400,7 @@ const Dashboard = ({
       });
   }
 
-  // console.log(customerTable, "customertable details")
 
-  // useEffect(() => {
-  //   // console.log("currentCall", currentCall)
-  //   if (reduxState.searchDistributor.length >= 4) {
-  //     // get(reduxState.searchDistributor);
-  //   } else {
-  //     // get();
-  //   }
-  // }, [reduxState.searchDistributor]);
 
   return !loadingDetails ? (
     <div style={{ position: 'relative' }}>
