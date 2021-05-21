@@ -259,7 +259,8 @@ const Dashboard = ({
         console.log((response.data));
         setCurrentCallDetails(
           response.data.Event,
-          localStorage.setItem('Interaction_id', response.data.InteractionID)
+          localStorage.setItem('Interaction_id', response.data.InteractionID),
+          localStorage.setItem('CallerNumber', response.data.CallerIDNum)
         )
         if (response.data.Paused === '1') {
           localStorage.setItem('Break_Status', 'IN')
@@ -428,7 +429,7 @@ const Dashboard = ({
             &nbsp;
                   <Typography display="inline">
                     {/* {localStorage.getItem('callerNumber')} */}
-          Call in Progress
+                    {localStorage.getItem('CallerNumber')}-Call in Progress
         </Typography>
                 </div>) : null
               }
@@ -438,7 +439,7 @@ const Dashboard = ({
             &nbsp;
                   <Typography display="inline">
                     {/* {localStorage.getItem('callerNumber')} */}
-          Call Disconnected
+                    {localStorage.getItem('CallerNumber')}- Call Disconnected
         </Typography>
                 </div>) : null
               }

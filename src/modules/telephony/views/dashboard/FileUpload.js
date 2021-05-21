@@ -27,7 +27,7 @@ const FileUpload = ({ status }) => {
                 setSnackbarOpen(true);
                 setSnackbarMessage({
                     severity: 'success',
-                    message: `${res.data.data} records submitted successfully !`
+                    message: `Records submitted successfully !`
                 });
                 status(res);
             })

@@ -185,7 +185,7 @@ const Inbound = () => {
   ];
 
   const showProfile = (data) => {
-    console.log(data)
+    // console.log(data)
   }
 
   useEffect(() => {
@@ -201,7 +201,7 @@ const Inbound = () => {
 
   }, [])
 
-  console.log(profiles)
+  // console.log(profiles)
   return (
     <>
       <Paper className={classes.root}>

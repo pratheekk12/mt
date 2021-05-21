@@ -198,7 +198,7 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
 
       const res = await Axios.post(url, data);
       var myObj = res.data;
-      console.log(myObj)
+      // console.log(myObj)
 
       if ('statusCode' in myObj) {
         setLoggedInMain(false);
@@ -280,7 +280,7 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
 
     const data2 = data1
     data2.OTP = otp
-    console.log(data2)
+    // console.log(data2)
 
     axios.post(`http://192.168.3.36:5555/api/login`, data2)
       .then((res) => {
