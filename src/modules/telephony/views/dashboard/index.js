@@ -18,9 +18,16 @@ import {
   CardContent,
   CardHeader,
   Tooltip,
-  IconButton
+  IconButton,
+  Button,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel
 } from '@material-ui/core';
 import axios from 'axios'
+import moment from 'moment';
+import Date from './daterange1'
 
 
 function TabPanel(props) {
@@ -71,24 +78,66 @@ const Inbound = () => {
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
   const [profiles, setProfiles] = useState([])
+  const [startDate, setStartDate] = useState("")
+  const [enddate, setEnddate] = useState("")
+  const [option, setOption] = useState("ALL")
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  const getProfiles = () => {
-    axios.get(`http://192.168.3.36:62010/channel/getfile`)
-      .then((response) => {
-        // console.log(response.data.updateRecord)
-        if (response.data.updateRecord.length > 0) {
-          setProfiles(response.data.updateRecord)
-        }
+  const getProfiles = async () => {
+    var dateFormat = 'DD-MM-YYYY';
+    // let startDate = localStorage.getItem('startDate')
+    // var testDateUtc1 = moment.utc(startDate);
+    // var localDate1 = testDateUtc1.local()
+    // startDate = localDate1.format(dateFormat);
 
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+    let startDate = moment(localStorage.getItem('startDate')).format().slice(0, 10);
+    let EndDate = moment(localStorage.getItem('EndDate')).format().slice(0, 10);
+    let option1 = localStorage.getItem('option')
+
+    const data = {
+      "startdate": startDate,
+      "enddate": EndDate,
+      "status": option1
+    }
+
+    console.log(data)
+
+    console.log(startDate, EndDate)
+
+    try {
+      await axios.post(`http://192.168.3.36:62010/channel/getFilterExcel`, data)
+        .then((response) => {
+          console.log(response)
+
+          if (response.data.Record.length > 0) {
+            console.log(response.data.Record)
+            response.data.Record.map((ele) => {
+              var dateFormat = 'DD-MM-YYYY HH:mm:ss';
+              var testDateUtc = moment.utc(ele.createdAt);
+              var localDate = testDateUtc.local();
+              ele.createdAt = localDate.format(dateFormat);
+            })
+            response.data.Record.map((ele) => {
+              var dateFormat = 'DD-MM-YYYY HH:mm:ss';
+              var testDateUtc = moment.utc(ele.updatedAt);
+              var localDate = testDateUtc.local();
+              ele.updatedAt = localDate.format(dateFormat);
+            })
+            setProfiles(response.data.Record)
+          }
+
+        })
+
+    } catch (err) {
+      console.log(err)
+    }
+
   }
+
+
 
   const handleChangeIndex = index => {
     setValue(index);
@@ -134,7 +183,7 @@ const Inbound = () => {
     {
       headerName: 'cfCl',
       field: 'cfCl',
-      flex: 0.5
+      flex: 0.2
     },
     {
       headerName: 'Id',
@@ -177,6 +226,16 @@ const Inbound = () => {
       flex: 0.5
     },
     {
+      headerName: 'Created At',
+      field: 'createdAt',
+      flex: 1
+    },
+    {
+      headerName: 'Updated At',
+      field: 'updatedAt',
+      flex: 1
+    },
+    {
       headerName: 'Link',
       field: 'link',
       flex: 1
@@ -184,8 +243,18 @@ const Inbound = () => {
 
   ];
 
+  const handleStatus = (e) => {
+    setOption(e.target.value)
+
+  }
+  // getProfiles()
+
   const showProfile = (data) => {
     // console.log(data)
+  }
+
+  const handlefetch = (e) => {
+    localStorage.setItem('option', option)
   }
 
   useEffect(() => {
@@ -200,6 +269,12 @@ const Inbound = () => {
 
 
   }, [])
+
+  // var dateFormat = 'DD-MM-YYYY HH:mm:ss';
+  // var testDateUtc = moment.utc('2021-05-18T10:04:54.792Z');
+  // var localDate = testDateUtc.local();
+  // console.log(localDate.format(dateFormat));
+  // console.log(moment("2021 - 05 - 18T10: 04: 54.792Z"))
 
   // console.log(profiles)
   return (
@@ -241,8 +316,43 @@ const Inbound = () => {
         </SwipeableViews>
       </Paper>
 
+      <Grid>
+        <Card>
+          <CardContent>
+            <Grid container spacing={3}>
+              <Grid item lg={2} md={6} xs={12}>
+                <Date value="Start Date" />
+              </Grid>
+              <Grid item lg={2} md={6} xs={12}>
+                <Date value="End Date" />
+              </Grid>
+              <Grid item lg={2} md={6} xs={12}>
+                <FormControl variant="outlined" className={classes.formControl} required="true" fullWidth={true}  >
+                  <InputLabel id="demo-simple-select-outlined-label">Status</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-outlined-label"
+                    id="demo-simple-select-outlined"
+                    value={option}
+                    onChange={handleStatus}
+                    label="Status"
+                  // required="true"
+                  >
+                    <MenuItem value="ALL">All</MenuItem>
+                    <MenuItem value="0">Dialed</MenuItem>
+                    <MenuItem value="1">Not Dialed</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item lg={2} md={6} xs={12}>
+                <Button variant="outlined" color="primary" onClick={handlefetch}>Fetch Data</Button>
+              </Grid>
+            </Grid>
+          </CardContent>
+        </Card>
+      </Grid>
+
       {
-        profiles.length > 1 ? (
+        profiles.length > 0 ? (
 
           <Grid>
             <Card>
