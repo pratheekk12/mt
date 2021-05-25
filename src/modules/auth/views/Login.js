@@ -26,6 +26,7 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import Logo from '../../dashboard-360/components/loginlogo'
 import axios from 'axios';
 import data from 'src/modules/dashboard-360/views/customer/CustomerListView/data';
+import { date } from 'date-fns/locale/af';
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -198,7 +199,7 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
 
       const res = await Axios.post(url, data);
       var myObj = res.data;
-      // console.log(myObj)
+      console.log(myObj)
 
       if ('statusCode' in myObj) {
         setLoggedInMain(false);
@@ -305,6 +306,9 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
             localStorage.setItem("jwtToken", accessToken);
             // localStorage.setItem('AgentSIPID', res.data.userData.id);
             localStorage.setItem('role', myObj.user.role);
+            localStorage.setItem('startDate', new Date())
+            localStorage.setItem('EndDate', new Date())
+            localStorage.setItem('option', 'ALL')
             // localStorage.setItem('Agenttype', res.data.userDetails.AgentType);
             if (myObj.user.role === 'agent') {
               localStorage.setItem('AgentSIPID', res.data.userData.id);

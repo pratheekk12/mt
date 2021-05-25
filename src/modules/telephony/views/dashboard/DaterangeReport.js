@@ -14,7 +14,7 @@ export default function MaterialUIPickers(props) {
 
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
-      <Grid item lg={2} sm={6}>
+      <Grid item lg={12} sm={6}>
         <KeyboardDatePicker
           disableToolbar
           variant="inline"
