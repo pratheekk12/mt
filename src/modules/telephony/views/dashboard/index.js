@@ -77,7 +77,7 @@ const Inbound = () => {
   };
 
   const getProfiles = () => {
-    axios.get(`http://192.168.3.36:62007/channel/getfile`)
+    axios.get(`http://192.168.3.36:62010/channel/getfile`)
       .then((response) => {
         // console.log(response.data.updateRecord)
         if (response.data.updateRecord.length > 0) {
