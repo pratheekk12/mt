@@ -140,7 +140,11 @@ const Campaign = (props) => {
                         return ele.datetime_end === ele.datetime_end.slice(0, 10)
                     })
                 }
-                console.log(response.data)
+                // console.log(response.data)
+                // let rdata = response.data.reverse()
+                // console.log()
+                // rdata = rdata.reverse()
+                // console.log(rdata)
                 setCampaigns(response.data.reverse())
             })
             .catch(function (error) {
@@ -148,6 +152,7 @@ const Campaign = (props) => {
             });
     }
 
+    // console.log(campaigns, "cammmm")
     const handleUpload = (data) => {
         console.log(data)
         // data.map((ele) => {
@@ -280,7 +285,7 @@ const Campaign = (props) => {
     ];
 
     const showProfile = (data) => {
-        console.log(data)
+        // console.log(data)
     }
 
 

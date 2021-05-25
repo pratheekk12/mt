@@ -77,7 +77,7 @@ const Inbound = () => {
   };
 
   const getProfiles = () => {
-    axios.get(`http://192.168.3.36:62007/channel/getfile`)
+    axios.get(`http://192.168.3.36:62010/channel/getfile`)
       .then((response) => {
         // console.log(response.data.updateRecord)
         if (response.data.updateRecord.length > 0) {
@@ -185,7 +185,7 @@ const Inbound = () => {
   ];
 
   const showProfile = (data) => {
-    console.log(data)
+    // console.log(data)
   }
 
   useEffect(() => {
@@ -201,7 +201,7 @@ const Inbound = () => {
 
   }, [])
 
-  console.log(profiles)
+  // console.log(profiles)
   return (
     <>
       <Paper className={classes.root}>
