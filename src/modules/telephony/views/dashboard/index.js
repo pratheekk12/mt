@@ -28,6 +28,7 @@ import {
 import axios from 'axios'
 import moment from 'moment';
 import Date from './daterange1'
+import Download from '../../../dashboard-360/views/DashboardView/DownloadReport'
 
 
 function TabPanel(props) {
@@ -320,13 +321,13 @@ const Inbound = () => {
         <Card>
           <CardContent>
             <Grid container spacing={3}>
-              <Grid item lg={2} md={6} xs={12}>
+              <Grid item lg={2} md={2} xs={6}>
                 <Date value="Start Date" />
               </Grid>
-              <Grid item lg={2} md={6} xs={12}>
+              <Grid item lg={2} md={2} xs={6}>
                 <Date value="End Date" />
               </Grid>
-              <Grid item lg={2} md={6} xs={12}>
+              <Grid item lg={2} md={2} xs={6}>
                 <FormControl variant="outlined" className={classes.formControl} required="true" fullWidth={true}  >
                   <InputLabel id="demo-simple-select-outlined-label">Status</InputLabel>
                   <Select
@@ -343,9 +344,17 @@ const Inbound = () => {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item lg={2} md={6} xs={12}>
+              <Grid item lg={2} md={2} xs={6}>
                 <Button variant="outlined" color="primary" onClick={handlefetch}>Fetch Data</Button>
               </Grid>
+              {
+                profiles.length > 0 ? (
+                  <Grid item lg={2} md={2} xs={6}>
+                    <button type="button" class="btn btn-light"><Download DownloadData={profiles} /></button>
+                  </Grid>
+                ) : (null)
+              }
+
             </Grid>
           </CardContent>
         </Card>
