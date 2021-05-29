@@ -538,7 +538,7 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
               }
 
               <Typography align="center">
-                Tap Start
+                Tap Start Outbound
               </Typography>
 
             </Box>

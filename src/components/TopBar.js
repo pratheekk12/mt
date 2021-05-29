@@ -361,6 +361,15 @@ const TopBar = ({
               </Tooltip>
             ) : (null)
           }
+{
+            localStorage.getItem('role') === 'admin' ? (
+              <Tooltip title="IVR Campaign">
+                <IconButton color="inherit">
+                  <Link to='/ivrcampaign' className="color-white"><Typography>IVR Campaign</Typography></Link>
+                </IconButton>
+              </Tooltip>
+            ) : (null)
+          }
 
           <Tooltip title="Logout">
             <IconButton color="inherit" onClick={() => logoutUser()}>
