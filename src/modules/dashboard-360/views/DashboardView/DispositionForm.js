@@ -1898,11 +1898,12 @@ export default function DispositionForm(props) {
     const id = localStorage.getItem('Interaction_id')
     console.log(id, "agentid")
     var axios = require('axios');
-
-
+// data.CRMDISPOSITION =data
+data= {"CRMDISPOSITION" :data};
+console.log("data",data)
     var config = {
       method: 'put',
-      url: `http://192.168.3.36:5000/api/interactions/${id}`,
+      url: `http://192.168.3.36:52001/api/interactions/${id}`,
       headers: {
         'Content-Type': 'application/json'
       },
