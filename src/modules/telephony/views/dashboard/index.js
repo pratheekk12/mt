@@ -43,6 +43,7 @@ import PhoneDisabledOutlinedIcon from '@material-ui/icons/PhoneDisabledOutlined'
 import SettingsPhoneOutlinedIcon from '@material-ui/icons/SettingsPhoneOutlined';
 import StorageOutlinedIcon from '@material-ui/icons/StorageOutlined';
 import ReplayOutlinedIcon from '@material-ui/icons/ReplayOutlined';
+import Download from 'src/modules/dashboard-360/views/DashboardView/DownloadReport.js'
 
 
 const useStyles = makeStyles(theme => ({
@@ -76,6 +77,7 @@ const Campaign = (props) => {
   const [campaignname, setCampaignname] = useState([])
   const [option, setOptions] = useState([])
   const [name, setname] = useState("")
+  const [attemptRecords, setAttemptRecords] = useState("")
 
   useEffect(() => {
     getCampaigns()
@@ -83,6 +85,7 @@ const Campaign = (props) => {
 
   }, [])
 
+  console.log(modaldata)
 
   const updateCampaign = (id, status) => {
     const data = {
@@ -92,7 +95,7 @@ const Campaign = (props) => {
     }
     console.log(data, "fdsfsd")
 
-    axios.post(`http://192.168.4.44:62010/campaign/updateCampaignbyID`, data)
+    axios.post(`http://192.168.3.36:33010/campaign/updateCampaignbyID`, data)
       .then((response) => {
         console.log(response.data, "update")
         getCampaigns()
@@ -108,7 +111,7 @@ const Campaign = (props) => {
 
     var config = {
       method: 'get',
-      url: 'http://192.168.4.44:62010/campaign/getAllCampaign',
+      url: 'http://192.168.3.36:33010/campaign/getAllCampaign',
       headers: {},
       data: data
     };
@@ -150,115 +153,48 @@ const Campaign = (props) => {
 
   const profilesColumns = [
     {
-      headerName: 'Name',
-      field: 'campaign_name',
+      headerName: 'Attempt',
+      field: 'attempt',
       flex: 0.5
 
     },
     {
-      headerName: 'Start Date',
-      field: 'startdate',
+      headerName: 'IVR Success',
+      field: 'ivrsuccess',
+      flex: 0.5
+
+    },
+    {
+      headerName: 'Option 1 (Call Now)',
+      field: 'option1',
       flex: 0.5,
 
     },
     {
-      headerName: 'End Date',
-      field: 'enddate',
+      headerName: 'Option 2 (Call back)',
+      field: 'option2',
       flex: 0.5
     },
     {
-      headerName: 'Queue',
-      field: 'queue',
+      headerName: 'Option 3',
+      field: 'option3',
       flex: 0.5
     },
     {
-      headerName: 'Retries',
-      field: 'retries',
+      headerName: 'Failed',
+      field: 'failed',
       flex: 0.5
     },
     {
-      headerName: 'Status',
-      field: '',
-
-      renderCell: rowData => (
-        <>
-          {
-            rowData.row.status === '1' && (<div>
-              <Tooltip title="Activated">
-                <IconButton
-
-                ><Typography>Inactive</Typography>
-                </IconButton>
-              </Tooltip>
-            </div>)
-          }
-          {
-            rowData.row.status === '0' && (<div>
-              <Tooltip title="Activate">
-                <IconButton
-                ><Typography>Active</Typography>
-                </IconButton>
-              </Tooltip>
-            </div>)
-          }
-          {
-            rowData.row.status === 'F' && (<div>
-              <Tooltip title="Finished">
-                <IconButton
-                ><Typography>Finished</Typography>
-                </IconButton>
-              </Tooltip>
-            </div>)
-          }
-        </>
-      ),
+      headerName: 'Busy',
+      field: 'busy',
       flex: 0.5
     },
     {
-      headerName: 'Actions',
-      field: 'id',
-
-      renderCell: rowData => (
-        <>
-          {
-            rowData.row.status === '1' && (<div>
-              <Tooltip title="Activate">
-                <IconButton
-                  onClick={() => { updateCampaign(rowData.row._id, "0") }}
-                ><Button variant="contained" >Activate</Button>
-                </IconButton>
-              </Tooltip>
-            </div>)
-          }
-          {
-            rowData.row.status === '0' && (<div>
-              <Tooltip title="Deactivate">
-                <IconButton
-                  onClick={() => { updateCampaign(rowData.row._id, "1") }}
-                ><Button variant="contained" >Deactivate</Button>
-                </IconButton>
-              </Tooltip>
-            </div>)
-          }
-        </>
-      ),
+      headerName: 'IVR No response',
+      field: 'ivrnoresponse',
       flex: 0.5
     },
-    {
-      headerName: 'Upload',
-      field: 'Script',
-
-      renderCell: rowData => (
-        <>
-          {
-            <FileUpload id={rowData.row._id} retries={rowData.row.retries} campaignID={rowData.row.campaign_name} handleUpload={handleUpload} />
-          }
-
-        </>
-      ),
-      flex: 0.5
-    }
-
 
   ];
 
@@ -269,6 +205,8 @@ const Campaign = (props) => {
 
 
   const handleChange = (event) => {
+    getAttemptDetails(event.target.value)
+    console.log("called again")
     setCampaignname(event.target.value);
     setcampaignname(event.target.value)
     setname(event.target.value)
@@ -278,13 +216,14 @@ const Campaign = (props) => {
     console.log(campaignName, "1st")
     console.log(campaignname, "2nd")
     console.log()
+
     setInterval(function () {
       var axios = require('axios');
       var data = JSON.stringify({ "ivrCampaignName": event.target.value });
 
       var config = {
         method: 'post',
-        url: 'http://192.168.4.44:62010/channel/getBycampaign',
+        url: 'http://192.168.3.36:33010/channel/getBycampaign',
         headers: {
           'Content-Type': 'application/json'
         },
@@ -293,15 +232,17 @@ const Campaign = (props) => {
 
       axios(config)
         .then(function (response) {
-          console.log(JSON.stringify(response.data));
+          // console.log(JSON.stringify(response.data));
           //  if(response.data.counts.length>0){
           console.log(response.data)
           response.data.counts[0].Campaignstartdate = moment(response.data.counts[0].Campaignstartdate).format('Do MMMM  YYYY, h:mm:ss a');
           response.data.counts[0].Campaignenddate = moment(response.data.counts[0].Campaignenddate).format('Do MMMM  YYYY, h:mm:ss a');
+
           // response.data.counts[0].Campaignstartdate.replace('T', "")
           setModaldata(response.data.counts);
           setShow(true)
           console.log("i am called")
+
           //  }
         })
         .catch(function (error) {
@@ -314,13 +255,43 @@ const Campaign = (props) => {
 
   }
 
+  const getAttemptDetails = (value, date) => {
+    const data = {
+      ivrCampaignName: value
+    }
+
+    axios.post(`http://192.168.3.36:33010/channel/getinteractionExcel`, data)
+      .then((res) => {
+        if (res.data.final.length > 0) {
+          res.data.date = date
+          res.data.final.map((ele) => {
+            return ele.date = date
+          })
+          console.log(res.data)
+          setAttemptRecords(res.data.final)
+        }
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+
+  }
+
+  console.log(modaldata, "modaldata")
+
 
   const handleClose = () => {
 
     setShow(false)
   }
 
-  console.log(campaignName)
+  // console.log(campaignName)
+  console.log(attemptRecords, "attempt")
+  if (attemptRecords.length > 0) {
+    attemptRecords.map((ele) => {
+      return ele.date = modaldata[0].Campaignstartdate
+    })
+  }
 
   return (<div>
     <Grid container spacing={3}>
@@ -449,16 +420,35 @@ const Campaign = (props) => {
       </CardContent>
 
     </Card >
-    <Grid container spacing={3}>
+    <Grid item lg={2} md={12} xs={12}>
+      <Download DownloadData={attemptRecords} />
+    </Grid>
+    {
+      attemptRecords.length > 0 && <DataGrid rows={attemptRecords} columns={profilesColumns} pageSize={5}
+        // rowsPerPageOptions={[10, 20, 50]}
+        // onRowClick={showProfile}
+        pagination />
+    }
+    {/* <Grid container spacing={3}>
       <Grid item lg={12} md={12} xs={12}></Grid>
       <Grid item lg={12} md={12} xs={12}></Grid>
       <Grid item lg={12} md={12} xs={12}>
-        <DataGrid rows={campaigns} columns={profilesColumns} pageSize={20}
-          // rowsPerPageOptions={[10, 20, 50]}
-          // onRowClick={showProfile}
-          pagination />
+        <Card style={{ 'height': '400px' }}>
+          <CardHeader
+            title={
+              `Date Allocated ::  `
+            }
+          />
+          <CardContent>
+
+
+
+
+          </CardContent>
+        </Card>
+
       </Grid>
-    </Grid>
+    </Grid> */}
     {/* <Grid container spacing={3}>
             <Grid item lg={12} md={12} xs={12}>
                 <Card>

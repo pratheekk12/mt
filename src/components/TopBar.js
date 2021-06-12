@@ -239,6 +239,12 @@ const TopBar = ({
   };
   async function logoutUser() {
 
+    if (localStorage.getItem('role') === 'admin') {
+      logout()
+      localStorage.clear()
+      window.location.reload()
+    }
+
     if (localStorage.getItem('callStatus') === 'AgentDisposed' || localStorage.getItem('callStatus') === 'LoggedIn' || localStorage.getItem('callStatus') === 'BREAKOUT' || localStorage.getItem('callStatus') === 'BREAKIN') {
       var axios = require('axios');
       var data = JSON.stringify({ "Event": "LoggedOut" });
@@ -352,7 +358,7 @@ const TopBar = ({
           )}
 
 
-          {
+          {/* {
             localStorage.getItem('role') === 'admin' ? (
               <Tooltip title="Campaign">
                 <IconButton color="inherit">
@@ -369,7 +375,7 @@ const TopBar = ({
                 </IconButton>
               </Tooltip>
             ) : (null)
-          }
+          } */}
 
           <Tooltip title="Logout">
             <IconButton color="inherit" onClick={() => logoutUser()}>

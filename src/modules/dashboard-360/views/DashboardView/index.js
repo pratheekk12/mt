@@ -497,7 +497,7 @@ const Dashboard = ({
                       <CardHeader title="Disposition Details" />
                       <Divider />
                       {currentCall.callStatus !== 'AgentDisposed' &&
-                        user.userType === 'agent' && currentCall.callStatus !== 'LoggedIn' && currentCall.callStatus !== 'AgentRingNoAnswer' && currentCall.callStatus !== 'BREAKOUT' && currentCall.callStatus !== '' && currentCall.callStatus !== 'LoggedOut' && currentCall.callStatus !== '0' ? (<CardContent>
+                        user.userType === 'agent' && currentCall.callStatus !== 'LoggedIn' && currentCall.callStatus !== 'AgentRingNoAnswer' && currentCall.callStatus !== 'BREAKOUT' && currentCall.callStatus !== 'BREAKIN' && currentCall.callStatus !== 'LoggedOut' && currentCall.callStatus !== '0' ? (<CardContent>
                           <DispositionForm
                             breakService={breakService}
                             agentSipID={agent.AgentSipId}
