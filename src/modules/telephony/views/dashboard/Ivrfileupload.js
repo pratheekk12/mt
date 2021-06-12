@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 
 const FileUpload = (props) => {
-    const { id, handleUpload ,retries, campaignID} = props
+    const { id, handleUpload, retries, campaignID } = props
     const [data1, setData1] = useState([])
 
 
@@ -13,22 +13,22 @@ const FileUpload = (props) => {
     const handleFileChosen = (file) => {
         const formData = new FormData();
 
-          // Update the formData object
-          console.log("file",file)
-          formData.append('file', file, file.name);
+        // Update the formData object
+        console.log("file", file)
+        formData.append('file', file, file.name);
 
-          formData.append('retries', retries);
-          formData.append('ivrCampaignName', campaignID);
-       
+        formData.append('retries', retries);
+        formData.append('ivrCampaignName', campaignID);
 
-            axios.post(`http://192.168.3.36:62010/channel/uploadivrfile`,formData)
-                .then((response) => {
-                    console.log(response.data)
-                    alert(`file uploaded succesfully`)
-                })
-                .catch((err) => {
-                    console.log(err)
-                })
+
+        axios.post(`http://192.168.3.36:62010/channel/uploadivrfile`, formData)
+            .then((response) => {
+                console.log(response.data)
+                alert(`file uploaded succesfully`)
+            })
+            .catch((err) => {
+                console.log(err)
+            })
 
 
     };

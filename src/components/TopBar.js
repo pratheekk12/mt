@@ -330,7 +330,7 @@ const TopBar = ({
               Agent {localStorage.getItem('Agenttype') + ' ' + localStorage.getItem('AgentSIPID')}
             </Link>
           </Typography> : <></>}
-          {localStorage.getItem("role") === "Admin" || localStorage.getItem("role") === "Group admin" ? <Typography className={classes.title} variant="h5" noWrap>
+          {/* {localStorage.getItem("role") === "Admin" || localStorage.getItem("role") === "Group admin" ? <Typography className={classes.title} variant="h5" noWrap>
             <Link to="/telephony/dashboard" className="color-white">
               Telephony
             </Link>
@@ -344,7 +344,7 @@ const TopBar = ({
             <Link to="/group/dashboard" className="color-white">
               Groups
             </Link>
-          </Typography> : <></>}
+          </Typography> : <></>} */}
           {viewAccess === -1 ? (
             ''
           ) : (
@@ -361,7 +361,7 @@ const TopBar = ({
               </Tooltip>
             ) : (null)
           }
-{
+          {
             localStorage.getItem('role') === 'admin' ? (
               <Tooltip title="IVR Campaign">
                 <IconButton color="inherit">

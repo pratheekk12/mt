@@ -1,199 +1,179 @@
-import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import SwipeableViews from 'react-swipeable-views';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-import Paper from '@material-ui/core/Paper';
-// import OneDirectApi from '../OneDirectApi';
-import FileHistoryTable from './filehistorytable';
-import FileUpload from './FileUpload'
-import { DataGrid } from '@material-ui/data-grid';
+import React, { useEffect, useState } from 'react'
+import TimePicker from './timepicker'
 import {
-  Grid,
+  Box,
   Card,
   CardContent,
   CardHeader,
-  Tooltip,
-  IconButton,
+  Container,
+  Divider,
+  Grid,
+  makeStyles,
+  Typography,
+  TextField,
+  Paper,
   Button,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel
+  Tooltip,
+  IconButton
+
 } from '@material-ui/core';
-import axios from 'axios'
 import moment from 'moment';
-import Date from './daterange1'
-import Download from '../../../dashboard-360/views/DashboardView/DownloadReport'
+import Date from './DaterangeReport'
+import { DataGrid } from '@material-ui/data-grid';
+import axios from 'axios'
+import FileUpload from './Ivrfileupload'
+import Showmodal from './Showmodal'
 
 
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import { setDayWithOptions } from 'date-fns/fp';
+import ScheduleIcon from '@material-ui/icons/Schedule';
+import QueuePlayNextOutlinedIcon from '@material-ui/icons/QueuePlayNextOutlined';
+import BackupOutlinedIcon from '@material-ui/icons/BackupOutlined';
+import DialerSipOutlinedIcon from '@material-ui/icons/DialerSipOutlined';
+import CallMissedOutgoingOutlinedIcon from '@material-ui/icons/CallMissedOutgoingOutlined';
+import AddIcCallOutlinedIcon from '@material-ui/icons/AddIcCallOutlined';
+import PhoneMissedOutlinedIcon from '@material-ui/icons/PhoneMissedOutlined';
+import MicOffOutlinedIcon from '@material-ui/icons/MicOffOutlined';
+import PhoneDisabledOutlinedIcon from '@material-ui/icons/PhoneDisabledOutlined';
+import SettingsPhoneOutlinedIcon from '@material-ui/icons/SettingsPhoneOutlined';
+import StorageOutlinedIcon from '@material-ui/icons/StorageOutlined';
+import ReplayOutlinedIcon from '@material-ui/icons/ReplayOutlined';
 
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`full-width-tabpanel-${index}`}
-      aria-labelledby={`full-width-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired
-};
-
-function a11yProps(index) {
-  return {
-    id: `full-width-tab-${index}`,
-    'aria-controls': `full-width-tabpanel-${index}`
-  };
-}
 
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     flexGrow: 1,
     margin: '1rem 2rem'
-  }
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 260,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
 }));
 
 
-const Inbound = () => {
+const Campaign = (props) => {
   const classes = useStyles();
-  const [uploadFileStatus, setUploadFileStatus] = useState(null);
-  const theme = useTheme();
-  const [value, setValue] = React.useState(0);
-  const [profiles, setProfiles] = useState([])
-  const [startDate, setStartDate] = useState("")
-  const [enddate, setEnddate] = useState("")
-  const [option, setOption] = useState("ALL")
+  const [startTime, setStartTime] = useState("")
+  const [endTime, setEndtime] = useState("")
+  const [queue, setQueue] = useState("")
+  const [campaignRetry, setRetry] = useState("")
+  const [campaignName, setcampaignname] = useState("")
+  const [date, setdate] = useState("")
+  const [campaigns, setCampaigns] = useState([])
+  const [disable, setDisable] = useState(true)
+  const [modaldata, setModaldata] = useState([])
+  const [show, setShow] = useState(false)
+  const [campaignname, setCampaignname] = useState([])
+  const [option, setOptions] = useState([])
+  const [name, setname] = useState("")
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
+  useEffect(() => {
+    getCampaigns()
 
-  const getProfiles = async () => {
-    var dateFormat = 'DD-MM-YYYY';
-    // let startDate = localStorage.getItem('startDate')
-    // var testDateUtc1 = moment.utc(startDate);
-    // var localDate1 = testDateUtc1.local()
-    // startDate = localDate1.format(dateFormat);
 
-    let startDate = moment(localStorage.getItem('startDate')).format().slice(0, 10);
-    let EndDate = moment(localStorage.getItem('EndDate')).format().slice(0, 10);
-    let option1 = localStorage.getItem('option')
+  }, [])
 
+
+  const updateCampaign = (id, status) => {
     const data = {
-      "startdate": startDate,
-      "enddate": EndDate,
-      "status": option1
+      "_id": id,
+      "status": status
+
     }
+    console.log(data, "fdsfsd")
 
-    console.log(data)
+    axios.post(`http://192.168.4.44:62010/campaign/updateCampaignbyID`, data)
+      .then((response) => {
+        console.log(response.data, "update")
+        getCampaigns()
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
 
-    console.log(startDate, EndDate)
+  const getCampaigns = () => {
+    var axios = require('axios');
+    var data = '';
 
-    try {
-      await axios.post(`http://192.168.3.36:62010/channel/getFilterExcel`, data)
-        .then((response) => {
-          console.log(response)
+    var config = {
+      method: 'get',
+      url: 'http://192.168.4.44:62010/campaign/getAllCampaign',
+      headers: {},
+      data: data
+    };
 
-          if (response.data.Record.length > 0) {
-            console.log(response.data.Record)
-            response.data.Record.map((ele) => {
-              var dateFormat = 'DD-MM-YYYY HH:mm:ss';
-              var testDateUtc = moment.utc(ele.createdAt);
-              var localDate = testDateUtc.local();
-              ele.createdAt = localDate.format(dateFormat);
-            })
-            response.data.Record.map((ele) => {
-              var dateFormat = 'DD-MM-YYYY HH:mm:ss';
-              var testDateUtc = moment.utc(ele.updatedAt);
-              var localDate = testDateUtc.local();
-              ele.updatedAt = localDate.format(dateFormat);
-            })
-            setProfiles(response.data.Record)
-          }
+    axios(config)
+      .then(function (response) {
+        if (response.data.Record.length > 0) {
+          console.log("chaitra", response.data.Record)
+          var i = 0;
+          response.data.Record = response.data.Record.reverse()
+          response.data.Record.map((ele) => {
+            i = i + 1;
 
-        })
+            var dateFormat = 'DD-MM-YYYY HH:mm:ss';
+            var endUtc = moment.utc(ele.enddate);
+            var startUtc = moment.utc(ele.startdate);
+            var localeDate = endUtc.local();
+            var localsDate = startUtc.local();
+            ele.enddate = localeDate.format(dateFormat);
+            ele.startdate = localsDate.format(dateFormat);
+            return ele.id = i;
+          })
+          setCampaigns(response.data.Record)
+        }
 
-    } catch (err) {
-      console.log(err)
-    }
 
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
   }
 
 
+  const handleUpload = (data) => {
+    console.log(data)
 
-  const handleChangeIndex = index => {
-    setValue(index);
-  };
+
+  }
 
   const profilesColumns = [
     {
-      headerName: 'Ref.Id',
-      field: 'refId',
+      headerName: 'Name',
+      field: 'campaign_name',
       flex: 0.5
 
     },
     {
-      headerName: 'Bank Name',
-      field: 'bankname',
+      headerName: 'Start Date',
+      field: 'startdate',
+      flex: 0.5,
+
+    },
+    {
+      headerName: 'End Date',
+      field: 'enddate',
       flex: 0.5
     },
     {
-      headerName: 'Client',
-      field: 'client',
+      headerName: 'Queue',
+      field: 'queue',
       flex: 0.5
     },
     {
-      headerName: 'Stage',
-      field: 'stage',
-      flex: 0.5
-    },
-    {
-      headerName: 'Reason',
-      field: 'reason',
-      flex: 0.5
-    },
-    {
-      headerName: 'City',
-      field: 'city',
-      flex: 0.5
-    },
-    {
-      headerName: 'Loan Amount',
-      field: 'loanamount',
-      flex: 0.5
-    },
-    {
-      headerName: 'cfCl',
-      field: 'cfCl',
-      flex: 0.2
-    },
-    {
-      headerName: 'Id',
-      field: 'id',
-      flex: 0.5
-    },
-    {
-      headerName: 'Phone Number',
-      field: 'phone',
+      headerName: 'Retries',
+      field: 'retries',
       flex: 0.5
     },
     {
@@ -204,20 +184,28 @@ const Inbound = () => {
         <>
           {
             rowData.row.status === '1' && (<div>
-              <Tooltip title="Not Dialed">
+              <Tooltip title="Activated">
                 <IconButton
 
-                ><Typography>Not Dialed</Typography>
+                ><Typography>Inactive</Typography>
                 </IconButton>
               </Tooltip>
             </div>)
           }
           {
             rowData.row.status === '0' && (<div>
-              <Tooltip title="Dialed">
+              <Tooltip title="Activate">
                 <IconButton
-
-                ><Typography>Dialed</Typography>
+                ><Typography>Active</Typography>
+                </IconButton>
+              </Tooltip>
+            </div>)
+          }
+          {
+            rowData.row.status === 'F' && (<div>
+              <Tooltip title="Finished">
+                <IconButton
+                ><Typography>Finished</Typography>
                 </IconButton>
               </Tooltip>
             </div>)
@@ -227,159 +215,267 @@ const Inbound = () => {
       flex: 0.5
     },
     {
-      headerName: 'Created At',
-      field: 'createdAt',
-      flex: 1
+      headerName: 'Actions',
+      field: 'id',
+
+      renderCell: rowData => (
+        <>
+          {
+            rowData.row.status === '1' && (<div>
+              <Tooltip title="Activate">
+                <IconButton
+                  onClick={() => { updateCampaign(rowData.row._id, "0") }}
+                ><Button variant="contained" >Activate</Button>
+                </IconButton>
+              </Tooltip>
+            </div>)
+          }
+          {
+            rowData.row.status === '0' && (<div>
+              <Tooltip title="Deactivate">
+                <IconButton
+                  onClick={() => { updateCampaign(rowData.row._id, "1") }}
+                ><Button variant="contained" >Deactivate</Button>
+                </IconButton>
+              </Tooltip>
+            </div>)
+          }
+        </>
+      ),
+      flex: 0.5
     },
     {
-      headerName: 'Updated At',
-      field: 'updatedAt',
-      flex: 1
-    },
-    {
-      headerName: 'Link',
-      field: 'link',
-      flex: 1
+      headerName: 'Upload',
+      field: 'Script',
+
+      renderCell: rowData => (
+        <>
+          {
+            <FileUpload id={rowData.row._id} retries={rowData.row.retries} campaignID={rowData.row.campaign_name} handleUpload={handleUpload} />
+          }
+
+        </>
+      ),
+      flex: 0.5
     }
+
 
   ];
 
-  const handleStatus = (e) => {
-    setOption(e.target.value)
+  const getCampaignDetails = () => {
 
   }
-  // getProfiles()
 
-  const showProfile = (data) => {
-    // console.log(data)
+
+
+  const handleChange = (event) => {
+    setCampaignname(event.target.value);
+    setcampaignname(event.target.value)
+    setname(event.target.value)
+    console.log(campaignName)
+    console.log(name)
+    console.log("data", event.target.value)
+    console.log(campaignName, "1st")
+    console.log(campaignname, "2nd")
+    console.log()
+    setInterval(function () {
+      var axios = require('axios');
+      var data = JSON.stringify({ "ivrCampaignName": event.target.value });
+
+      var config = {
+        method: 'post',
+        url: 'http://192.168.4.44:62010/channel/getBycampaign',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        data: data
+      };
+
+      axios(config)
+        .then(function (response) {
+          console.log(JSON.stringify(response.data));
+          //  if(response.data.counts.length>0){
+          console.log(response.data)
+          response.data.counts[0].Campaignstartdate = moment(response.data.counts[0].Campaignstartdate).format('Do MMMM  YYYY, h:mm:ss a');
+          response.data.counts[0].Campaignenddate = moment(response.data.counts[0].Campaignenddate).format('Do MMMM  YYYY, h:mm:ss a');
+          // response.data.counts[0].Campaignstartdate.replace('T', "")
+          setModaldata(response.data.counts);
+          setShow(true)
+          console.log("i am called")
+          //  }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+    }, 3000);
+
+
+
   }
 
-  const handlefetch = (e) => {
-    localStorage.setItem('option', option)
+
+  const handleClose = () => {
+
+    setShow(false)
   }
 
-  useEffect(() => {
-    localStorage.setItem('callStatus', 'AgentDisposed')
-    getProfiles()
+  console.log(campaignName)
 
-    const interval = setInterval(async () => {
-      getProfiles()
+  return (<div>
+    <Grid container spacing={3}>
+      <Grid item lg={4} md={12} xs={0}></Grid>
+      <Grid item lg={4} md={12} xs={0}>
+        <h1 style={{ textAlign: 'center' }}>Campaign Monitoring</h1>
+      </Grid>
+      <Grid item lg={4} md={12} xs={0}></Grid>
+    </Grid>
+    <br /><br />
+    <Card >
+      <CardContent>
 
-    }, 5000);
+        <Grid container spacing={3}>
+          <Grid item lg={12} md={12} xs={12}></Grid>
+          <Grid item lg={12} md={12} xs={12}>
+            <FormControl variant="outlined" className={classes.formControl} >
+              <InputLabel id="demo-simple-select-outlined-label">Campaign</InputLabel>
+              <Select
+                labelId="demo-simple-select-outlined-label"
+                id="demo-simple-select-outlined"
+                value={campaignName}
+                onChange={handleChange}
+                label="Campaign"
+                autoWidth="true"
+              >
+                {
+                  campaigns.map((ele) => {
+                    return (<MenuItem value={ele.campaign_name}>{ele.campaign_name}</MenuItem>)
+                  })
+                }
 
+              </Select>
+            </FormControl>
+          </Grid>
+          {show === true ? <>
+            <Grid item lg={3} md={12} xs={12}>
+              <Card style={{ backgroundColor: '#A52A2A', borderRadius: '12px' }}>
+                <CardContent><h3 style={{ color: 'white' }}><b><ScheduleIcon /> Start date : </b>{modaldata[0].Campaignstartdate}</h3></CardContent>
+              </Card>
+            </Grid>
 
-
-  }, [])
-
-  // var dateFormat = 'DD-MM-YYYY HH:mm:ss';
-  // var testDateUtc = moment.utc('2021-05-18T10:04:54.792Z');
-  // var localDate = testDateUtc.local();
-  // console.log(localDate.format(dateFormat));
-  // console.log(moment("2021 - 05 - 18T10: 04: 54.792Z"))
-
-  // console.log(profiles)
-  return (
-    <>
-      <Paper className={classes.root}>
-        <AppBar position="static" color="default">
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            indicatorColor="primary"
-            style={{ backgroundColor: 'white' }}
-            textColor="primary"
-            variant="fullWidth"
-            aria-label="full width tabs example"
-            centered
-          >
-            <Tab label="Upload" {...a11yProps(0)} />
-            <Tab label="OneDirect" {...a11yProps(1)} />
-            {/* <Tab label="Inresto" {...a11yProps(2)} /> */}
-          </Tabs>
-        </AppBar>
-        <SwipeableViews
-          style={{ backgroundColor: '#f4f6f8' }}
-          axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
-          index={value}
-          onChangeIndex={handleChangeIndex}
-        // style={{ display: 'flex', justifyContent: 'center' }}
-        >
-          <TabPanel value={value} index={0} dir={theme.direction}>
-            <FileUpload status={setUploadFileStatus} />
-            {/* <FileHistoryTable status={uploadFileStatus} /> */}
-          </TabPanel>
-          {/* <TabPanel value={value} index={1} dir={theme.direction}>
-          <OneDirectApi />
-        </TabPanel> */}
-          {/* <TabPanel value={value} index={2} dir={theme.direction}>
-          API Call
-        </TabPanel> */}
-        </SwipeableViews>
-      </Paper>
-
-      <Grid>
-        <Card>
-          <CardContent>
-            <Grid container spacing={3}>
-              <Grid item lg={2} md={2} xs={6}>
-                <Date value="Start Date" />
-              </Grid>
-              <Grid item lg={2} md={2} xs={6}>
-                <Date value="End Date" />
-              </Grid>
-              <Grid item lg={2} md={2} xs={6}>
-                <FormControl variant="outlined" className={classes.formControl} required="true" fullWidth={true}  >
-                  <InputLabel id="demo-simple-select-outlined-label">Status</InputLabel>
-                  <Select
-                    labelId="demo-simple-select-outlined-label"
-                    id="demo-simple-select-outlined"
-                    value={option}
-                    onChange={handleStatus}
-                    label="Status"
-                  // required="true"
-                  >
-                    <MenuItem value="ALL">All</MenuItem>
-                    <MenuItem value="0">Dialed</MenuItem>
-                    <MenuItem value="1">Not Dialed</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item lg={2} md={2} xs={6}>
-                <Button variant="outlined" color="primary" onClick={handlefetch}>Fetch Data</Button>
-              </Grid>
-              {
-                profiles.length > 0 ? (
-                  <Grid item lg={2} md={2} xs={6}>
-                    <button type="button" class="btn btn-light"><Download DownloadData={profiles} /></button>
-                  </Grid>
-                ) : (null)
-              }
+            <Grid item lg={3} md={12} xs={12}>
+              <Card style={{ backgroundColor: '#696969', borderRadius: '12px' }}>
+                <CardContent><h3 style={{ color: 'white' }}><b><ScheduleIcon /> End date : </b>{modaldata[0].Campaignenddate}</h3></CardContent>
+              </Card>
 
             </Grid>
-          </CardContent>
-        </Card>
+
+            <Grid item lg={2} md={12} xs={12}>
+              <Card style={{ backgroundColor: '#800080', borderRadius: '12px' }}>
+                <CardContent><h3 style={{ color: 'white' }}><b><QueuePlayNextOutlinedIcon /> Queue: </b>{modaldata[0].queue}</h3></CardContent>
+              </Card>
+
+            </Grid>
+
+
+            <Grid item lg={2} md={12} xs={12}>
+              <Card style={{ backgroundColor: '#66CDAA', borderRadius: '12px' }}>
+                <CardContent><h3 style={{ color: 'white' }}><b><BackupOutlinedIcon /> Total Records Uploaded : </b>{modaldata[0].totalRecords}</h3></CardContent>
+              </Card>
+            </Grid>
+
+            <Grid item lg={2} md={12} xs={12}>
+              <Card style={{ backgroundColor: '#191970', borderRadius: '12px' }}>
+                <CardContent><h3 style={{ color: 'white' }}><b><DialerSipOutlinedIcon /> Dailed records Count: </b>{modaldata[0].DailedCountrecordsCount}</h3></CardContent>
+              </Card>
+            </Grid>
+
+            <Grid item lg={2} md={12} xs={12}>
+              <Card style={{ backgroundColor: '#6B8E23', borderRadius: '12px' }}>
+                <CardContent><h3 style={{ color: 'white' }}><b><CallMissedOutgoingOutlinedIcon /> NotDailed records Count: </b>{modaldata[0].NotDailedrecordsCount}</h3></CardContent>
+              </Card>
+            </Grid>
+
+
+            <Grid item lg={2} md={12} xs={12}>
+              <Card style={{ backgroundColor: '#006400', borderRadius: '12px' }}>
+                <CardContent><h3 style={{ color: 'white' }}><b><AddIcCallOutlinedIcon /> Answered records Count: </b>{modaldata[0].AnsweredrecordCount}</h3></CardContent>
+              </Card>
+            </Grid>
+
+            <Grid item lg={3} md={12} xs={12}>
+              <Card style={{ backgroundColor: '#BC8F8F', borderRadius: '12px' }}>
+                <CardContent><h3 style={{ color: 'white' }}><b><PhoneMissedOutlinedIcon /> Not Answered records Count: </b>{modaldata[0].NoAnsweredrecordCount}</h3></CardContent>
+              </Card>
+            </Grid>
+
+            <Grid item lg={3} md={12} xs={12}>
+              <Card style={{ backgroundColor: '#FA8072', borderRadius: '12px' }}>
+                <CardContent><h3 style={{ color: 'white' }}><b><PhoneDisabledOutlinedIcon /> Failed calls records Count: </b>{modaldata[0].FailerrecordCount}</h3></CardContent>
+              </Card>
+            </Grid>
+
+            <Grid item lg={2} md={12} xs={12}>
+              <Card style={{ backgroundColor: '#708090', borderRadius: '12px' }}>
+                <CardContent><h3 style={{ color: 'white' }}><b><MicOffOutlinedIcon /> Busy calls records Count: </b>{modaldata[0].BusyrecordCount}</h3></CardContent>
+              </Card>
+            </Grid>
+
+            <Grid item lg={3} md={12} xs={12}>
+              <Card style={{ backgroundColor: '#2F4F4F', borderRadius: '12px' }}>
+                <CardContent><h3 style={{ color: 'white' }}><b><SettingsPhoneOutlinedIcon /> Congestion calls records Count: </b>{modaldata[0].CongestionrecordCount}</h3></CardContent>
+              </Card>
+            </Grid>
+
+            <Grid item lg={3} md={12} xs={12}>
+              <Card style={{ backgroundColor: '#DAA520', borderRadius: '12px' }}>
+                <CardContent ><h3 style={{ color: 'white' }}><b> <StorageOutlinedIcon /> Job complete records Count: </b>{modaldata[0].jobcompleterecordcount}</h3></CardContent>
+              </Card>
+            </Grid>
+            <Grid item lg={3} md={12} xs={12}>
+              <Card style={{ backgroundColor: '#808000', borderRadius: '12px' }}>
+                <CardContent><h3 style={{ color: 'white' }}><b> <StorageOutlinedIcon /> Job not complete records Count: </b>{modaldata[0].jobnotcompleterecordcount}</h3></CardContent>
+              </Card>
+            </Grid>
+            <Grid item lg={2} md={12} xs={12}>
+              <Card style={{ backgroundColor: '#0000CD', borderRadius: '12px' }}>
+                <CardContent><h3 style={{ color: 'white' }}><b><ReplayOutlinedIcon /> Retries : </b>{modaldata[0].retries}</h3></CardContent>
+              </Card>
+            </Grid>
+
+
+          </> : <></>}
+        </Grid>
+      </CardContent>
+
+    </Card >
+    <Grid container spacing={3}>
+      <Grid item lg={12} md={12} xs={12}></Grid>
+      <Grid item lg={12} md={12} xs={12}></Grid>
+      <Grid item lg={12} md={12} xs={12}>
+        <DataGrid rows={campaigns} columns={profilesColumns} pageSize={20}
+          // rowsPerPageOptions={[10, 20, 50]}
+          // onRowClick={showProfile}
+          pagination />
       </Grid>
+    </Grid>
+    {/* <Grid container spacing={3}>
+            <Grid item lg={12} md={12} xs={12}>
+                <Card>
+                    <CardContent>
+                        <div style={{ height: 500, width: '100%' }}>
+                            <DataGrid rows={campaigns} columns={profilesColumns} pageSize={20}
+                                // rowsPerPageOptions={[10, 20, 50]}
+                                onRowClick={showProfile}
+                                pagination />
+                        </div>
 
-      {
-        profiles.length > 0 ? (
+                    </CardContent>
+                </Card>
+            </Grid>
+        </Grid> */}
+    {/* {show===true? <Showmodal show={show} modaldata={modaldata}  handleClose={handleClose} />:<></>} */}
+  </div >)
+}
 
-          <Grid>
-            <Card>
-              <CardContent>
-                <div style={{ height: 500, width: '100%' }}>
-                  <DataGrid rows={profiles} columns={profilesColumns} pageSize={20}
-                    // rowsPerPageOptions={[10, 20, 50]}
-                    onRowClick={showProfile}
-                    pagination />
-                </div>
-
-              </CardContent>
-            </Card>
-
-          </Grid>
-        ) : (null)}
-    </>
-  );
-};
-
-export default Inbound;
+export default Campaign

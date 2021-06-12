@@ -90,7 +90,7 @@ const Campaign = (props) => {
             "startdate": `${date}${startTime}`,
             "enddate": `${date}${endTime}`,
             "retries": campaignRetry,
-            "status":"1"
+            "status": "1"
         }
 
         axios.post(`http://192.168.3.36:62010/campaign/createCampaign`, data)
@@ -138,19 +138,19 @@ const Campaign = (props) => {
             .then(function (response) {
                 if (response.data.Record.length > 0) {
                     // console.log("chaitra",response.data.Record)
-                    var i=0;
+                    var i = 0;
                     response.data.Record.map((ele) => {
-                       i=i+1;
+                        i = i + 1;
 
-                       var dateFormat = 'DD-MM-YYYY HH:mm:ss';
+                        var dateFormat = 'DD-MM-YYYY HH:mm:ss';
                         var endUtc = moment.utc(ele.enddate);
                         var startUtc = moment.utc(ele.startdate);
                         var localeDate = endUtc.local();
                         var localsDate = startUtc.local();
                         ele.enddate = localeDate.format(dateFormat);
                         ele.startdate = localsDate.format(dateFormat);
-                        return ele.id=i;
-                        
+                        return ele.id = i;
+
                         // return ele.enddate === ele.enddate.slice(0, 10)
                     })
                     setCampaigns(response.data.Record.reverse())
@@ -160,7 +160,7 @@ const Campaign = (props) => {
                 // console.log()
                 // rdata = rdata.reverse()
                 // console.log(rdata)
-                
+
             })
             .catch(function (error) {
                 console.log(error);
@@ -187,7 +187,7 @@ const Campaign = (props) => {
             headerName: 'Start Date',
             field: 'startdate',
             flex: 0.5,
-          
+
             // renderCell: rowData => (
             //     <>
             //         {
