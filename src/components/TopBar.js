@@ -245,7 +245,7 @@ const TopBar = ({
 
       var config = {
         method: 'put',
-        url: `http://192.168.3.36:5000/api/agents/${localStorage.getItem('Agent_Object_ID')}`,
+        url: `http://192.168.3.36:33002/api/agents/${localStorage.getItem('Agent_Object_ID')}`,
         headers: {
           'Content-Type': 'application/json'
         },
@@ -265,7 +265,7 @@ const TopBar = ({
 
       var config = {
         method: 'get',
-        url: `http://192.168.3.36:52005/ami/actions/rmq?Queue=${localStorage.getItem('Queue')}&Interface=SIP/${localStorage.getItem('AgentSIPID')}`,
+        url: `http://192.168.3.36:33003/ami/actions/rmq?Queue=${localStorage.getItem('Queue')}&Interface=SIP/${localStorage.getItem('AgentSIPID')}`,
         headers: {},
         data: data
       };
@@ -282,7 +282,7 @@ const TopBar = ({
       var axios = require('axios');
       var config = {
         method: 'get',
-        url: `http://192.168.3.36:52005/ami/actions/break?Queue=${localStorage.getItem('Queue')}&Interface=SIP%2F${AgentSIPID}&Reason=BREAK_IN&Break=true`,
+        url: `http://192.168.3.36:33003/ami/actions/break?Queue=${localStorage.getItem('Queue')}&Interface=SIP%2F${AgentSIPID}&Reason=BREAK_IN&Break=true`,
         headers: {}
       };
 

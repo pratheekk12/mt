@@ -512,7 +512,7 @@ export default function DispositionForm(props) {
     var axios = require('axios');
     var config = {
       method: 'get',
-      url: `http://192.168.3.36:52005/ami/actions/break?Queue=${localStorage.getItem('Queue')}&Interface=SIP%2F${AgentSIPID}&Reason=AgentDisposed&Break=false`,
+      url: `http://192.168.3.36:33003/ami/actions/break?Queue=${localStorage.getItem('Queue')}&Interface=SIP%2F${AgentSIPID}&Reason=AgentDisposed&Break=false`,
       headers: {}
     };
 

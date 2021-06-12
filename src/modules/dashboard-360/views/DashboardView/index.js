@@ -250,7 +250,7 @@ const Dashboard = ({
 
     var config = {
       method: 'get',
-      url: `http://192.168.3.36:5000/api/agents/${agentSipID}`,
+      url: `http://192.168.3.36:33002/api/agents/${agentSipID}`,
       headers: {}
     };
 
@@ -281,7 +281,7 @@ const Dashboard = ({
       var axios = require('axios');
       var config = {
         method: 'get',
-        url: `http://192.168.3.36:52005/ami/actions/break?Queue=${localStorage.getItem('Queue')}&Interface=SIP%2F${AgentSIPID}&Reason=BREAKIN&Break=true`,
+        url: `http://192.168.3.36:33003/ami/actions/break?Queue=${localStorage.getItem('Queue')}&Interface=SIP%2F${AgentSIPID}&Reason=BREAKIN&Break=true`,
         headers: {}
       };
 
@@ -296,7 +296,7 @@ const Dashboard = ({
       var axios = require('axios');
       var config = {
         method: 'get',
-        url: `http://192.168.3.36:52005/ami/actions/break?Queue=${localStorage.getItem('Queue')}&Interface=SIP%2F${AgentSIPID}&Reason=BREAKOUT&Break=false`,
+        url: `http://192.168.3.36:33003/ami/actions/break?Queue=${localStorage.getItem('Queue')}&Interface=SIP%2F${AgentSIPID}&Reason=BREAKOUT&Break=false`,
         headers: {}
       };
 
@@ -332,7 +332,7 @@ const Dashboard = ({
   useEffect(() => {
     const agentSipID = localStorage.getItem('Agent_Object_ID')
     const interval = setInterval(async () => {
-      const GET_CURRENT_STATUS_BY_AGENT_SIP_ID = `http://192.168.3.36:5000/api/agents/${localStorage.getItem('Agent_Object_ID')}`;
+      const GET_CURRENT_STATUS_BY_AGENT_SIP_ID = `http://192.168.3.36:33002/api/agents/${localStorage.getItem('Agent_Object_ID')}`;
       const getCurrentStatus = await axios.get(GET_CURRENT_STATUS_BY_AGENT_SIP_ID);
       //console.log('getCurrentStatus', getCurrentStatus)
       getAgentCallStatus(agentSipID)

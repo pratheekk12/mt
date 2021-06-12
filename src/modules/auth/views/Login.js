@@ -188,7 +188,7 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
     setError('');
     try {
       console.log(values)
-      const url = 'http://192.168.3.36:5555/api/sendOtp'
+      const url = 'http://192.168.3.36:33001/api/sendOtp'
       // // const url='http://192.168.3.45:42009/user/login'
       // console.log("values", values)
       const data = {}
@@ -283,7 +283,7 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
     data2.OTP = otp
     // console.log(data2)
 
-    axios.post(`http://192.168.3.36:5555/api/login`, data2)
+    axios.post(`http://192.168.3.36:33001/api/login`, data2)
       .then((res) => {
         console.log(res)
         var myObj = res.data;
@@ -334,7 +334,7 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
 
               var config = {
                 method: 'get',
-                url: `http://192.168.3.36:52005/ami/actions/addq?Queue=${res.data.userData.Queue}&Interface=${res.data.userData.Location}`,
+                url: `http://192.168.3.36:33003/ami/actions/addq?Queue=${res.data.userData.Queue}&Interface=${res.data.userData.Location}`,
                 headers: {},
                 data: data1
               };
@@ -353,7 +353,7 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
 
               var config = {
                 method: 'put',
-                url: `http://192.168.3.36:5000/api/agents/${res.data.userData._id}`,
+                url: `http://192.168.3.36:33002/api/agents/${res.data.userData._id}`,
                 headers: {
                   'Content-Type': 'application/json'
                 },
@@ -372,7 +372,7 @@ function Login({ setLoggedInMain, setAccountTypeMain, setUserDetailsMain }) {
               var axios = require('axios');
               var config = {
                 method: 'get',
-                url: `http://192.168.3.36:52005/ami/actions/break?Queue=${res.data.userData.Queue}&Interface=SIP%2F${AgentSIPID}&Reason=BREAK_OUT&Break=false`,
+                url: `http://192.168.3.36:33003/ami/actions/break?Queue=${res.data.userData.Queue}&Interface=SIP%2F${AgentSIPID}&Reason=BREAK_OUT&Break=false`,
                 headers: {}
               };
 
