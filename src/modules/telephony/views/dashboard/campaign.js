@@ -22,7 +22,7 @@ import Date from './DaterangeReport'
 import { DataGrid } from '@material-ui/data-grid';
 import axios from 'axios'
 import FileUpload from './FileUpload3'
-
+import { CAMPAIGN } from 'src/modules/dashboard-360/utils/endpoints'
 
 
 
@@ -92,7 +92,7 @@ const Campaign = (props) => {
             "campaignRetry": campaignRetry
         }
 
-        axios.post(`http://192.168.3.36:62008/api/Create_Campaign`, data)
+        axios.post(`${CAMPAIGN}/Create_Campaign`, data)
             .then((response) => {
                 console.log(response.data)
                 handleReset()
@@ -112,7 +112,7 @@ const Campaign = (props) => {
         }
         console.log(data, "fdsfsd")
 
-        axios.post(`http://192.168.3.36:62008/api/Update_Status_Campaign`, data)
+        axios.post(`${CAMPAIGN}/Update_Status_Campaign`, data)
             .then((response) => {
                 console.log(response.data, "update")
                 getCampaigns()
@@ -128,7 +128,7 @@ const Campaign = (props) => {
 
         var config = {
             method: 'get',
-            url: 'http://192.168.3.36:62008/api/getCampaign',
+            url: `${CAMPAIGN}/getCampaign`,
             headers: {},
             data: data
         };

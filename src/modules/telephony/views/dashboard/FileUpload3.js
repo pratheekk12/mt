@@ -3,6 +3,8 @@ import XLSX from "xlsx";
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
 
+import { CAMPAIGN } from 'src/modules/dashboard-360/utils/endpoints'
+
 const FileUpload = (props) => {
     const { id, handleUpload } = props
     const [data1, setData1] = useState([])
@@ -43,7 +45,7 @@ const FileUpload = (props) => {
             const data3 = { data: arr }
             // console.log(data3)
 
-            axios.post(`http://192.168.3.36:62008/api/Upload_Campaign`, data3)
+            axios.post(`${CAMPAIGN}/Upload_Campaign`, data3)
                 .then((response) => {
                     console.log(response.data)
                     alert(`file uploaded succesfully`)

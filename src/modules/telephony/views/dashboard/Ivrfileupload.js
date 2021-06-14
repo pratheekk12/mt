@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import XLSX from "xlsx";
 import { v4 as uuidv4 } from 'uuid';
 import axios from 'axios';
+import { UPLOAD_FILE } from 'src/modules/dashboard-360/utils/endpoints'
 
 const FileUpload = (props) => {
     const { id, handleUpload, retries, campaignID } = props
@@ -21,7 +22,7 @@ const FileUpload = (props) => {
         formData.append('ivrCampaignName', campaignID);
 
 
-        axios.post(`http://192.168.3.36:62010/channel/uploadivrfile`, formData)
+        axios.post(`${UPLOAD_FILE}/channel/uploadivrfile`, formData)
             .then((response) => {
                 console.log(response.data)
                 alert(`file uploaded succesfully`)

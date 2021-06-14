@@ -45,6 +45,8 @@ import StorageOutlinedIcon from '@material-ui/icons/StorageOutlined';
 import ReplayOutlinedIcon from '@material-ui/icons/ReplayOutlined';
 import Download from 'src/modules/dashboard-360/views/DashboardView/DownloadReport.js'
 
+import { CAMPAIGN_REPORT } from 'src/modules/dashboard-360/utils/endpoints'
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -95,7 +97,7 @@ const Campaign = (props) => {
     }
     console.log(data, "fdsfsd")
 
-    axios.post(`http://192.168.3.36:33010/campaign/updateCampaignbyID`, data)
+    axios.post(`${CAMPAIGN_REPORT}/campaign/updateCampaignbyID`, data)
       .then((response) => {
         console.log(response.data, "update")
         getCampaigns()
@@ -111,7 +113,7 @@ const Campaign = (props) => {
 
     var config = {
       method: 'get',
-      url: 'http://192.168.3.36:33010/campaign/getAllCampaign',
+      url: `${CAMPAIGN_REPORT}/campaign/getAllCampaign`,
       headers: {},
       data: data
     };
@@ -223,7 +225,7 @@ const Campaign = (props) => {
 
       var config = {
         method: 'post',
-        url: 'http://192.168.3.36:33010/channel/getBycampaign',
+        url: `${CAMPAIGN_REPORT}/channel/getBycampaign`,
         headers: {
           'Content-Type': 'application/json'
         },
@@ -260,7 +262,7 @@ const Campaign = (props) => {
       ivrCampaignName: value
     }
 
-    axios.post(`http://192.168.3.36:33010/channel/getinteractionExcel`, data)
+    axios.post(`${CAMPAIGN_REPORT}/channel/getinteractionExcel`, data)
       .then((res) => {
         if (res.data.final.length > 0) {
           res.data.date = date

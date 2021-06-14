@@ -19,7 +19,7 @@ const FileUpload = ({ status }) => {
 
     function uploadFile(file) {
         axios
-            .post('http://192.168.3.36:62010/channel/uploadfile', file)
+            .post('${UPLOAD_FILE}/channel/uploadfile', file)
             .then(res => {
                 console.log(res)
                 setDisable(false)

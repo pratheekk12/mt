@@ -1,19 +1,11 @@
-export const GET_DEALER_PROFILE = 'http://14.98.23.204/boapi/profileID';
-export const GET_DEALER_JOINING_DETAILS = 'http://14.98.23.204/boapi/distjoining';
-export const GET_DEALER_ORDERS = 'http://14.98.23.204/boapi/orders';
-export const GET_DEALER_SINGLE_ORDERS = 'http://14.98.23.204/boapi/order';
-export const GET_DEALER_INVOICES = 'http://14.98.23.204/boapi/invoice';
-export const GET_DEALER_KYC = 'http://14.98.23.204/boapi/kycstatus';
+export const AUTH = 'http://106.51.86.75:5555/api'
+export const AGENT_SERVICE = 'http://106.51.86.75:5000/api'
+export const AMI = 'http://106.51.86.75:52005/ami'
 
 
+export const CAMPAIGN = 'http://106.51.86.75:62008/api'
+export const CAMPAIGN_REPORT = 'http://106.51.86.75:33010'
+export const UPLOAD_FILE = 'http://106.51.86.75:62010'
 
-export const PUT_BREAK_AGENT = 'http://192.168.3.36:62004/crm/agentbreakservices';
-export const GET_INTERACTION_BY_DISTRIBUTOR_ID = 'http://192.168.3.36:62004/crm/interactions/getByDistributerID?distributerID=';
-export const GET_INTERACTION_BY_AGENT_SIP_ID = 'http://192.168.3.36:62004/crm/interactions/getByAgentSIPID?SipID=';
-export const UPDATE_CURRENT_STATUS = 'http://192.168.3.36:62004/crm/currentstatuses/';
-export const GET_CURRENT_STATUS_BY_AGENT_SIP_ID = 'http://192.168.3.36:62004/crm/currentstatuses/agentSipID?agentSipID=';
-export const ORIGINATE_CALL_WITH_SIP_ID = 'http://192.168.3.36:62004/ami/actions/orginatecall?';
-export const UPDATE_CALL_STATUS = 'http://192.168.3.36:62004/crm/interactions/';
-export const GET_INBOUND_DASHBOARD_DATA = '/gpreport/service/dashboardcount?AccessKeys=123';
-export const GET_INTERACTION_BY_CALLER_NUMBER = 'http://192.168.3.36:62004/crm/interactions/getTransferedData?callerNumber=';
+
 

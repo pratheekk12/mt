@@ -3,10 +3,7 @@ import React, { useRef, useState } from 'react';
 import { TextField, RadioGroup } from 'formik-material-ui';
 import { useEffect } from 'react';
 import {
-  UPDATE_CALL_STATUS,
-  UPDATE_CURRENT_STATUS,
-  GET_INTERACTION_BY_DISTRIBUTOR_ID,
-  GET_INTERACTION_BY_CALLER_NUMBER
+  AMI
 } from 'src/modules/dashboard-360/utils/endpoints';
 import {
   Button,
@@ -475,27 +472,7 @@ export default function DispositionForm(props) {
   }, [props])
 
   function updateCallData(uniqueid, dispostionData) {
-    let data = JSON.stringify(dispostionData);
-    // console.log('updateCAllData', data, uniqueid);
 
-    let config = {
-      method: 'post',
-
-      url: UPDATE_CALL_STATUS + uniqueid,
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      data: data
-    };
-
-    axios(config)
-      .then(response => {
-        // console.log('dispostionForm', JSON.stringify(response.data));
-        // props.getALF();
-      })
-      .catch(error => {
-        console.log('dispostionFrom', error);
-      });
   }
 
   function updateAgentCallStatus(updateData) {
@@ -512,7 +489,7 @@ export default function DispositionForm(props) {
     var axios = require('axios');
     var config = {
       method: 'get',
-      url: `http://192.168.3.36:33003/ami/actions/break?Queue=${localStorage.getItem('Queue')}&Interface=SIP%2F${AgentSIPID}&Reason=AgentDisposed&Break=false`,
+      url: `${AMI}/actions/break?Queue=${localStorage.getItem('Queue')}&Interface=SIP%2F${AgentSIPID}&Reason=AgentDisposed&Break=false`,
       headers: {}
     };
 
