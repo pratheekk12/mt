@@ -184,57 +184,7 @@ const TopBar = ({
   const [notifications] = useState([]);
   const [searchText, setSearchText] = useState('');
   useEffect(() => {
-    // const apiUrl = config.APIS_URL + '/access/email/' + userData.email;
-    // fetch(apiUrl)
-    //   .then(res => res.json())
-    //   .then(repos => {
-    //     setRole(repos.role.role);
-    //     setCreateAccess(
-    //       parseInt(
-    //         (
-    //           repos.data.filter(
-    //             access => access.functionalityId === '1'
-    //           )[0] || { accessLevelId: -1 }
-    //         ).accessLevelId
-    //       )
-    //     );
-    //     setViewAccess(
-    //       parseInt(
-    //         (
-    //           repos.data.filter(
-    //             access => access.functionalityId === '2'
-    //           )[0] || { accessLevelId: -1 }
-    //         ).accessLevelId
-    //       )
-    //     );
-    //     setEditAccess(
-    //       parseInt(
-    //         (
-    //           repos.data.filter(
-    //             access => access.functionalityId === '3'
-    //           )[0] || { accessLevelId: -1 }
-    //         ).accessLevelId
-    //       )
-    //     );
-    //     setAssignAccess(
-    //       parseInt(
-    //         (
-    //           repos.data.filter(
-    //             access => access.functionalityId === '4'
-    //           )[0] || { accessLevelId: -1 }
-    //         ).accessLevelId
-    //       )
-    //     );
-    //     setReportsAccess(
-    //       parseInt(
-    //         (
-    //           repos.data.filter(
-    //             access => access.functionalityId === '5'
-    //           )[0] || { accessLevelId: -1 }
-    //         ).accessLevelId
-    //       )
-    //     );
-    //   });
+
   }, []);
   const updateSearchText = evt => {
     setSearchText(evt.target.value);
@@ -319,22 +269,7 @@ const TopBar = ({
           <Logo />
         </RouterLink>
 
-        {/* <div className={classes.search}>
-          <div className={classes.searchIcon}>
-            <SearchIcon />
-          </div>
-          <InputBase
-            placeholder="Search…"
-            classes={{
-              root: classes.inputRoot,
-              input: classes.inputInput
-            }}
-            inputProps={{ 'aria-label': 'search' }}
-            onChange={updateSearchText}
-            value={searchText}
-            onBlur={distributorID}
-          />
-        </div> */}
+
         <Box flexGrow={1} />
         <Hidden mdDown>
           {localStorage.getItem("role") === "Agent" ? <Typography className={classes.title} variant="h5" noWrap>
@@ -342,21 +277,7 @@ const TopBar = ({
               Agent {localStorage.getItem('Agenttype') + ' ' + localStorage.getItem('AgentSIPID')}
             </Link>
           </Typography> : <></>}
-          {/* {localStorage.getItem("role") === "Admin" || localStorage.getItem("role") === "Group admin" ? <Typography className={classes.title} variant="h5" noWrap>
-            <Link to="/telephony/dashboard" className="color-white">
-              Telephony
-            </Link>
-          </Typography> : <></>}
-          {localStorage.getItem("role") === "Admin" || localStorage.getItem("role") === "Group admin" ? <Typography className={classes.title} variant="h5" noWrap>
-            <Link to="/agent/dashboard" className="color-white">
-              Agents
-            </Link>
-          </Typography> : <></>}
-          {localStorage.getItem("role") === "Admin" ? <Typography className={classes.title} variant="h5" noWrap>
-            <Link to="/group/dashboard" className="color-white">
-              Groups
-            </Link>
-          </Typography> : <></>} */}
+
           {viewAccess === -1 ? (
             ''
           ) : (
@@ -381,7 +302,35 @@ const TopBar = ({
                 </IconButton>
               </Tooltip>
             ) : (null)
+          }
+          {
+            localStorage.getItem('role') === 'admin' ? (
+              <Tooltip title="Campaign">
+                <IconButton color="inherit">
+                  <Link to='/manageagents' className="color-white"><Typography>manageAgents</Typography></Link>
+                </IconButton>
+              </Tooltip>
+            ) : (null)
+          }
+          {
+            localStorage.getItem('role') === 'admin' ? (
+              <Tooltip title="IVR Campaign">
+                <IconButton color="inherit">
+                  <Link to='/interactionreport' className="color-white"><Typography>Interaction Report</Typography></Link>
+                </IconButton>
+              </Tooltip>
+            ) : (null)
+          }
+          {
+            localStorage.getItem('role') === 'admin' ? (
+              <Tooltip title="IVR Campaign">
+                <IconButton color="inherit">
+                  <Link to='/agentPerformance' className="color-white"><Typography>Agent Performance</Typography></Link>
+                </IconButton>
+              </Tooltip>
+            ) : (null)
           } */}
+
 
           <Tooltip title="Logout">
             <IconButton color="inherit" onClick={() => logoutUser()}>
