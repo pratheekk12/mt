@@ -45,7 +45,7 @@ import StorageOutlinedIcon from '@material-ui/icons/StorageOutlined';
 import ReplayOutlinedIcon from '@material-ui/icons/ReplayOutlined';
 import Download from 'src/modules/dashboard-360/views/DashboardView/DownloadReport.js'
 
-import { CAMPAIGN_REPORT } from 'src/modules/dashboard-360/utils/endpoints'
+import { CAMPAIGN_REPORT, UPLOAD_FILE } from 'src/modules/dashboard-360/utils/endpoints'
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 
@@ -229,7 +229,7 @@ const Campaign = (props) => {
 
     var config = {
       method: 'post',
-      url: 'http://192.168.3.36:62010/channel/getJobreportExcel',
+      url: `${UPLOAD_FILE}/channel/getJobreportExcel`,
       headers: {
         'Content-Type': 'application/json'
       },
