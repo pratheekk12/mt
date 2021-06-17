@@ -46,6 +46,7 @@ import ReplayOutlinedIcon from '@material-ui/icons/ReplayOutlined';
 import Download from 'src/modules/dashboard-360/views/DashboardView/DownloadReport.js'
 
 import { CAMPAIGN_REPORT } from 'src/modules/dashboard-360/utils/endpoints'
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 
 const useStyles = makeStyles(theme => ({
@@ -80,6 +81,8 @@ const Campaign = (props) => {
   const [option, setOptions] = useState([])
   const [name, setname] = useState("")
   const [attemptRecords, setAttemptRecords] = useState("")
+  const [records1, setRecords] = useState([])
+  const [loader, setLoader] = useState(false)
 
   useEffect(() => {
     getCampaigns()
@@ -146,6 +149,7 @@ const Campaign = (props) => {
       });
   }
 
+  console.log(attemptRecords, "attemp")
 
   const handleUpload = (data) => {
     console.log(data)
@@ -207,26 +211,40 @@ const Campaign = (props) => {
 
 
   const handleChange = (event) => {
+    setLoader(true)
     getAttemptDetails(event.target.value)
-    console.log("called again")
+    // console.log("called again")
     setCampaignname(event.target.value);
     setcampaignname(event.target.value)
     setname(event.target.value)
-    console.log(campaignName)
-    console.log(name)
-    console.log("data", event.target.value)
-    console.log(campaignName, "1st")
-    console.log(campaignname, "2nd")
-    console.log()
+    // console.log(campaignName)
+    // console.log(name)
+    // console.log("data", event.target.value)
+    // console.log(campaignName, "1st")
+    // console.log(campaignname, "2nd")
+    // console.log()
 
-    var data1 = JSON.stringify({ "ivrCampaignName": event.target.value });
-    axios.post(`http://192.168.3.36:62010/channel/getJobreportExcel`, data1)
-      .then((res) => {
-        console.log(res, "new res")
+    var axios = require('axios');
+    var data = JSON.stringify({ "ivrCampaignName": event.target.value });
+
+    var config = {
+      method: 'post',
+      url: 'http://192.168.3.36:62010/channel/getJobreportExcel',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: data
+    };
+
+    axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data), "ressssssssssssssssssssssssssss");
+        setRecords(response.data.Record)
+        setLoader(false)
       })
-      .catch((err) => {
-        console.log(err, "new error")
-      })
+      .catch(function (error) {
+        console.log(error);
+      });
 
     setInterval(function () {
       var axios = require('axios');
@@ -245,7 +263,7 @@ const Campaign = (props) => {
         .then(function (response) {
           // console.log(JSON.stringify(response.data));
           //  if(response.data.counts.length>0){
-          console.log(response.data)
+          // console.log(response.data)
           response.data.counts[0].Campaignstartdate = moment(response.data.counts[0].Campaignstartdate).format('Do MMMM  YYYY, h:mm:ss a');
           response.data.counts[0].Campaignenddate = moment(response.data.counts[0].Campaignenddate).format('Do MMMM  YYYY, h:mm:ss a');
 
@@ -253,7 +271,7 @@ const Campaign = (props) => {
           // setModaldata("")
           setModaldata(response.data.counts);
           setShow(true)
-          console.log("i am called")
+          // console.log("i am called")
 
           //  }
         })
@@ -274,13 +292,13 @@ const Campaign = (props) => {
 
     axios.post(`${CAMPAIGN_REPORT}/channel/getinteractionExcel`, data)
       .then((res) => {
-        console.log(res)
+        // console.log(res)
         if (res.data.final.length > 0) {
           res.data.date = date
           res.data.final.map((ele) => {
             return ele.date = date
           })
-          console.log(res.data)
+          // console.log(res.data)
           setAttemptRecords(res.data.final)
         }
       })
@@ -290,7 +308,7 @@ const Campaign = (props) => {
 
   }
 
-  console.log(modaldata, "modaldata")
+  // console.log(modaldata, "modaldata")
 
 
   const handleClose = () => {
@@ -333,6 +351,12 @@ const Campaign = (props) => {
         </FormControl>
       </Grid>
       <Grid item lg={5} md={12} xs={12}></Grid>
+      <Grid item lg={12} md={12} xs={12}>
+        {
+          loader ? (<h1 style={{ textAlign: 'center' }}><CircularProgress /></h1>) : (null)
+        }
+
+      </Grid>
       {show === true ? <>
         <Grid item lg={3} md={12} xs={12}>
           <Card style={{ backgroundColor: '#A52A2A', borderRadius: '12px' }}>
@@ -420,7 +444,7 @@ const Campaign = (props) => {
           </Card>
         </Grid>
         <Grid item lg={3} md={12} xs={12}>
-          <Download DownloadData={modaldata[0]} />
+          <Download DownloadData={records1} />
         </Grid>
 
 
@@ -433,48 +457,18 @@ const Campaign = (props) => {
     <Grid item lg={2} md={12} xs={12}>
       <Download DownloadData={attemptRecords} />
     </Grid>
-    {
-      attemptRecords.length > 0 && <DataGrid rows={attemptRecords} columns={profilesColumns} pageSize={5}
-        // rowsPerPageOptions={[10, 20, 50]}
-        // onRowClick={showProfile}
-        pagination />
+
+    {attemptRecords.length > 0 && <Card >
+      <CardContent style={{ 'height': '300px' }}>
+        <DataGrid rows={attemptRecords} columns={profilesColumns} pageSize={5}
+          // rowsPerPageOptions={[10, 20, 50]}
+          // onRowClick={showProfile}
+          pagination />
+
+      </CardContent>
+    </Card>
     }
-    {/* <Grid container spacing={3}>
-      <Grid item lg={12} md={12} xs={12}></Grid>
-      <Grid item lg={12} md={12} xs={12}></Grid>
-      <Grid item lg={12} md={12} xs={12}>
-        <Card style={{ 'height': '400px' }}>
-          <CardHeader
-            title={
-              `Date Allocated ::  `
-            }
-          />
-          <CardContent>
 
-
-
-
-          </CardContent>
-        </Card>
-
-      </Grid>
-    </Grid> */}
-    {/* <Grid container spacing={3}>
-            <Grid item lg={12} md={12} xs={12}>
-                <Card>
-                    <CardContent>
-                        <div style={{ height: 500, width: '100%' }}>
-                            <DataGrid rows={campaigns} columns={profilesColumns} pageSize={20}
-                                // rowsPerPageOptions={[10, 20, 50]}
-                                onRowClick={showProfile}
-                                pagination />
-                        </div>
-
-                    </CardContent>
-                </Card>
-            </Grid>
-        </Grid> */}
-    {/* {show===true? <Showmodal show={show} modaldata={modaldata}  handleClose={handleClose} />:<></>} */}
   </div >)
 }
 
