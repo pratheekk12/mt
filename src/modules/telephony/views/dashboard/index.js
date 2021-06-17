@@ -44,7 +44,7 @@ import SettingsPhoneOutlinedIcon from '@material-ui/icons/SettingsPhoneOutlined'
 import StorageOutlinedIcon from '@material-ui/icons/StorageOutlined';
 import ReplayOutlinedIcon from '@material-ui/icons/ReplayOutlined';
 import Download from 'src/modules/dashboard-360/views/DashboardView/DownloadReport.js'
-
+import Download1 from './DownloadReport'
 import { CAMPAIGN_REPORT, UPLOAD_FILE } from 'src/modules/dashboard-360/utils/endpoints'
 import CircularProgress from '@material-ui/core/CircularProgress';
 
@@ -240,6 +240,12 @@ const Campaign = (props) => {
       .then(function (response) {
         console.log(JSON.stringify(response.data), "ressssssssssssssssssssssssssss");
         setRecords(response.data.Record)
+        response.data.Record.map((ele) => {
+          var formatted = moment.utc(ele.Call_Duration*1000).format('HH:mm:ss');
+          ele.CDR_Duration=formatted;
+          delete ele._id;
+        })
+
         setLoader(false)
       })
       .catch(function (error) {
@@ -444,7 +450,9 @@ const Campaign = (props) => {
           </Card>
         </Grid>
         <Grid item lg={3} md={12} xs={12}>
+        <Button>
           <Download DownloadData={records1} />
+          </Button>
         </Grid>
 
 
@@ -455,9 +463,13 @@ const Campaign = (props) => {
     </Card > */}
     <Grid item lg={12} md={12} xs={12}></Grid>
     <Grid item lg={2} md={12} xs={12}>
-      <Download DownloadData={attemptRecords} />
+      <br></br>
+      <br></br>
+      <Button>
+      <Download1 DownloadData={attemptRecords} />
+      </Button>
     </Grid>
-
+<br/>
     {attemptRecords.length > 0 && <Card >
       <CardContent style={{ 'height': '300px' }}>
         <DataGrid rows={attemptRecords} columns={profilesColumns} pageSize={5}

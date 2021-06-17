@@ -25,6 +25,9 @@ export default function DownloadReport({ DownloadData }) {
         var header = {};
         for (var i = 0; i < result.length; i += 1) {
             header[result[i]] = result[i];
+            // if(result[i]==="_id"){
+            //     header[result[i]]=""
+            // }
         }
         filename = 'Download'
         fields = header

@@ -30,7 +30,7 @@ export default function DownloadReport({ DownloadData }) {
             padding: "5px"
         }
         data = DownloadData
-        text = "Download Data"
+        text = "Download Campaign Data"
 
 
     }
