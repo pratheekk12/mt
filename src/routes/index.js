@@ -10,6 +10,9 @@ import groupRoutes from '../modules/groupadminForm/routes';
 import campaign from '../modules/telephony/views/dashboard/campaign'
 
 import ivrcampaign from '../modules/telephony/views/dashboard/ivrcampaign'
+import manageagents from 'src/modules/telephony/views/dashboard/Auto-report/manageagents'
+import agentPerformance from 'src/modules/telephony/views/dashboard/Auto-report/agentperformance'
+import interactionreport from 'src/modules/telephony/views/dashboard/Auto-report/interactionreport'
 
 export const dash360 = React.lazy(() =>
   import('src/modules/dashboard-360/views')
@@ -90,6 +93,21 @@ export default [
     path: '/ivrcampaign',
     component: ivrcampaign,
     requiresAuth: true
-  }
+  },
+  {
+    path: '/manageagents',
+    component: manageagents,
+    requiresAuth: true
+  },
+  {
+    path: '/agentPerformance',
+    component: agentPerformance,
+    requiresAuth: true
+  },
+  {
+    path: '/interactionreport',
+    component: interactionreport,
+    requiresAuth: true
+  },
 
 ];

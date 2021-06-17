@@ -19,7 +19,7 @@ const FileUpload = ({ status }) => {
 
     function uploadFile(file) {
         axios
-            .post('${UPLOAD_FILE}/channel/uploadfile', file)
+            .post(`${UPLOAD_FILE}/channel/uploadfile`, file)
             .then(res => {
                 console.log(res)
                 setDisable(false)

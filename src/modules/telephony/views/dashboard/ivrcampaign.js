@@ -326,7 +326,7 @@ const Campaign = (props) => {
         <Grid container spacing={3}>
             <Grid item lg={4} md={12} xs={0}></Grid>
             <Grid item lg={4} md={12} xs={0}>
-                <h1 >&nbsp; IVR Campaign Admin Dashboard</h1>
+                <h1 style={{ textAlign: 'center' }}> IVR Campaign Admin Dashboard</h1>
             </Grid>
             <Grid item lg={4} md={12} xs={0}></Grid>
         </Grid>

@@ -241,6 +241,7 @@ const Campaign = (props) => {
           response.data.counts[0].Campaignenddate = moment(response.data.counts[0].Campaignenddate).format('Do MMMM  YYYY, h:mm:ss a');
 
           // response.data.counts[0].Campaignstartdate.replace('T', "")
+          // setModaldata("")
           setModaldata(response.data.counts);
           setShow(true)
           console.log("i am called")
@@ -264,6 +265,7 @@ const Campaign = (props) => {
 
     axios.post(`${CAMPAIGN_REPORT}/channel/getinteractionExcel`, data)
       .then((res) => {
+        console.log(res)
         if (res.data.final.length > 0) {
           res.data.date = date
           res.data.final.map((ele) => {
@@ -288,7 +290,11 @@ const Campaign = (props) => {
   }
 
   // console.log(campaignName)
+<<<<<<< HEAD
   console.log(attemptRecords, "attempt")
+=======
+  // console.log(attemptRecords, "attempt")
+>>>>>>> 4ea5dc72b6b58977b36d17eddfb782b7d8356952
   // if (attemptRecords.length > 0) {
   //   attemptRecords.map((ele) => {
   //     return ele.date = modaldata[0].Campaignstartdate
