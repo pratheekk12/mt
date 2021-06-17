@@ -289,11 +289,11 @@ const Campaign = (props) => {
 
   // console.log(campaignName)
   console.log(attemptRecords, "attempt")
-  if (attemptRecords.length > 0) {
-    attemptRecords.map((ele) => {
-      return ele.date = modaldata[0].Campaignstartdate
-    })
-  }
+  // if (attemptRecords.length > 0) {
+  //   attemptRecords.map((ele) => {
+  //     return ele.date = modaldata[0].Campaignstartdate
+  //   })
+  // }
 
   return (<div>
     <Grid container spacing={3}>
