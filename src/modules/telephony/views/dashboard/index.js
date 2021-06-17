@@ -219,6 +219,15 @@ const Campaign = (props) => {
     console.log(campaignname, "2nd")
     console.log()
 
+    var data1 = JSON.stringify({ "ivrCampaignName": event.target.value });
+    axios.post(`http://192.168.3.36:62010/channel/getJobreportExcel`, data1)
+      .then((res) => {
+        console.log(res, "new res")
+      })
+      .catch((err) => {
+        console.log(err, "new error")
+      })
+
     setInterval(function () {
       var axios = require('axios');
       var data = JSON.stringify({ "ivrCampaignName": event.target.value });
@@ -290,11 +299,7 @@ const Campaign = (props) => {
   }
 
   // console.log(campaignName)
-<<<<<<< HEAD
-  console.log(attemptRecords, "attempt")
-=======
   // console.log(attemptRecords, "attempt")
->>>>>>> 4ea5dc72b6b58977b36d17eddfb782b7d8356952
   // if (attemptRecords.length > 0) {
   //   attemptRecords.map((ele) => {
   //     return ele.date = modaldata[0].Campaignstartdate
@@ -302,132 +307,129 @@ const Campaign = (props) => {
   // }
 
   return (<div>
+    <h1 style={{ textAlign: 'center' }}>Campaign Monitoring</h1>
+
     <Grid container spacing={3}>
-      <Grid item lg={4} md={12} xs={0}></Grid>
-      <Grid item lg={4} md={12} xs={0}>
-        <h1 style={{ textAlign: 'center' }}>Campaign Monitoring</h1>
+      <Grid item lg={12} md={12} xs={12}></Grid>
+      <Grid item lg={5} md={12} xs={12}></Grid>
+      <Grid item lg={2} md={12} xs={12}>
+        <FormControl variant="outlined" className={classes.formControl} >
+          <InputLabel id="demo-simple-select-outlined-label">Campaign</InputLabel>
+          <Select
+            labelId="demo-simple-select-outlined-label"
+            id="demo-simple-select-outlined"
+            value={campaignName}
+            onChange={handleChange}
+            label="Campaign"
+            autoWidth="true"
+          >
+            {
+              campaigns.map((ele) => {
+                return (<MenuItem value={ele.campaign_name}>{ele.campaign_name}</MenuItem>)
+              })
+            }
+
+          </Select>
+        </FormControl>
       </Grid>
-      <Grid item lg={4} md={12} xs={0}></Grid>
-    </Grid>
-    <br /><br />
-    <Card >
-      <CardContent>
-
-        <Grid container spacing={3}>
-          <Grid item lg={12} md={12} xs={12}></Grid>
-          <Grid item lg={12} md={12} xs={12}>
-            <FormControl variant="outlined" className={classes.formControl} >
-              <InputLabel id="demo-simple-select-outlined-label">Campaign</InputLabel>
-              <Select
-                labelId="demo-simple-select-outlined-label"
-                id="demo-simple-select-outlined"
-                value={campaignName}
-                onChange={handleChange}
-                label="Campaign"
-                autoWidth="true"
-              >
-                {
-                  campaigns.map((ele) => {
-                    return (<MenuItem value={ele.campaign_name}>{ele.campaign_name}</MenuItem>)
-                  })
-                }
-
-              </Select>
-            </FormControl>
-          </Grid>
-          {show === true ? <>
-            <Grid item lg={3} md={12} xs={12}>
-              <Card style={{ backgroundColor: '#A52A2A', borderRadius: '12px' }}>
-                <CardContent><h3 style={{ color: 'white' }}><b><ScheduleIcon /> Start date : </b>{modaldata[0].Campaignstartdate}</h3></CardContent>
-              </Card>
-            </Grid>
-
-            <Grid item lg={3} md={12} xs={12}>
-              <Card style={{ backgroundColor: '#696969', borderRadius: '12px' }}>
-                <CardContent><h3 style={{ color: 'white' }}><b><ScheduleIcon /> End date : </b>{modaldata[0].Campaignenddate}</h3></CardContent>
-              </Card>
-
-            </Grid>
-
-            <Grid item lg={2} md={12} xs={12}>
-              <Card style={{ backgroundColor: '#800080', borderRadius: '12px' }}>
-                <CardContent><h3 style={{ color: 'white' }}><b><QueuePlayNextOutlinedIcon /> Queue: </b>{modaldata[0].queue}</h3></CardContent>
-              </Card>
-
-            </Grid>
-
-
-            <Grid item lg={2} md={12} xs={12}>
-              <Card style={{ backgroundColor: '#66CDAA', borderRadius: '12px' }}>
-                <CardContent><h3 style={{ color: 'white' }}><b><BackupOutlinedIcon /> Total Records Uploaded : </b>{modaldata[0].totalRecords}</h3></CardContent>
-              </Card>
-            </Grid>
-
-            <Grid item lg={2} md={12} xs={12}>
-              <Card style={{ backgroundColor: '#191970', borderRadius: '12px' }}>
-                <CardContent><h3 style={{ color: 'white' }}><b><DialerSipOutlinedIcon /> Dailed records Count: </b>{modaldata[0].DailedCountrecordsCount}</h3></CardContent>
-              </Card>
-            </Grid>
-
-            <Grid item lg={2} md={12} xs={12}>
-              <Card style={{ backgroundColor: '#6B8E23', borderRadius: '12px' }}>
-                <CardContent><h3 style={{ color: 'white' }}><b><CallMissedOutgoingOutlinedIcon /> NotDailed records Count: </b>{modaldata[0].NotDailedrecordsCount}</h3></CardContent>
-              </Card>
-            </Grid>
-
-
-            <Grid item lg={2} md={12} xs={12}>
-              <Card style={{ backgroundColor: '#006400', borderRadius: '12px' }}>
-                <CardContent><h3 style={{ color: 'white' }}><b><AddIcCallOutlinedIcon /> Answered records Count: </b>{modaldata[0].AnsweredrecordCount}</h3></CardContent>
-              </Card>
-            </Grid>
-
-            <Grid item lg={3} md={12} xs={12}>
-              <Card style={{ backgroundColor: '#BC8F8F', borderRadius: '12px' }}>
-                <CardContent><h3 style={{ color: 'white' }}><b><PhoneMissedOutlinedIcon /> Not Answered records Count: </b>{modaldata[0].NoAnsweredrecordCount}</h3></CardContent>
-              </Card>
-            </Grid>
-
-            <Grid item lg={3} md={12} xs={12}>
-              <Card style={{ backgroundColor: '#FA8072', borderRadius: '12px' }}>
-                <CardContent><h3 style={{ color: 'white' }}><b><PhoneDisabledOutlinedIcon /> Failed calls records Count: </b>{modaldata[0].FailerrecordCount}</h3></CardContent>
-              </Card>
-            </Grid>
-
-            <Grid item lg={2} md={12} xs={12}>
-              <Card style={{ backgroundColor: '#708090', borderRadius: '12px' }}>
-                <CardContent><h3 style={{ color: 'white' }}><b><MicOffOutlinedIcon /> Busy calls records Count: </b>{modaldata[0].BusyrecordCount}</h3></CardContent>
-              </Card>
-            </Grid>
-
-            <Grid item lg={3} md={12} xs={12}>
-              <Card style={{ backgroundColor: '#2F4F4F', borderRadius: '12px' }}>
-                <CardContent><h3 style={{ color: 'white' }}><b><SettingsPhoneOutlinedIcon /> Congestion calls records Count: </b>{modaldata[0].CongestionrecordCount}</h3></CardContent>
-              </Card>
-            </Grid>
-
-            <Grid item lg={3} md={12} xs={12}>
-              <Card style={{ backgroundColor: '#DAA520', borderRadius: '12px' }}>
-                <CardContent ><h3 style={{ color: 'white' }}><b> <StorageOutlinedIcon /> Job complete records Count: </b>{modaldata[0].jobcompleterecordcount}</h3></CardContent>
-              </Card>
-            </Grid>
-            <Grid item lg={3} md={12} xs={12}>
-              <Card style={{ backgroundColor: '#808000', borderRadius: '12px' }}>
-                <CardContent><h3 style={{ color: 'white' }}><b> <StorageOutlinedIcon /> Job not complete records Count: </b>{modaldata[0].jobnotcompleterecordcount}</h3></CardContent>
-              </Card>
-            </Grid>
-            <Grid item lg={2} md={12} xs={12}>
-              <Card style={{ backgroundColor: '#0000CD', borderRadius: '12px' }}>
-                <CardContent><h3 style={{ color: 'white' }}><b><ReplayOutlinedIcon /> Retries : </b>{modaldata[0].retries}</h3></CardContent>
-              </Card>
-            </Grid>
-
-
-          </> : <></>}
+      <Grid item lg={5} md={12} xs={12}></Grid>
+      {show === true ? <>
+        <Grid item lg={3} md={12} xs={12}>
+          <Card style={{ backgroundColor: '#A52A2A', borderRadius: '12px' }}>
+            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><ScheduleIcon /> Start date : </b>{modaldata[0].Campaignstartdate}</h3></CardContent>
+          </Card>
         </Grid>
-      </CardContent>
 
-    </Card >
+        <Grid item lg={3} md={12} xs={12}>
+          <Card style={{ backgroundColor: '#696969', borderRadius: '12px' }}>
+            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><ScheduleIcon /> End date : </b>{modaldata[0].Campaignenddate}</h3></CardContent>
+          </Card>
+
+        </Grid>
+
+        <Grid item lg={3} md={12} xs={12}>
+          <Card style={{ backgroundColor: '#800080', borderRadius: '12px', }}>
+            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><QueuePlayNextOutlinedIcon /> Queue: </b>{modaldata[0].queue}</h3></CardContent>
+          </Card>
+
+        </Grid>
+
+
+        <Grid item lg={3} md={12} xs={12}>
+          <Card style={{ backgroundColor: '#66CDAA', borderRadius: '12px', justifyContent: 'center' }}>
+            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><BackupOutlinedIcon /> Total Records Uploaded : </b>{modaldata[0].totalRecords}</h3></CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item lg={3} md={12} xs={12}>
+          <Card style={{ backgroundColor: '#191970', borderRadius: '12px' }}>
+            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><DialerSipOutlinedIcon /> Dailed records Count: </b>{modaldata[0].DailedCountrecordsCount}</h3></CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item lg={3} md={12} xs={12}>
+          <Card style={{ backgroundColor: '#6B8E23', borderRadius: '12px' }}>
+            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><CallMissedOutgoingOutlinedIcon /> NotDailed records Count: </b>{modaldata[0].NotDailedrecordsCount}</h3></CardContent>
+          </Card>
+        </Grid>
+
+
+        <Grid item lg={3} md={12} xs={12}>
+          <Card style={{ backgroundColor: '#006400', borderRadius: '12px' }}>
+            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><AddIcCallOutlinedIcon /> Answered records Count: </b>{modaldata[0].AnsweredrecordCount}</h3></CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item lg={3} md={12} xs={12}>
+          <Card style={{ backgroundColor: '#BC8F8F', borderRadius: '12px' }}>
+            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><PhoneMissedOutlinedIcon /> Not Answered records Count: </b>{modaldata[0].NoAnsweredrecordCount}</h3></CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item lg={3} md={12} xs={12}>
+          <Card style={{ backgroundColor: '#FA8072', borderRadius: '12px' }}>
+            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><PhoneDisabledOutlinedIcon /> Failed calls records Count: </b>{modaldata[0].FailerrecordCount}</h3></CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item lg={3} md={12} xs={12}>
+          <Card style={{ backgroundColor: '#708090', borderRadius: '12px' }}>
+            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><MicOffOutlinedIcon /> Busy calls records Count: </b>{modaldata[0].BusyrecordCount}</h3></CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item lg={3} md={12} xs={12}>
+          <Card style={{ backgroundColor: '#2F4F4F', borderRadius: '12px' }}>
+            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><SettingsPhoneOutlinedIcon /> Congestion calls records Count: </b>{modaldata[0].CongestionrecordCount}</h3></CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item lg={3} md={12} xs={12}>
+          <Card style={{ backgroundColor: '#DAA520', borderRadius: '12px' }}>
+            <CardContent ><h3 style={{ color: 'white', textAlign: 'center' }}><b> <StorageOutlinedIcon /> Job complete records Count: </b>{modaldata[0].jobcompleterecordcount}</h3></CardContent>
+          </Card>
+        </Grid>
+        <Grid item lg={3} md={12} xs={12}>
+          <Card style={{ backgroundColor: '#808000', borderRadius: '12px' }}>
+            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b> <StorageOutlinedIcon /> Job not complete records Count: </b>{modaldata[0].jobnotcompleterecordcount}</h3></CardContent>
+          </Card>
+        </Grid>
+        <Grid item lg={3} md={12} xs={12}>
+          <Card style={{ backgroundColor: '#0000CD', borderRadius: '12px' }}>
+            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><ReplayOutlinedIcon /> Retries : </b>{modaldata[0].retries}</h3></CardContent>
+          </Card>
+        </Grid>
+        <Grid item lg={3} md={12} xs={12}>
+          <Download DownloadData={modaldata[0]} />
+        </Grid>
+
+
+      </> : <></>}
+    </Grid>
+    {/* </CardContent>
+
+    </Card > */}
+    <Grid item lg={12} md={12} xs={12}></Grid>
     <Grid item lg={2} md={12} xs={12}>
       <Download DownloadData={attemptRecords} />
     </Grid>
