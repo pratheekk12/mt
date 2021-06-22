@@ -83,7 +83,10 @@ const Campaign = (props) => {
   const [attemptRecords, setAttemptRecords] = useState("")
   const [records1, setRecords] = useState([])
   const [loader, setLoader] = useState(false)
-
+  const [englishRecords, setEnglishRecords] = useState("")
+  const [hindiRecords, setHindiRecords] = useState("")
+  const [kannadaRecords, setKannadaRecords] = useState("")
+ 
   useEffect(() => {
     getCampaigns()
 
@@ -116,7 +119,7 @@ const Campaign = (props) => {
 
     var config = {
       method: 'get',
-      url: `${CAMPAIGN_REPORT}/campaign/getAllCampaign`,
+      url: `${UPLOAD_FILE}/campaign/getAllCampaign`,
       headers: {},
       data: data
     };
@@ -157,7 +160,7 @@ const Campaign = (props) => {
 
   }
 
-  const profilesColumns = [
+  const englishColumns = [
     {
       headerName: 'Attempt',
       field: 'attempt',
@@ -166,40 +169,152 @@ const Campaign = (props) => {
     },
     {
       headerName: 'IVR Success',
-      field: 'ivrsuccess',
+      field: 'optionE1',
       flex: 0.5
 
     },
     {
-      headerName: 'Option 1 (Call Now)',
-      field: 'option1',
+      headerName: 'Call now',
+      field: 'optionEC1',
       flex: 0.5,
 
     },
     {
-      headerName: 'Option 2 (Call back)',
-      field: 'option2',
+      headerName: 'Call back',
+      field: 'optionEC2',
       flex: 0.5
     },
     {
-      headerName: 'Option 3',
-      field: 'option3',
+      headerName: 'Call back on tommorow',
+      field: 'optionEC3',
+      flex: 0.6
+    },
+    {
+      headerName: 'Call back 1 ',
+      field: 'optionECT1',
+      flex: 0.4,
+
+    },
+    {
+      headerName: 'Call back 2 ',
+      field: 'optionECT2',
+      flex: 0.4
+    },
+    {
+      headerName: 'Call back 3 ',
+      field: 'optionECT3',
+      flex: 0.4
+    },
+    {
+      headerName: 'Invalid Option',
+      field: 'optionEInvalid1',
+      flex: 0.4
+    },
+    
+
+  ];
+  const kannadaColumns = [
+    {
+      headerName: 'Attempt',
+      field: 'attempt',
+      flex: 0.5
+
+    },
+    {
+      headerName: 'IVR Success',
+      field: 'optionK3',
+      flex: 0.5
+
+    },
+    {
+      headerName: 'Call now',
+      field: 'optionKC1',
+      flex: 0.5,
+
+    },
+    {
+      headerName: 'Call back',
+      field: 'optionKC2',
       flex: 0.5
     },
     {
-      headerName: 'Failed',
-      field: 'failed',
+      headerName: 'Call back on tommorow',
+      field: 'optionKC3',
+      flex: 0.6
+    },
+    {
+      headerName: 'Call back 1 ',
+      field: 'optionKCT1',
+      flex: 0.4,
+
+    },
+    {
+      headerName: 'Call back 2 ',
+      field: 'optionKCT2',
+      flex: 0.4
+    },
+    {
+      headerName: 'Call back 3 ',
+      field: 'optionKCT3',
+      flex: 0.4
+    },
+    {
+      headerName: 'Invalid Option',
+      field: 'optionKInvalid3',
+      flex: 0.4
+    },
+
+  ];
+
+  const hindiColumns = [
+    {
+      headerName: 'Attempt',
+      field: 'attempt',
+      flex: 0.5
+
+    },
+    {
+      headerName: 'IVR Success',
+      field: 'optionH2',
+      flex: 0.5
+
+    },
+    {
+      headerName: 'Call now',
+      field: 'optionHC1',
+      flex: 0.5,
+
+    },
+    {
+      headerName: 'Call back',
+      field: 'optionHC2',
       flex: 0.5
     },
     {
-      headerName: 'Busy',
-      field: 'busy',
-      flex: 0.5
+      headerName: 'Call back on tommorow',
+      field: 'optionHC3',
+      flex: 0.6
     },
     {
-      headerName: 'IVR No response',
-      field: 'ivrnoresponse',
-      flex: 0.5
+      headerName: 'Call back 1 ',
+      field: 'optionHCT1',
+      flex: 0.4,
+
+    },
+    {
+      headerName: 'Call back 2 ',
+      field: 'optionHCT2',
+      flex: 0.4
+    },
+    {
+      headerName: 'Call back 3 ',
+      field: 'optionHCT3',
+      flex: 0.4
+    },
+    {
+      headerName: 'Invalid Option',
+      field: 'optionHInvalid2',
+      flex: 0.4
     },
 
   ];
@@ -258,7 +373,7 @@ const Campaign = (props) => {
 
       var config = {
         method: 'post',
-        url: `${CAMPAIGN_REPORT}/channel/getBycampaign`,
+        url: `${UPLOAD_FILE}/channel/getBycampaign`,
         headers: {
           'Content-Type': 'application/json'
         },
@@ -295,8 +410,12 @@ const Campaign = (props) => {
     const data = {
       ivrCampaignName: value
     }
-
-    axios.post(`${CAMPAIGN_REPORT}/channel/getinteractionExcel`, data)
+    var en=[]
+    var hi=[]
+    var kn=[]
+    console.log("data",data)
+    
+    axios.post(`${UPLOAD_FILE}/channel/getinteractionExcel`, data)
       .then((res) => {
         // console.log(res)
         if (res.data.final.length > 0) {
@@ -304,7 +423,39 @@ const Campaign = (props) => {
           res.data.final.map((ele) => {
             return ele.date = date
           })
-          // console.log(res.data)
+          console.log(res.data,"data attempt")
+          res.data.final.forEach(element => {
+            en.push({ivrsuccess:element.optionE1,
+              option1:element.optionEC1,
+              option2:element.optionEC2,
+              option3:element.optionEC3,
+            Callbackoption1:element.optionECT1,
+            Callbackoption2:element.optionECT2,
+            Callbackoption3:element.optionECT3,
+            InvalidOption:element.optionEInvalid1,
+          })
+            hi.push({ivrsuccess:element.optionH2,
+              option1:element.optionHC1,
+              option2:element.optionHC2,
+              option3:element.optionHC3,
+            Callbackoption1:element.optionHCT1,
+            Callbackoption2:element.optionHCT2,
+            Callbackoption3:element.optionHCT3,
+            InvalidOption:element.optionHInvalid2,})
+            kn.push({ivrsuccess:element.optionK3,
+              option1:element.optionKC1,
+              option2:element.optionKC2,
+              option3:element.optionKC3,
+            Callbackoption1:element.optionKCT1,
+            Callbackoption2:element.optionKCT2,
+            Callbackoption3:element.optionKCT3,
+            InvalidOption:element.optionKInvalid3,
+          })
+          });
+         
+          setEnglishRecords(en)
+          setHindiRecords(hi)
+          setKannadaRecords(kn)
           setAttemptRecords(res.data.final)
         }
       })
@@ -466,13 +617,15 @@ const Campaign = (props) => {
       <br></br>
       <br></br>
       <Button>
-      <Download1 DownloadData={attemptRecords} />
+      <Download1 DownloadData={englishRecords} />
       </Button>
+      
     </Grid>
 <br/>
     {attemptRecords.length > 0 && <Card >
       <CardContent style={{ 'height': '300px' }}>
-        <DataGrid rows={attemptRecords} columns={profilesColumns} pageSize={5}
+      <h2>English Calls</h2>
+        <DataGrid rows={attemptRecords} columns={englishColumns} pageSize={5}
           // rowsPerPageOptions={[10, 20, 50]}
           // onRowClick={showProfile}
           pagination />
@@ -481,6 +634,46 @@ const Campaign = (props) => {
     </Card>
     }
 
+<Grid item lg={2} md={12} xs={12}>
+      <br></br>
+      <br></br>
+      <Button>
+      <Download1 DownloadData={hindiRecords}  />
+      </Button>
+    </Grid>
+<br/>
+    {attemptRecords.length > 0 && <Card >
+    
+      <CardContent style={{ 'height': '300px' }}>
+      <h2>Hindi Calls</h2>
+        <DataGrid rows={attemptRecords} columns={hindiColumns} pageSize={5}
+          // rowsPerPageOptions={[10, 20, 50]}
+          // onRowClick={showProfile}
+          pagination />
+
+      </CardContent>
+    </Card>
+    }
+     <Grid item lg={2} md={12} xs={12}>
+      <br></br>
+      <br></br>
+      <Button>
+      <Download1 DownloadData={kannadaRecords}/>
+      </Button>
+    </Grid>
+<br/>
+    {attemptRecords.length > 0 && <Card >
+    
+      <CardContent style={{ 'height': '300px' }}>
+      <h2>Kannada Calls</h2>
+        <DataGrid rows={attemptRecords} columns={kannadaColumns} pageSize={5}
+          // rowsPerPageOptions={[10, 20, 50]}
+          // onRowClick={showProfile}
+          pagination />
+
+      </CardContent>
+    </Card>
+    }
   </div >)
 }
 
