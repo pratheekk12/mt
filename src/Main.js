@@ -29,6 +29,7 @@ function Main({
       try {
         if (localStorage.getItem('jwtToken')) {
           setLoggedInMain(true);
+          localStorage.removeItem('campaign')
           // var test = await Axios.post('http://192.168.3.36:4000/api/login/verifyClient', {}, { headers: { Authorization: `Bearer ${localStorage.getItem('jwtToken')}` } })
           //   .then(response => {
           //     console.log('respose', response)
