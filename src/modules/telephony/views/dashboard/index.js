@@ -23,7 +23,8 @@ import { DataGrid } from '@material-ui/data-grid';
 import axios from 'axios'
 import FileUpload from './Ivrfileupload'
 import Showmodal from './Showmodal'
-
+import Download from 'src/modules/dashboard-360/views/DashboardView/DownloadReport'
+import Download1 from './DownloadReport'
 
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -43,10 +44,9 @@ import PhoneDisabledOutlinedIcon from '@material-ui/icons/PhoneDisabledOutlined'
 import SettingsPhoneOutlinedIcon from '@material-ui/icons/SettingsPhoneOutlined';
 import StorageOutlinedIcon from '@material-ui/icons/StorageOutlined';
 import ReplayOutlinedIcon from '@material-ui/icons/ReplayOutlined';
-import Download from 'src/modules/dashboard-360/views/DashboardView/DownloadReport.js'
-import Download1 from './DownloadReport'
 import { CAMPAIGN_REPORT, UPLOAD_FILE } from 'src/modules/dashboard-360/utils/endpoints'
 import CircularProgress from '@material-ui/core/CircularProgress';
+
 
 
 const useStyles = makeStyles(theme => ({
@@ -67,98 +67,142 @@ const useStyles = makeStyles(theme => ({
 
 const Campaign = (props) => {
   const classes = useStyles();
-  const [startTime, setStartTime] = useState("")
-  const [endTime, setEndtime] = useState("")
-  const [queue, setQueue] = useState("")
-  const [campaignRetry, setRetry] = useState("")
-  const [campaignName, setcampaignname] = useState("")
-  const [date, setdate] = useState("")
-  const [campaigns, setCampaigns] = useState([])
-  const [disable, setDisable] = useState(true)
-  const [modaldata, setModaldata] = useState([])
-  const [show, setShow] = useState(false)
-  const [campaignname, setCampaignname] = useState([])
-  const [option, setOptions] = useState([])
-  const [name, setname] = useState("")
-  const [attemptRecords, setAttemptRecords] = useState("")
+
+  const [campaigns, setCampaigns] = useState("")
+  const [selectedCamapign, setSelectedCampaign] = useState("")
+  const [campaigndata, setCampaignData] = useState([])
   const [records1, setRecords] = useState([])
   const [loader, setLoader] = useState(false)
   const [englishRecords, setEnglishRecords] = useState("")
   const [hindiRecords, setHindiRecords] = useState("")
   const [kannadaRecords, setKannadaRecords] = useState("")
- 
+  const [attemptRecords, setAttemptRecords] = useState("")
+
   useEffect(() => {
     getCampaigns()
 
-
   }, [])
 
-  console.log(modaldata)
-
-  const updateCampaign = (id, status) => {
-    const data = {
-      "_id": id,
-      "status": status
-
+  useEffect(() => {
+    if (localStorage.getItem('campaign')) {
+      getExcelData()
+      const interval = setInterval(async () => {
+        getCampaignDetails()
+        getExcelData()
+        //getExcelData()
+      }, 3000);
     }
-    console.log(data, "fdsfsd")
+  }, [selectedCamapign])
 
-    axios.post(`${CAMPAIGN_REPORT}/campaign/updateCampaignbyID`, data)
-      .then((response) => {
-        console.log(response.data, "update")
-        getCampaigns()
+
+
+
+  const getCampaigns = () => {
+    axios.get(`${UPLOAD_FILE}/campaign/getAllCampaign`)
+      .then((res) => {
+        setCampaigns(res.data.Record.reverse())
+
       })
       .catch((err) => {
-        console.log(err)
+        console.log("Failed to get campaigns values")
       })
   }
 
-  const getCampaigns = () => {
-    var axios = require('axios');
-    var data = '';
+  const getCampaignDetails = () => {
+    //setLoader(true)
+    const data = {
+      "ivrCampaignName": localStorage.getItem('campaign')
+    }
 
-    var config = {
-      method: 'get',
-      url: `${UPLOAD_FILE}/campaign/getAllCampaign`,
-      headers: {},
-      data: data
-    };
+    axios.post(`${UPLOAD_FILE}/channel/getBycampaign`, data)
+      .then((response) => {
+        console.log(response.data, "particular campaign")
 
-    axios(config)
-      .then(function (response) {
-        if (response.data.Record.length > 0) {
-          console.log("chaitra", response.data.Record)
-          var i = 0;
-          response.data.Record = response.data.Record.reverse()
-          response.data.Record.map((ele) => {
-            i = i + 1;
+        response.data.counts[0].Campaignstartdate = response.data.counts[0].Campaignstartdate.replace("T", " ")
+        response.data.counts[0].Campaignstartdate = response.data.counts[0].Campaignstartdate.slice(0, 19)
 
-            var dateFormat = 'DD-MM-YYYY HH:mm:ss';
-            var endUtc = moment.utc(ele.enddate);
-            var startUtc = moment.utc(ele.startdate);
-            var localeDate = endUtc.local();
-            var localsDate = startUtc.local();
-            ele.enddate = localeDate.format(dateFormat);
-            ele.startdate = localsDate.format(dateFormat);
-            return ele.id = i;
-          })
-          setCampaigns(response.data.Record)
+        response.data.counts[0].Campaignenddate = response.data.counts[0].Campaignenddate.replace("T", " ")
+        response.data.counts[0].Campaignenddate = response.data.counts[0].Campaignenddate.slice(0, 19)
+
+
+        // response.data.counts[0].Campaignstartdate = moment(response.data.counts[0].Campaignstartdate).format();
+        // response.data.counts[0].Campaignenddate = moment(response.data.counts[0].Campaignenddate).format();
+        console.log(response.data)
+        setCampaignData(response.data.counts)
+      })
+      .catch((err) => {
+        console.log(err.message, "failed to fetch campaign details")
+      })
+  }
+
+  const getExcelData = () => {
+    const data = {
+      "ivrCampaignName": localStorage.getItem('campaign')
+    }
+
+    var en = []
+    var hi = []
+    var kn = []
+
+    axios.post(`${UPLOAD_FILE}/channel/getinteractionExcel`, data)
+      .then(function (res) {
+        console.log(res.data, "excel data");
+        if (res.data.final.length > 0) {
+          // res.data.date = date
+          // res.data.final.map((ele) => {
+          //   return ele.date = date
+          // })
+          console.log(res.data, "data attempt")
+          res.data.final.forEach(element => {
+            en.push({
+              ivrsuccess: element.optionE1,
+              option1: element.optionEC1,
+              option2: element.optionEC2,
+              option3: element.optionEC3,
+              Callbackoption1: element.optionECT1,
+              Callbackoption2: element.optionECT2,
+              Callbackoption3: element.optionECT3,
+              InvalidOption: element.optionEInvalid1,
+            })
+            hi.push({
+              ivrsuccess: element.optionH2,
+              option1: element.optionHC1,
+              option2: element.optionHC2,
+              option3: element.optionHC3,
+              Callbackoption1: element.optionHCT1,
+              Callbackoption2: element.optionHCT2,
+              Callbackoption3: element.optionHCT3,
+              InvalidOption: element.optionHInvalid2,
+            })
+            kn.push({
+              ivrsuccess: element.optionK3,
+              option1: element.optionKC1,
+              option2: element.optionKC2,
+              option3: element.optionKC3,
+              Callbackoption1: element.optionKCT1,
+              Callbackoption2: element.optionKCT2,
+              Callbackoption3: element.optionKCT3,
+              InvalidOption: element.optionKInvalid3,
+            })
+          });
+
+          setEnglishRecords(en)
+          setHindiRecords(hi)
+          setKannadaRecords(kn)
+          setAttemptRecords(res.data.final)
         }
-
-
       })
       .catch(function (error) {
-        console.log(error);
+        console.log(error.message, "failed to fetch excel data");
       });
   }
 
-  console.log(attemptRecords, "attemp")
 
-  const handleUpload = (data) => {
-    console.log(data)
-
-
+  const handleChange = (e) => {
+    localStorage.setItem("campaign", e.target.value)
+    setSelectedCampaign(e.target.value)
   }
+
 
   const englishColumns = [
     {
@@ -210,9 +254,10 @@ const Campaign = (props) => {
       field: 'optionEInvalid1',
       flex: 0.4
     },
-    
+
 
   ];
+
   const kannadaColumns = [
     {
       headerName: 'Attempt',
@@ -319,173 +364,12 @@ const Campaign = (props) => {
 
   ];
 
-  const getCampaignDetails = () => {
-
-  }
-
-
-
-  const handleChange = (event) => {
-    setLoader(true)
-    getAttemptDetails(event.target.value)
-    // console.log("called again")
-    setCampaignname(event.target.value);
-    setcampaignname(event.target.value)
-    setname(event.target.value)
-    // console.log(campaignName)
-    // console.log(name)
-    // console.log("data", event.target.value)
-    // console.log(campaignName, "1st")
-    // console.log(campaignname, "2nd")
-    // console.log()
-
-    var axios = require('axios');
-    var data = JSON.stringify({ "ivrCampaignName": event.target.value });
-
-    var config = {
-      method: 'post',
-      url: `${UPLOAD_FILE}/channel/getJobreportExcel`,
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      data: data
-    };
-
-    axios(config)
-      .then(function (response) {
-        console.log(JSON.stringify(response.data), "ressssssssssssssssssssssssssss");
-        setRecords(response.data.Record)
-        response.data.Record.map((ele) => {
-          var formatted = moment.utc(ele.Call_Duration*1000).format('HH:mm:ss');
-          ele.CDR_Duration=formatted;
-          delete ele._id;
-        })
-
-        setLoader(false)
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-
-    setInterval(function () {
-      var axios = require('axios');
-      var data = JSON.stringify({ "ivrCampaignName": event.target.value });
-
-      var config = {
-        method: 'post',
-        url: `${UPLOAD_FILE}/channel/getBycampaign`,
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        data: data
-      };
-
-      axios(config)
-        .then(function (response) {
-          // console.log(JSON.stringify(response.data));
-          //  if(response.data.counts.length>0){
-          // console.log(response.data)
-          response.data.counts[0].Campaignstartdate = moment(response.data.counts[0].Campaignstartdate).format('Do MMMM  YYYY, h:mm:ss a');
-          response.data.counts[0].Campaignenddate = moment(response.data.counts[0].Campaignenddate).format('Do MMMM  YYYY, h:mm:ss a');
-
-          // response.data.counts[0].Campaignstartdate.replace('T', "")
-          // setModaldata("")
-          setModaldata(response.data.counts);
-          setShow(true)
-          // console.log("i am called")
-
-          //  }
-        })
-        .catch(function (error) {
-          console.log(error);
-        });
-
-    }, 3000);
-
-
-
-  }
-
-  const getAttemptDetails = (value, date) => {
-    const data = {
-      ivrCampaignName: value
-    }
-    var en=[]
-    var hi=[]
-    var kn=[]
-    console.log("data",data)
-    
-    axios.post(`${UPLOAD_FILE}/channel/getinteractionExcel`, data)
-      .then((res) => {
-        // console.log(res)
-        if (res.data.final.length > 0) {
-          res.data.date = date
-          res.data.final.map((ele) => {
-            return ele.date = date
-          })
-          console.log(res.data,"data attempt")
-          res.data.final.forEach(element => {
-            en.push({ivrsuccess:element.optionE1,
-              option1:element.optionEC1,
-              option2:element.optionEC2,
-              option3:element.optionEC3,
-            Callbackoption1:element.optionECT1,
-            Callbackoption2:element.optionECT2,
-            Callbackoption3:element.optionECT3,
-            InvalidOption:element.optionEInvalid1,
-          })
-            hi.push({ivrsuccess:element.optionH2,
-              option1:element.optionHC1,
-              option2:element.optionHC2,
-              option3:element.optionHC3,
-            Callbackoption1:element.optionHCT1,
-            Callbackoption2:element.optionHCT2,
-            Callbackoption3:element.optionHCT3,
-            InvalidOption:element.optionHInvalid2,})
-            kn.push({ivrsuccess:element.optionK3,
-              option1:element.optionKC1,
-              option2:element.optionKC2,
-              option3:element.optionKC3,
-            Callbackoption1:element.optionKCT1,
-            Callbackoption2:element.optionKCT2,
-            Callbackoption3:element.optionKCT3,
-            InvalidOption:element.optionKInvalid3,
-          })
-          });
-         
-          setEnglishRecords(en)
-          setHindiRecords(hi)
-          setKannadaRecords(kn)
-          setAttemptRecords(res.data.final)
-        }
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-
-  }
-
-  // console.log(modaldata, "modaldata")
-
-
-  const handleClose = () => {
-
-    setShow(false)
-  }
-
-  // console.log(campaignName)
-  // console.log(attemptRecords, "attempt")
-  // if (attemptRecords.length > 0) {
-  //   attemptRecords.map((ele) => {
-  //     return ele.date = modaldata[0].Campaignstartdate
-  //   })
-  // }
 
   return (<div>
-    <h1 style={{ textAlign: 'center' }}>Campaign Monitoring</h1>
+    {/* <h3 style={{ textAlign: 'center' }}>Campaign Monitoring</h3> */}
 
     <Grid container spacing={3}>
-      <Grid item lg={12} md={12} xs={12}></Grid>
+      {/* <Grid item lg={12} md={12} xs={12}></Grid> */}
       <Grid item lg={5} md={12} xs={12}></Grid>
       <Grid item lg={2} md={12} xs={12}>
         <FormControl variant="outlined" className={classes.formControl} >
@@ -493,20 +377,23 @@ const Campaign = (props) => {
           <Select
             labelId="demo-simple-select-outlined-label"
             id="demo-simple-select-outlined"
-            value={campaignName}
+            value={selectedCamapign}
             onChange={handleChange}
             label="Campaign"
             autoWidth="true"
           >
             {
-              campaigns.map((ele) => {
-                return (<MenuItem value={ele.campaign_name}>{ele.campaign_name}</MenuItem>)
-              })
+              campaigns.length > 0 ? (
+                campaigns.map((ele) => {
+                  return (<MenuItem value={ele.campaign_name}>{ele.campaign_name}</MenuItem>)
+                })
+              ) : (null)
             }
 
           </Select>
         </FormControl>
       </Grid>
+
       <Grid item lg={5} md={12} xs={12}></Grid>
       <Grid item lg={12} md={12} xs={12}>
         {
@@ -514,166 +401,155 @@ const Campaign = (props) => {
         }
 
       </Grid>
-      {show === true ? <>
+      {campaigndata.length > 0 ? <>
         <Grid item lg={3} md={12} xs={12}>
-          <Card style={{ backgroundColor: '#A52A2A', borderRadius: '12px' }}>
-            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><ScheduleIcon /> Start date : </b>{modaldata[0].Campaignstartdate}</h3></CardContent>
+          <Card style={{ backgroundColor: '#A52A2A', borderRadius: '12px', fontSize: '13px' }}>
+            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><ScheduleIcon /> Start date : </b>{campaigndata[0].Campaignstartdate}</h3></CardContent>
           </Card>
         </Grid>
 
         <Grid item lg={3} md={12} xs={12}>
-          <Card style={{ backgroundColor: '#696969', borderRadius: '12px' }}>
-            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><ScheduleIcon /> End date : </b>{modaldata[0].Campaignenddate}</h3></CardContent>
+          <Card style={{ backgroundColor: '#696969', borderRadius: '12px', fontSize: '13px' }}>
+            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><ScheduleIcon /> End date : </b>{campaigndata[0].Campaignenddate}</h3></CardContent>
           </Card>
 
         </Grid>
 
         <Grid item lg={3} md={12} xs={12}>
-          <Card style={{ backgroundColor: '#800080', borderRadius: '12px', }}>
-            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><QueuePlayNextOutlinedIcon /> Queue: </b>{modaldata[0].queue}</h3></CardContent>
+          <Card style={{ backgroundColor: '#800080', borderRadius: '12px', fontSize: '13px' }}>
+            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><QueuePlayNextOutlinedIcon /> Queue: </b>{campaigndata[0].queue}</h3></CardContent>
           </Card>
 
         </Grid>
 
 
         <Grid item lg={3} md={12} xs={12}>
-          <Card style={{ backgroundColor: '#66CDAA', borderRadius: '12px', justifyContent: 'center' }}>
-            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><BackupOutlinedIcon /> Total Records Uploaded : </b>{modaldata[0].totalRecords}</h3></CardContent>
+          <Card style={{ backgroundColor: '#66CDAA', borderRadius: '12px', justifyContent: 'center', fontSize: '13px' }}>
+            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><BackupOutlinedIcon /> Total Records Uploaded : </b>{campaigndata[0].totalRecords}</h3></CardContent>
           </Card>
         </Grid>
 
         <Grid item lg={3} md={12} xs={12}>
-          <Card style={{ backgroundColor: '#191970', borderRadius: '12px' }}>
-            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><DialerSipOutlinedIcon /> Dailed records Count: </b>{modaldata[0].DailedCountrecordsCount}</h3></CardContent>
+          <Card style={{ backgroundColor: '#191970', borderRadius: '12px', fontSize: '13px' }}>
+            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><DialerSipOutlinedIcon /> Dailed records Count: </b>{campaigndata[0].DailedCountrecordsCount}</h3></CardContent>
           </Card>
         </Grid>
 
         <Grid item lg={3} md={12} xs={12}>
-          <Card style={{ backgroundColor: '#6B8E23', borderRadius: '12px' }}>
-            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><CallMissedOutgoingOutlinedIcon /> NotDailed records Count: </b>{modaldata[0].NotDailedrecordsCount}</h3></CardContent>
+          <Card style={{ backgroundColor: '#6B8E23', borderRadius: '12px', fontSize: '13px' }}>
+            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><CallMissedOutgoingOutlinedIcon /> NotDailed records Count: </b>{campaigndata[0].NotDailedrecordsCount}</h3></CardContent>
           </Card>
         </Grid>
 
 
         <Grid item lg={3} md={12} xs={12}>
-          <Card style={{ backgroundColor: '#006400', borderRadius: '12px' }}>
-            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><AddIcCallOutlinedIcon /> Answered records Count: </b>{modaldata[0].AnsweredrecordCount}</h3></CardContent>
+          <Card style={{ backgroundColor: '#006400', borderRadius: '12px', fontSize: '13px' }}>
+            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><AddIcCallOutlinedIcon /> Answered records Count: </b>{campaigndata[0].AnsweredrecordCount}</h3></CardContent>
           </Card>
         </Grid>
 
         <Grid item lg={3} md={12} xs={12}>
-          <Card style={{ backgroundColor: '#BC8F8F', borderRadius: '12px' }}>
-            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><PhoneMissedOutlinedIcon /> Not Answered records Count: </b>{modaldata[0].NoAnsweredrecordCount}</h3></CardContent>
+          <Card style={{ backgroundColor: '#BC8F8F', borderRadius: '12px', fontSize: '13px' }}>
+            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><PhoneMissedOutlinedIcon /> Not Answered records Count: </b>{campaigndata[0].NoAnsweredrecordCount}</h3></CardContent>
           </Card>
         </Grid>
 
         <Grid item lg={3} md={12} xs={12}>
-          <Card style={{ backgroundColor: '#FA8072', borderRadius: '12px' }}>
-            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><PhoneDisabledOutlinedIcon /> Failed calls records Count: </b>{modaldata[0].FailerrecordCount}</h3></CardContent>
+          <Card style={{ backgroundColor: '#FA8072', borderRadius: '12px', fontSize: '13px' }}>
+            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><PhoneDisabledOutlinedIcon /> Failed calls records Count: </b>{campaigndata[0].FailerrecordCount}</h3></CardContent>
           </Card>
         </Grid>
 
         <Grid item lg={3} md={12} xs={12}>
-          <Card style={{ backgroundColor: '#708090', borderRadius: '12px' }}>
-            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><MicOffOutlinedIcon /> Busy calls records Count: </b>{modaldata[0].BusyrecordCount}</h3></CardContent>
+          <Card style={{ backgroundColor: '#708090', borderRadius: '12px', fontSize: '13px' }}>
+            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><MicOffOutlinedIcon /> Busy calls records Count: </b>{campaigndata[0].BusyrecordCount}</h3></CardContent>
           </Card>
         </Grid>
 
         <Grid item lg={3} md={12} xs={12}>
-          <Card style={{ backgroundColor: '#2F4F4F', borderRadius: '12px' }}>
-            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><SettingsPhoneOutlinedIcon /> Congestion calls records Count: </b>{modaldata[0].CongestionrecordCount}</h3></CardContent>
+          <Card style={{ backgroundColor: '#2F4F4F', borderRadius: '12px', fontSize: '13px' }}>
+            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><SettingsPhoneOutlinedIcon /> Congestion calls records Count: </b>{campaigndata[0].CongestionrecordCount}</h3></CardContent>
           </Card>
         </Grid>
 
         <Grid item lg={3} md={12} xs={12}>
-          <Card style={{ backgroundColor: '#DAA520', borderRadius: '12px' }}>
-            <CardContent ><h3 style={{ color: 'white', textAlign: 'center' }}><b> <StorageOutlinedIcon /> Job complete records Count: </b>{modaldata[0].jobcompleterecordcount}</h3></CardContent>
+          <Card style={{ backgroundColor: '#DAA520', borderRadius: '12px', fontSize: '13px' }}>
+            <CardContent ><h3 style={{ color: 'white', textAlign: 'center' }}><b> <StorageOutlinedIcon /> Job complete records Count: </b>{campaigndata[0].jobcompleterecordcount}</h3></CardContent>
           </Card>
         </Grid>
         <Grid item lg={3} md={12} xs={12}>
-          <Card style={{ backgroundColor: '#808000', borderRadius: '12px' }}>
-            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b> <StorageOutlinedIcon /> Job not complete records Count: </b>{modaldata[0].jobnotcompleterecordcount}</h3></CardContent>
+          <Card style={{ backgroundColor: '#808000', borderRadius: '12px', fontSize: '13px' }}>
+            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b> <StorageOutlinedIcon /> Job not complete records Count: </b>{campaigndata[0].jobnotcompleterecordcount}</h3></CardContent>
           </Card>
         </Grid>
         <Grid item lg={3} md={12} xs={12}>
-          <Card style={{ backgroundColor: '#0000CD', borderRadius: '12px' }}>
-            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><ReplayOutlinedIcon /> Retries : </b>{modaldata[0].retries}</h3></CardContent>
+          <Card style={{ backgroundColor: '#0000CD', borderRadius: '12px', fontSize: '13px' }}>
+            <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><ReplayOutlinedIcon /> Retries : </b>{campaigndata[0].retries}</h3></CardContent>
           </Card>
         </Grid>
         <Grid item lg={3} md={12} xs={12}>
-        <Button>
-          <Download DownloadData={records1} />
+          <Button>
+            <Download DownloadData={campaigndata} />
           </Button>
         </Grid>
 
 
       </> : <></>}
-    </Grid>
-    {/* </CardContent>
+      <Grid item lg={12} md={12} xs={12}></Grid>
+      <Grid item lg={2} md={12} xs={12}>
+        <br></br>
+        <br></br>
+        <Button>
+          <Download1 DownloadData={englishRecords} />
+        </Button>
+      </Grid>
+      {attemptRecords.length > 0 && <Grid item lg={12} md={12} xs={12}>
+        <Card >
+          <CardContent style={{ 'height': '300px' }}>
+            <h4>English Calls</h4>
+            <DataGrid rows={attemptRecords} columns={englishColumns} pageSize={5}
+              pagination />
 
-    </Card > */}
-    <Grid item lg={12} md={12} xs={12}></Grid>
+          </CardContent>
+        </Card>
+      </Grid>
+      }
+    </Grid>
     <Grid item lg={2} md={12} xs={12}>
       <br></br>
       <br></br>
       <Button>
-      <Download1 DownloadData={englishRecords} />
+        <Download1 DownloadData={hindiRecords} />
       </Button>
-      
     </Grid>
-<br/>
-    {attemptRecords.length > 0 && <Card >
-      <CardContent style={{ 'height': '300px' }}>
-      <h2>English Calls</h2>
-        <DataGrid rows={attemptRecords} columns={englishColumns} pageSize={5}
-          // rowsPerPageOptions={[10, 20, 50]}
-          // onRowClick={showProfile}
-          pagination />
-
-      </CardContent>
-    </Card>
+    {attemptRecords.length > 0 && <Grid item lg={12} md={12} xs={12}>
+      <Card >
+        <CardContent style={{ 'height': '300px' }}>
+          <h4>Hindi Calls</h4>
+          <DataGrid rows={attemptRecords} columns={hindiColumns} pageSize={5}
+            pagination />
+        </CardContent>
+      </Card>
+    </Grid>
     }
-
-<Grid item lg={2} md={12} xs={12}>
+    <Grid item lg={2} md={12} xs={12}>
       <br></br>
       <br></br>
       <Button>
-      <Download1 DownloadData={hindiRecords}  />
+        <Download1 DownloadData={kannadaRecords} />
       </Button>
     </Grid>
-<br/>
-    {attemptRecords.length > 0 && <Card >
-    
-      <CardContent style={{ 'height': '300px' }}>
-      <h2>Hindi Calls</h2>
-        <DataGrid rows={attemptRecords} columns={hindiColumns} pageSize={5}
-          // rowsPerPageOptions={[10, 20, 50]}
-          // onRowClick={showProfile}
-          pagination />
-
-      </CardContent>
-    </Card>
-    }
-     <Grid item lg={2} md={12} xs={12}>
-      <br></br>
-      <br></br>
-      <Button>
-      <Download1 DownloadData={kannadaRecords}/>
-      </Button>
+    {attemptRecords.length > 0 && <Grid item lg={12} md={12} xs={12}>
+      <Card >
+        <CardContent style={{ 'height': '300px' }}>
+          <h4>kannada Calls</h4>
+          <DataGrid rows={attemptRecords} columns={kannadaColumns} pageSize={5}
+            pagination />
+        </CardContent>
+      </Card>
     </Grid>
-<br/>
-    {attemptRecords.length > 0 && <Card >
-    
-      <CardContent style={{ 'height': '300px' }}>
-      <h2>Kannada Calls</h2>
-        <DataGrid rows={attemptRecords} columns={kannadaColumns} pageSize={5}
-          // rowsPerPageOptions={[10, 20, 50]}
-          // onRowClick={showProfile}
-          pagination />
-
-      </CardContent>
-    </Card>
     }
+
   </div >)
 }
 
