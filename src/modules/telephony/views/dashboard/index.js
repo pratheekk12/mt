@@ -46,6 +46,7 @@ import StorageOutlinedIcon from '@material-ui/icons/StorageOutlined';
 import ReplayOutlinedIcon from '@material-ui/icons/ReplayOutlined';
 import { CAMPAIGN_REPORT, UPLOAD_FILE } from 'src/modules/dashboard-360/utils/endpoints'
 import CircularProgress from '@material-ui/core/CircularProgress';
+import ExcelReport from 'src/components/ExcelReport';
 
 
 
@@ -85,7 +86,9 @@ const Campaign = (props) => {
 
   useEffect(() => {
     if (localStorage.getItem('campaign')) {
+      setLoader(true)
       getExcelData()
+      getInteractionDeatils()
       const interval = setInterval(async () => {
         getCampaignDetails()
         getExcelData()
@@ -109,7 +112,7 @@ const Campaign = (props) => {
   }
 
   const getCampaignDetails = () => {
-    //setLoader(true)
+
     const data = {
       "ivrCampaignName": localStorage.getItem('campaign')
     }
@@ -134,6 +137,38 @@ const Campaign = (props) => {
         console.log(err.message, "failed to fetch campaign details")
       })
   }
+
+  const getInteractionDeatils = () => {
+    var axios = require('axios');
+    var data = JSON.stringify({ "ivrCampaignName": localStorage.getItem('campaign') });
+
+    var config = {
+      method: 'post',
+      url: `${UPLOAD_FILE}/channel/getJobreportExcel`,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: data
+    };
+
+    axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data), "ressssssssssssssssssssssssssss");
+        setRecords(response.data.Record)
+        response.data.Record.map((ele) => {
+          var formatted = moment.utc(ele.Call_Duration * 1000).format('HH:mm:ss');
+          ele.CDR_Duration = formatted;
+          delete ele._id;
+        })
+
+        setLoader(false)
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  }
+
+
 
   const getExcelData = () => {
     const data = {
@@ -487,11 +522,14 @@ const Campaign = (props) => {
             <CardContent><h3 style={{ color: 'white', textAlign: 'center' }}><b><ReplayOutlinedIcon /> Retries : </b>{campaigndata[0].retries}</h3></CardContent>
           </Card>
         </Grid>
-        <Grid item lg={3} md={12} xs={12}>
-          <Button>
-            <Download DownloadData={campaigndata} />
-          </Button>
-        </Grid>
+        {
+          records1.length > 0 && <Grid item lg={3} md={12} xs={12}>
+            <Button>
+              <Download DownloadData={records1} />
+            </Button>
+          </Grid>
+        }
+
 
 
       </> : <></>}
