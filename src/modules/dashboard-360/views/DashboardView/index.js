@@ -46,8 +46,8 @@ import { setDistributorOrders } from '../../redux/action';
 import DispositionForm from './DispositionForm';
 
 
-const SOCKETENDPOINT = 'http://192.168.3.36:62002';
-const APIENDPOINT = 'http://192.168.3.36:62002';
+const SOCKETENDPOINT = 'http://192.168.4.44:53003';
+const APIENDPOINT = 'http://192.168.4.44:53003';
 const axios = require('axios');
 
 const socket = socketIOClient(SOCKETENDPOINT, { transports: ['websocket'] });
