@@ -3,7 +3,7 @@ import React, { useRef, useState } from 'react';
 import { TextField, RadioGroup } from 'formik-material-ui';
 import { useEffect } from 'react';
 import {
-  AMI
+  AMI,AGENT_SERVICE
 } from 'src/modules/dashboard-360/utils/endpoints';
 import {
   Button,
@@ -515,7 +515,7 @@ export default function DispositionForm(props) {
     console.log("data", data)
     var config = {
       method: 'put',
-      url: `http://192.168.4.44:53002/api/interactions/${id}`,
+      url: `${AGENT_SERVICE}/interactions/${id}`,
       headers: {
         'Content-Type': 'application/json'
       },
