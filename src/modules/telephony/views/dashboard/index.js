@@ -19,7 +19,7 @@ import {
 } from '@material-ui/core';
 import moment from 'moment';
 import Date from './DaterangeReport'
-import { DataGrid } from '@material-ui/data-grid';
+import { DataGrid,GridToolbar } from '@material-ui/data-grid';
 import axios from 'axios'
 import FileUpload from './Ivrfileupload'
 import Showmodal from './Showmodal'
@@ -47,7 +47,8 @@ import ReplayOutlinedIcon from '@material-ui/icons/ReplayOutlined';
 import { CAMPAIGN_REPORT, UPLOAD_FILE } from 'src/modules/dashboard-360/utils/endpoints'
 import CircularProgress from '@material-ui/core/CircularProgress';
 import ExcelReport from 'src/components/ExcelReport';
-
+import { Language } from '@material-ui/icons';
+import LanguageTable from './languageReport'
 
 
 const useStyles = makeStyles(theme => ({
@@ -534,18 +535,23 @@ const Campaign = (props) => {
 
       </> : <></>}
       <Grid item lg={12} md={12} xs={12}></Grid>
-      <Grid item lg={2} md={12} xs={12}>
+ 
+      {attemptRecords.length > 0 &&  
+        <LanguageTable/>
+      }
+      {/* <Grid item lg={2} md={12} xs={12}>
         <br></br>
         <br></br>
         <Button>
           <Download1 DownloadData={englishRecords} />
         </Button>
-      </Grid>
+      </Grid> */}
       {attemptRecords.length > 0 && <Grid item lg={12} md={12} xs={12}>
         <Card >
-          <CardContent style={{ 'height': '300px' }}>
-            <h4>English Calls</h4>
-            <DataGrid rows={attemptRecords} columns={englishColumns} pageSize={5}
+          <CardContent style={{ 'height': '400px' }}>
+            <h4>English Calls Counts</h4>
+            <DataGrid rows={attemptRecords} components={{
+          Toolbar: GridToolbar,}} columns={englishColumns} pageSize={5}
               pagination />
 
           </CardContent>
@@ -553,35 +559,37 @@ const Campaign = (props) => {
       </Grid>
       }
     </Grid>
-    <Grid item lg={2} md={12} xs={12}>
+    {/* <Grid item lg={2} md={12} xs={12}>
       <br></br>
       <br></br>
       <Button>
         <Download1 DownloadData={hindiRecords} />
       </Button>
-    </Grid>
+    </Grid> */}
     {attemptRecords.length > 0 && <Grid item lg={12} md={12} xs={12}>
       <Card >
-        <CardContent style={{ 'height': '300px' }}>
-          <h4>Hindi Calls</h4>
-          <DataGrid rows={attemptRecords} columns={hindiColumns} pageSize={5}
+        <CardContent style={{ 'height': '400px' }}>
+          <h4>Hindi Calls Counts</h4>
+          <DataGrid rows={attemptRecords} components={{
+          Toolbar: GridToolbar,}} columns={hindiColumns} pageSize={5}
             pagination />
         </CardContent>
       </Card>
     </Grid>
     }
-    <Grid item lg={2} md={12} xs={12}>
+    {/* <Grid item lg={2} md={12} xs={12}>
       <br></br>
       <br></br>
       <Button>
         <Download1 DownloadData={kannadaRecords} />
       </Button>
-    </Grid>
+    </Grid> */}
     {attemptRecords.length > 0 && <Grid item lg={12} md={12} xs={12}>
       <Card >
-        <CardContent style={{ 'height': '300px' }}>
-          <h4>kannada Calls</h4>
-          <DataGrid rows={attemptRecords} columns={kannadaColumns} pageSize={5}
+        <CardContent style={{ 'height': '400px' }}>
+          <h4>kannada Calls Counts</h4>
+          <DataGrid rows={attemptRecords} components={{
+          Toolbar: GridToolbar,}} columns={kannadaColumns} pageSize={5}
             pagination />
         </CardContent>
       </Card>
