@@ -11,9 +11,11 @@ import campaign from '../modules/telephony/views/dashboard/campaign'
 
 import ivrcampaign from '../modules/telephony/views/dashboard/ivrcampaign'
 import manageagents from 'src/modules/telephony/views/dashboard/Auto-report/manageagents'
-import agentPerformance from 'src/modules/telephony/views/dashboard/Auto-report/agentperformance'
-import interactionreport from 'src/modules/telephony/views/dashboard/Auto-report/interactionreport'
-
+import AgentPerformance from 'src/modules/telephony/views/dashboard/Auto-report/agentperformance'
+import interactionreport from 'src/modules/telephony/views/dashboard/Auto-report/interationreport'
+import cdrreport from 'src/modules/telephony/views/dashboard/Auto-report/cdrReport'
+import queuereport from 'src/modules/telephony/views/dashboard/Auto-report/queueReport'
+import createcampaign from 'src/modules/telephony/views/dashboard/Createcampaign'
 export const dash360 = React.lazy(() =>
   import('src/modules/dashboard-360/views')
 );
@@ -101,7 +103,7 @@ export default [
   },
   {
     path: '/agentPerformance',
-    component: agentPerformance,
+    component: AgentPerformance,
     requiresAuth: true
   },
   {
@@ -109,5 +111,19 @@ export default [
     component: interactionreport,
     requiresAuth: true
   },
-
+  {
+    path: '/createcampaign',
+    component: createcampaign,
+    requiresAuth: true
+  },
+  {
+    path: '/queuereport',
+    component: queuereport,
+    requiresAuth: true
+  },
+  {
+    path: '/cdrreport',
+    component: cdrreport,
+    requiresAuth: true
+  },
 ];

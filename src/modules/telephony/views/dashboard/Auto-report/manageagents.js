@@ -37,7 +37,7 @@ import { propTypes } from 'react-bootstrap/esm/Image';
 import Dialog1 from './updatedialog'
 import Popup from './PopUp'
 import { date } from 'yup';
-import { AGENT_PERFORMANCE } from 'src/modules/dashboard-360/utils/endpoints'
+import {AGENT_SERVICE} from 'src/modules/dashboard-360/utils/endpoints'
 
 
 const Inbound = (props) => {
@@ -50,7 +50,8 @@ const Inbound = (props) => {
     const [idle, setIdle] = useState([])
     const [update, setUpdate] = useState({})
     const [show, setShow] = useState(false)
-
+    const [ManageAgent, setManageAgent] = useState([])
+ 
 
     const profilesColumns = [
         {
@@ -166,7 +167,7 @@ const Inbound = (props) => {
         },
         {
             headerName: 'Queue ',
-            field: 'queue',
+            field: 'Queue',
             flex: 1
         },
         {
@@ -181,6 +182,9 @@ const Inbound = (props) => {
         //     return ele._id === data.row._id
         // })
         // console.log(record)
+        
+        var value=JSON.stringify(data.row)
+        localStorage.setItem("Formdata",value)
         setUpdate(data.row)
         setShow(true)
     }
@@ -193,7 +197,7 @@ const Inbound = (props) => {
     }
 
     const getAgents = () => {
-        axios.get(`${AGENT_PERFORMANCE}/agents`)
+        axios.get(`${AGENT_SERVICE}/agents`)
             .then((res) => {
                 console.log(res.data)
                 if (res.data.length > 0) {
@@ -222,7 +226,7 @@ const Inbound = (props) => {
 
                     let value;
                     res.data.map((ele) => {
-
+                      
                         value = new Date(ele.updatedAt).toUTCString()
                         //console.log(value)
                         // value = new date() - new Date(value)
@@ -235,21 +239,34 @@ const Inbound = (props) => {
                             ele.Mduration = value
                         )
                     })
-
+                  
                     setAgents(res.data)
-                    const idle1 = agents.filter((ele) => {
+                    const magagent = res.data.filter((ele) => {
+                        var formattted1= parseInt(ele.updatedAt);
+                        var formatte = moment.unix(formattted1/ 1000).format('DD-MM-yyyy');
+                        var currentdate= moment(new Date()).format('DD-MM-yyyy')
+                    
+                        if(currentdate == formatte) {
+                            // Date equals today's date
+                            console.log("sub",formatte)
+                            return ele;
+                        }
+                       
+                    })
+                    setManageAgent(magagent)
+                    const idle1 = res.data.filter((ele) => {
                         return ele.Event === 'Call Disconnected Not Disposed'
                     })
                     setIdle(idle1)
-                    const break1 = agents.filter((ele) => {
+                    const break1 = res.data.filter((ele) => {
                         return ele.Event === 'On Break'
                     })
                     setBreakdetails(break1)
-                    const agentsFree1 = agents.filter((ele) => {
+                    const agentsFree1 = res.data.filter((ele) => {
                         return ele.Event === 'Free for Next Call'
                     })
                     setAgentsFree(agentsFree1)
-                    const live = agents.filter((ele) => {
+                    const live = res.data.filter((ele) => {
                         return ele.Event === 'On Call'
                     })
                     setLivecalls(live)
@@ -312,10 +329,10 @@ const Inbound = (props) => {
                                 <Grid item xs={6} sm={6} lg={5}> <b>Agents Status</b></Grid>
                                 <Grid item xs={6} sm={6} lg={1}></Grid>
                                 <Grid item xs={6} sm={6} lg={12}>
-                                    <DataGrid rows={agents} columns={agentStatusColumn} pageSize={5}
+                                    <DataGrid rows={ManageAgent} columns={agentStatusColumn} pageSize={5}
                                         //rowsPerPageOptions={[5, 20, 50]}
                                         autoHeight="true"
-                                        pagination onRowClick={showProfile} />
+                                        pagination  />
                                 </Grid>
                             </Grid>
                         </CardContent>
@@ -332,7 +349,7 @@ const Inbound = (props) => {
                                     <DataGrid rows={breakdetails} columns={agentStatusColumn} pageSize={5}
                                         //rowsPerPageOptions={[5, 20, 50]}
                                         autoHeight="true"
-                                        pagination onRowClick={showProfile} />
+                                        pagination  />
                                 </Grid>
                             </Grid>
                         </CardContent>
@@ -349,7 +366,7 @@ const Inbound = (props) => {
                                     <DataGrid rows={liveCalls} columns={liveCallsColumn} pageSize={5}
                                         //rowsPerPageOptions={[5, 20, 50]}
                                         autoHeight="true"
-                                        pagination onRowClick={showProfile} />
+                                        pagination  />
                                 </Grid>
                             </Grid>
                         </CardContent>
@@ -366,7 +383,7 @@ const Inbound = (props) => {
                                     <DataGrid rows={agentsFree} columns={agentsFreeColumn} pageSize={5}
                                         //rowsPerPageOptions={[5, 20, 50]}
                                         autoHeight="true"
-                                        pagination onRowClick={showProfile} />
+                                        pagination  />
                                 </Grid>
                             </Grid>
                         </CardContent>
@@ -383,7 +400,7 @@ const Inbound = (props) => {
                                     <DataGrid rows={idle} columns={callsNotDisposed} pageSize={5}
                                         //rowsPerPageOptions={[5, 20, 50]}
                                         autoHeight="true"
-                                        pagination onRowClick={showProfile} />
+                                        pagination  />
                                 </Grid>
                             </Grid>
                         </CardContent>
@@ -395,7 +412,7 @@ const Inbound = (props) => {
     );
 
 
-
+  
 }
 
 export default Inbound

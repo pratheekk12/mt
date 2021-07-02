@@ -13,6 +13,7 @@ import {
     Grid, TextField
 } from '@material-ui/core';
 import axios from 'axios';
+import {AUTH} from 'src/modules/dashboard-360/utils/endpoints'
 
 const styles = (theme) => ({
     root: {
@@ -126,7 +127,7 @@ export default function CustomizedDialogs(props) {
                     "StateInterface": `Local/5${phone}@from-internal`
                 }
 
-                axios.post(`http://192.168.4.44:62003/api/register`, data)
+                axios.post(`${AUTH}/register`, data)
                     .then((res) => {
                         console.log(res.data)
                         alert(`Agent Added Successfully`)
@@ -158,7 +159,7 @@ export default function CustomizedDialogs(props) {
                     "MemberName": id,
                     "StateInterface": id
                 }
-                axios.post(`http://192.168.4.44:62003/api/register`, data)
+                axios.post(`${AUTH}/register`, data)
                     .then((res) => {
                         console.log(res.data)
                         alert(`Agent Added Successfully`)

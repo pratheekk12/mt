@@ -21,7 +21,7 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import CallIcon from '@material-ui/icons/Call';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import { getAddressFromObj } from '../../utils/util-functions';
-
+import {AUTH,AMI} from 'src/modules/dashboard-360/utils/endpoints'
 const useStyles = makeStyles(theme => ({
   maxW50: {
     maxWidth: '50%',
@@ -119,7 +119,7 @@ export default function DealerCard(props) {
   }
 
   const [showFullDetailsModal, setShowFullDetailsModal] = useState(false);
-  const SOCKETENDPOINT = 'http://192.168.4.44:53003/';
+  const SOCKETENDPOINT = `${AMI}`;
   const getIconColor = () => {
     return 'primary';
   };

@@ -23,7 +23,8 @@ import {
     DialogTitle
 } from '@material-ui/core';
 import axios from 'axios'
-import { AGENT_PERFORMANCE } from 'src/modules/dashboard-360/utils/endpoints'
+import {AGENT_SERVICE,AMI} from 'src/modules/dashboard-360/utils/endpoints'
+import {AUTH} from 'src/modules/dashboard-360/utils/endpoints'
 
 
 const Popup = (props) => {
@@ -54,20 +55,22 @@ const Popup = (props) => {
     //console.log(record)
 
     useEffect(() => {
-        setname(record.name)
-        setProcessType(record.ProcessType)
-        setProcessname(record.ProcessName)
-        if (show && record.id.length > 9) {
-            setPhone(record.id)
+        var formdata= JSON.parse(localStorage.getItem("Formdata"))
+        console.log("formdata",formdata)
+        setname(formdata.name)
+        setProcessType(formdata.ProcessType)
+        setProcessname(formdata.ProcessName)
+        if (show && formdata.id.length > 9) {
+            setPhone(formdata.id)
         } else {
-            setSip(record.id)
+            setSip(formdata.id)
         }
 
-        setProcessLocation(record.ProcessLocation)
-        setQueue(record.Queue)
-        setEmail(record.UserName)
-        setProcessGroup(record.ProcessGroup)
-    }, [props])
+        setProcessLocation(formdata.ProcessLocation)
+        setQueue(formdata.Queue)
+        setEmail(formdata.UserName)
+        setProcessGroup(formdata.ProcessGroup)
+    }, [localStorage.getItem("Formdata")])
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -93,11 +96,11 @@ const Popup = (props) => {
         if (!sip) {
             //setSip(phone)
             const data = {
-                "username": email,
+                "UserName": email,
                 // "password": phone,
                 "role": "agent",
                 "id": phone,
-                "Name": name,
+                "name": name,
                 "agentAvailability": "Mobile",
                 "queuePrefix": "",
                 "ProcessName": processName,
@@ -113,7 +116,7 @@ const Popup = (props) => {
             }
             console.log(data)
 
-            axios.put(`${AGENT_PERFORMANCE}/agents/${record._id}`, data)
+            axios.put(`${AGENT_SERVICE}/agents/${record._id}`, data)
                 .then((res) => {
                     // console.log(res.data)
                     alert(`Agent Updated Successfully`)
@@ -130,7 +133,7 @@ const Popup = (props) => {
                 }
 
 
-                axios.post(`http://192.168.4.44:62003/api/reset-password`, data1)
+                axios.post(`${AUTH}/reset-password`, data1)
                     .then((res) => {
                         if (res.data.status === 'ok') {
                             alert(`Password Changed Successfully`)
@@ -146,11 +149,11 @@ const Popup = (props) => {
         } else {
             const id = `SIP/${sip}`
             const data = {
-                "username": email,
+                "UserName": email,
                 //"password": phone,
                 "role": "agent",
                 "id": sip,
-                "Name": name,
+                "name": name,
                 "agentAvailability": "Sip",
                 "queuePrefix": "",
                 "ProcessName": processName,
@@ -166,7 +169,7 @@ const Popup = (props) => {
             }
             console.log("i am here")
             console.log(data)
-            axios.put(`${AGENT_PERFORMANCE}/agents/${record._id}`, data)
+            axios.put(`${AGENT_SERVICE}/agents/${record._id}`, data)
                 .then((res) => {
                     // console.log(res.data)
                     alert(`Agent updated Successfully`)
@@ -181,7 +184,7 @@ const Popup = (props) => {
                     "newpassword": password,
                     "_id": record._id
                 }
-                axios.post(`http://192.168.4.44:62003/api/reset-password`, data1)
+                axios.post(`${AUTH}/reset-password`, data1)
                     .then((res) => {
                         //console.log(res.data)
                         if (res.data.status === 'ok') {
@@ -212,7 +215,7 @@ const Popup = (props) => {
             < DialogContent>
                 <Grid container spacing={3} direction="row">
                     <Grid item xs={6} sm={6} lg={6}><TextField id="outlined-basic" label="Name" variant="outlined" value={name} onChange={handleName} /></Grid>
-                    <Grid item xs={6} sm={6} lg={6}><TextField id="outlined-basic" label="Email-ID" variant="outlined" value={email} onChange={handleemail} /></Grid>
+                    <Grid item xs={6} sm={6} lg={6}><TextField id="outlined-basic" label="Email-ID" variant="outlined" value={email} onChange={handleemail}  disabled="disabled"/></Grid>
                     <Grid item xs={6} sm={6} lg={6}><TextField id="outlined-basic" label="Number" variant="outlined" value={phone} onChange={handlephone} /></Grid>
                     <Grid item xs={6} sm={6} lg={6}><TextField id="outlined-basic" label="Process Name" variant="outlined" value={processName} onChange={handleprocessName} /></Grid>
                     <Grid item xs={6} sm={6} lg={6}><TextField id="outlined-basic" label="Process Location" variant="outlined" value={processlocation} onChange={handleprocesslocation} /></Grid>

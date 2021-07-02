@@ -46,11 +46,11 @@ import { setDistributorOrders } from '../../redux/action';
 import DispositionForm from './DispositionForm';
 
 
-const SOCKETENDPOINT = 'http://192.168.4.44:53003';
-const APIENDPOINT = 'http://192.168.4.44:53003';
+const SOCKETENDPOINT = `${AMI}`;
+const APIENDPOINT = `${AMI}`;
 const axios = require('axios');
 
-const socket = socketIOClient(SOCKETENDPOINT, { transports: ['websocket'] });
+// const socket = socketIOClient(SOCKETENDPOINT, { transports: ['websocket'] });
 const useStyles = makeStyles(theme => {
   return {
     root: {

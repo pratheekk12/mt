@@ -16,6 +16,7 @@ import {
 import * as yup from 'yup';
 import { Autocomplete } from '@material-ui/lab';
 import { Category } from '@material-ui/icons';
+
 const axios = require('axios');
 const useStyle = makeStyles(() => ({
   fieldContainer: {
@@ -25,7 +26,7 @@ const useStyle = makeStyles(() => ({
 export default function DispositionForm(props) {
   const [disable, setDisable] = useState(true)
   const [takebreak, setTakebreak] = useState(false)
-  var APIENDPOINT = 'http://192.168.4.44:53003';
+  var APIENDPOINT = `${AMI}`;
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////
   /// addToQueue start //////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////

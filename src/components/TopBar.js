@@ -89,7 +89,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-var APIENDPOINT = 'http://192.168.4.44:53003';
+var APIENDPOINT = `${AMI}`;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// addToQueue start //////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -284,7 +284,62 @@ const TopBar = ({
             <></>
           )}
 
+           {
+            localStorage.getItem('role') === 'admin' ? (
+              <Tooltip title="IVR Campaign">
+                <IconButton color="inherit">
+                  <Link to='/createcampaign' className="color-white"><Typography>Create Campaign</Typography></Link>
+                </IconButton>
+              </Tooltip>
+            ) : (null)
+          }
 
+
+{
+            localStorage.getItem('role') === 'admin' ? (
+              <Tooltip title="manageagents">
+                <IconButton color="inherit">
+                  <Link to='/manageagents' className="color-white"><Typography>Agents Dashboard</Typography></Link>
+                </IconButton>
+              </Tooltip>
+            ) : (null)
+          }
+          {
+            localStorage.getItem('role') === 'admin' ? (
+              <Tooltip title="manageagents">
+                <IconButton color="inherit">
+                  <Link to='/AgentPerformance' className="color-white"><Typography>Agent Peformance Report</Typography></Link>
+                </IconButton>
+              </Tooltip>
+            ) : (null)
+          }
+              {
+            localStorage.getItem('role') === 'admin' ? (
+              <Tooltip title="interactionreport">
+                <IconButton color="inherit">
+                  <Link to='/interactionreport' className="color-white"><Typography>Interaction Report</Typography></Link>
+                </IconButton>
+              </Tooltip>
+            ) : (null)
+          }
+                {
+            localStorage.getItem('role') === 'admin' ? (
+              <Tooltip title="queuereport">
+                <IconButton color="inherit">
+                  <Link to='/queuereport' className="color-white"><Typography>Queue Report</Typography></Link>
+                </IconButton>
+              </Tooltip>
+            ) : (null)
+          }
+            {
+            localStorage.getItem('role') === 'admin' ? (
+              <Tooltip title="cdrreport">
+                <IconButton color="inherit">
+                  <Link to='/cdrreport' className="color-white"><Typography>CDR Report</Typography></Link>
+                </IconButton>
+              </Tooltip>
+            ) : (null)
+          }
           {/* {
             localStorage.getItem('role') === 'admin' ? (
               <Tooltip title="Campaign">

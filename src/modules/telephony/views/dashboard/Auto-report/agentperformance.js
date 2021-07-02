@@ -26,15 +26,15 @@ import InteractionDate from './agentperformance_date'
 import DownloadReport from '../DownloadReport'
 import axios from 'axios';
 import moment from 'moment'
-import { DataGrid } from '@material-ui/data-grid';
+import { DataGrid,GridToolbar } from '@material-ui/data-grid';
 import ExcelReport from '../ExcelReport'
-import { AGENT_PERFORMANCE } from 'src/modules/dashboard-360/utils/endpoints'
-
+import {AGENT_SERVICE,AMI} from 'src/modules/dashboard-360/utils/endpoints'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 const AgentPerformance = (props) => {
     const [date, setdate] = useState("")
     const [records, setRecords] = useState([])
-
+    const [loader, setLoader] = useState(false)
     const profilesColumns = [
         {
             headerName: 'SL.No',
@@ -90,16 +90,32 @@ const AgentPerformance = (props) => {
     ]
 
     const getData = (date) => {
+        setLoader(true)
         let value = moment(date).format().slice(0, 10)
         const data = {
             "startDate": value
         }
 
-        axios.post(`${AGENT_PERFORMANCE}/AgentPeformanceReport`, data)
+        axios.post(`${AGENT_SERVICE}/AgentPeformanceReport`, data)
             .then((res) => {
+                setLoader(false)
                 console.log(res.data.filteredArray)
                 var i = 0
                 res.data.filteredArray.map((ele) => {
+                   var TotalLoginTime = moment.utc(ele.TotalLoginTime*1000).format('HH:mm:ss');
+                 
+                   
+                   var TotalTalkTime = moment.utc(ele.TotalTalkTime*1000).format('HH:mm:ss');
+                   var TotalIdleDuration = moment.utc(ele.TotalIdleDuration*1000).format('HH:mm:ss');
+                   var TotalBreakTime= moment.utc(ele.TotalBreakTime*1000).format('HH:mm:ss');
+                   
+                    var ACW = moment.utc(ele.ACW*1000).format('HH:mm:ss');
+              
+                   ele.TotalBreakTime=TotalBreakTime
+                    ele.TotalIdleDuration=TotalIdleDuration
+                    ele.TotalTalkTime=TotalTalkTime
+                    ele.TotalLoginTime=TotalLoginTime
+                    ele.ACW=ACW
                     i = i + 1
                     return ele.id = i
                 })
@@ -121,22 +137,38 @@ const AgentPerformance = (props) => {
         <Grid container spacing={3} direction="row">
             <Grid item xs={6} sm={6} lg={5}></Grid>
             <Grid item xs={6} sm={6} lg={4}> <InteractionDate getData={getData} /> {records && records.length > 0 && (
-                <ExcelReport
-                    data={records}
-                    fileName={'Agent Performance'}
-                />
+              <ExcelReport
+                data={records}
+                fileName={'Agent Performance'}
+              />
             )}</Grid>
             <Grid item xs={6} sm={6} lg={1}></Grid>
             <Grid item xs={6} sm={6} lg={2}></Grid>
+            <Grid item xs={4} sm={4} lg={2}>
+                {
+                    loader ? (<div>
+
+                        <CircularProgress />
+
+                    </div>
+                    ) : (null)
+                }
+            </Grid>
         </Grid>
         <Grid container spacing={3} direction="row">
             {
                 records.length > 0 ? (
                     <Grid item xs={6} sm={6} lg={12}>
-                        <DataGrid rows={records} columns={profilesColumns} pageSize={10}
-                            //rowsPerPageOptions={[10, 20, 50]}
+                          <Card >
+                            <CardContent style={{ 'height': '500px' }}>
+                        <DataGrid components={{
+                                    Toolbar: GridToolbar,
+                                }} rows={records} columns={profilesColumns} pageSize={10}
+                          
                             autoHeight="true"
                             pagination />
+                            </CardContent>
+                            </Card>
                     </Grid>
                 ) : (null)
             }
